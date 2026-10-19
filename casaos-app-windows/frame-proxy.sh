@@ -71,7 +71,9 @@ served=""
       up="127.0.0.1:$p"
       tls=""
     fi
-    printf 'http://127.0.0.1:%s {\n\treverse_proxy %s {\n%s' "$q" "$up" "$tls"
+    # any Host (tailscale serve passes the browser's: <machine>.<tailnet>.ts.net:P),
+    # on this machine only
+    printf 'http://:%s {\n\tbind 127.0.0.1\n\treverse_proxy %s {\n%s' "$q" "$up" "$tls"
     printf '\t\theader_up X-Forwarded-Proto https\n'
     printf '\t\theader_down -X-Frame-Options\n'
     printf '\t\theader_down Content-Security-Policy "frame-ancestors[^;]*;?" ""\n'
