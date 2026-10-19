@@ -1,7 +1,9 @@
 /*
- * Music Player Widget — styles. Matches the look of the CasaOS dashboard
+ * Music Player + Spotify — styles. Matches the look of the CasaOS dashboard
  * widgets (white text over the frosted .blur-background); every class is
- * prefixed with "smp-" so it never collides with CasaOS.
+ * prefixed with "smp-" so it never collides with CasaOS. The Music Player's
+ * styles, plus the source switch and the Spotify mode (Spotify's green as
+ * the accent there).
  */
 .smp-widget {
   --smp-muted: hsl(208, 16%, 78%);
@@ -320,4 +322,222 @@
   opacity: 1;
   background: var(--smp-accent);
   color: #111827;
+}
+
+/* ---------- The source switch, the Spotify and Jellyfin modes ---------- */
+.smp-widget[data-source="spotify"] { --smp-accent: hsl(141, 63%, 58%); }
+.smp-widget[data-source="jellyfin"] { --smp-accent: hsl(196, 100%, 62%); }
+.smp-head-left { display: flex; align-items: center; gap: 0.4rem; min-width: 0; }
+.smp-head-btns { align-items: center; }
+.smp-source {
+  display: inline-flex;
+  margin-inline-end: 0.2rem;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
+}
+.smp-src {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+.smp-src svg { width: 15px; height: 15px; }
+.smp-src:hover { opacity: 1; }
+.smp-src:focus-visible { outline: 2px solid var(--smp-accent); outline-offset: 1px; }
+.smp-src.smp-on { background: rgba(255, 255, 255, 0.9); color: #111827; opacity: 1; }
+.smp-src[data-src="spotify"].smp-on { background: hsl(141, 73%, 42%); color: #fff; }
+.smp-src[data-src="jellyfin"].smp-on { background: linear-gradient(135deg, #aa5cc3, #00a4dc); color: #fff; }
+.smp-btn[hidden],
+.smp-like[hidden],
+.smp-device[hidden],
+.smp-info[hidden],
+.smp-pop[hidden],
+.smp-devices[hidden],
+.smp-upnext[hidden],
+.smp-spset[hidden],
+.smp-jfset[hidden],
+.smp-jf-wait[hidden],
+.smp-sp-head[hidden],
+.smp-account[hidden],
+.smp-check[hidden],
+.smp-web-note[hidden],
+.smp-note[hidden],
+.smp-text-btn[hidden] { display: none; }
+
+/* The (i) of a free account and its explanation */
+.smp-info {
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  padding: 0;
+  border: 1px solid var(--smp-muted);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--smp-muted);
+  font: italic 600 0.68rem/1 Georgia, serif;
+  cursor: pointer;
+}
+.smp-info:hover,
+.smp-info[aria-expanded="true"] { border-color: #fff; color: #fff; }
+.smp-pop {
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #fff;
+}
+
+/* Now playing: the heart, the device it plays on */
+.smp-meta { flex: 1; }
+.smp-like { flex: none; }
+.smp-like.smp-on { color: var(--smp-accent); background: transparent; }
+.smp-like.smp-on svg path { fill: currentColor; }
+.smp-device {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  min-width: 0;
+  margin-top: -0.2rem;
+  padding: 0.15rem 0.25rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--smp-muted);
+  font: inherit;
+  font-size: 0.75rem;
+  text-align: start;
+  cursor: pointer;
+}
+.smp-device:hover { background: var(--smp-faint); color: #fff; }
+.smp-device svg { flex: none; width: 14px; height: 14px; }
+.smp-device span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.smp-seek:disabled,
+.smp-vol:disabled,
+.smp-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* A free account: what plays, no controls */
+.smp-widget.smp-free .smp-controls,
+.smp-widget.smp-free .smp-volume { display: none; }
+
+/* Up next, devices and settings panels (the folder picker's look) */
+.smp-upnext,
+.smp-devices,
+.smp-spset,
+.smp-jfset {
+  display: grid;
+  gap: 0.45rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--smp-faint);
+}
+.smp-nlist { display: grid; max-height: 14rem; overflow-y: auto; }
+/* Queued tracks: their place in the queue in the accent color, ✕ takes them out */
+.smp-track.smp-queued .smp-track-n { color: var(--smp-accent); font-weight: 600; }
+.smp-dev-list { display: grid; max-height: 10rem; overflow-y: auto; font-size: 0.8rem; color: var(--smp-muted); }
+.smp-dev.smp-current { color: var(--smp-accent); }
+.smp-dev:disabled { opacity: 0.45; cursor: default; }
+/* Text fields never widen the widget (a grid item's min-content width otherwise would) */
+.smp-content > *,
+.smp-spset > *,
+.smp-jfset > * { min-width: 0; }
+.smp-spset .smp-cid,
+.smp-jfset .smp-jf-server { width: 100%; box-sizing: border-box; }
+.smp-jf-server:disabled { opacity: 0.6; }
+.smp-spset .smp-path-row .smp-path { width: 0; }
+.smp-note {
+  margin: 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+  background: rgba(255, 190, 60, 0.16);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.smp-account { font-size: 0.8rem; color: var(--smp-muted); }
+/* Play in this browser: how it goes, as a warning when it can't */
+.smp-web-note { margin: 0; font-size: 0.75rem; line-height: 1.35; color: var(--smp-muted); }
+.smp-web-note.smp-warn {
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+  background: rgba(255, 190, 60, 0.16);
+  color: inherit;
+}
+.smp-spset .smp-folder-btns,
+.smp-jfset .smp-folder-btns { align-items: center; }
+/* Jellyfin's Quick Connect: the code to enter in Jellyfin */
+.smp-jf-wait { display: grid; gap: 0.35rem; }
+.smp-jf-code {
+  padding: 0.3rem;
+  border-radius: 0.45rem;
+  background: rgba(0, 0, 0, 0.25);
+  font: 600 1.5rem/1.25 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.25em;
+  text-align: center;
+  user-select: all;
+}
+.smp-help {
+  margin-inline-end: auto;
+  color: var(--smp-muted);
+  font-size: 0.78rem;
+  text-decoration: underline;
+}
+.smp-help:hover { color: #fff; }
+.smp-text-btn:disabled { opacity: 0.45; cursor: default; }
+
+/* The library: a playlist's header, its rows, the catalog's results */
+.smp-sp-head { display: flex; align-items: center; gap: 0.35rem; min-width: 0; }
+.smp-widget[dir="rtl"] .smp-sp-head svg { transform: scaleX(-1); }
+.smp-sp-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 500;
+  unicode-bidi: plaintext;
+}
+.smp-pl-img {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 0.3rem;
+  background: rgba(255, 255, 255, 0.12) center / cover no-repeat;
+}
+.smp-pl-img img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+.smp-pl-img svg { width: 15px; height: 15px; opacity: 0.8; }
+.smp-liked-img { background: linear-gradient(135deg, hsl(250, 70%, 55%), hsl(190, 60%, 70%)); }
+.smp-liked-img svg { width: 15px; height: 15px; opacity: 1; }
+.smp-liked-img svg path { fill: #fff; }
+.smp-track-play { flex-wrap: nowrap; }
+.smp-track-t { flex: 0 1 auto; min-width: 0; }
+.smp-track-s {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--smp-muted);
+  font-size: 0.72rem;
+  unicode-bidi: plaintext;
+}
+.smp-track-s:empty { display: none; }
+.smp-track.smp-off { opacity: 0.45; }
+.smp-section {
+  padding: 0.5rem 0.4rem 0.2rem;
+  color: var(--smp-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }

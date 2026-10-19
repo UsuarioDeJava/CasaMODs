@@ -1,5 +1,7 @@
 # Music Player + Spotify for CasaOS
 
+> **Replaced by the [Music Player](../casaos-music-player) 2.0.0**, which is this same widget (Local, Spotify and Jellyfin) and gets the new features (like Jellyfin's All songs). To move: copy `music-player-widget` into `/DATA/AppData/casamod/mod/`, remove `music-player-spotify`, restart CasaMOD and reload. The settings and logins carry over.
+
 A [CasaMOD](https://github.com/Cp0204/CasaMOD) mod: the [Music Player](../casaos-music-player) widget with a switch at its top between **Local** (a folder of your CasaOS storage, played in the CasaOS tab), **Spotify** (your Spotify account: what plays in the Spotify app on any of your devices, with its controls, your playlists, the queue, search and devices; with **Play in this browser**, the CasaOS tab is one of those devices and plays the music itself) and **Jellyfin** (the music library of your Jellyfin server, played in the CasaOS tab).
 
 It replaces the Music Player mod: install one or the other. If both are installed, the Music Player stands down and only this widget shows.

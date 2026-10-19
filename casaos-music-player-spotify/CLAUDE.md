@@ -1,5 +1,7 @@
 # Music Player + Spotify for CasaOS
 
+**Replaced by `../casaos-music-player` (2.0.0), which has this code and gets the changes: work there, not here.**
+
 A CasaMOD mod: the Music Player widget (`../casaos-music-player`, copied and extended) with a switch to the user's Spotify account (Spotify Web API, login with Authorization Code + PKCE and the user's own Client ID) or their Jellyfin library. See `README.md`.
 
 - `music-player-spotify/` is the mod as installed (`mod.js`, `mod.css`): no build step, copied as is to `/DATA/AppData/casamod/mod/music-player-spotify/`.
