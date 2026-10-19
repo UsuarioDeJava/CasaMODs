@@ -245,14 +245,10 @@
     return null;
   }
 
-  // Where windows go: below the CasaOS top bar, the whole width
+  // Where windows go: the whole tab, over CasaOS's top bar too (maximized is
+  // the whole tab; with the browser in full screen, the whole screen)
   function area() {
-    var bar = document.querySelector('.top-bar'), top = 0;
-    if (bar) {
-      var r = bar.getBoundingClientRect();
-      if (r.height && r.bottom > 0 && r.bottom < window.innerHeight / 3) top = Math.round(r.bottom);
-    }
-    return { x: 0, y: top, w: window.innerWidth, h: Math.max(MINH, window.innerHeight - top) };
+    return { x: 0, y: 0, w: window.innerWidth, h: Math.max(MINH, window.innerHeight) };
   }
   // A phone: windows always fill the area
   function narrow() { return window.innerWidth < 640; }
@@ -334,7 +330,7 @@
     return r;
   }
 
-  // The bar stays reachable: never above the top bar, never out of sight
+  // The bar stays reachable: never above the tab's top edge, never out of sight
   function clamp(r, a) {
     r.w = Math.max(MINW, Math.min(r.w, a.w));
     r.h = Math.max(MINH, Math.min(r.h, a.h));

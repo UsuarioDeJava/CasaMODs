@@ -1,7 +1,7 @@
 /* App Windows — the windows, their bar and edges, and CasaOS's Files and App
    Store panels as windows. Each window is a child of <body> with its own
-   z-index (21-29), so apps and panels stack together, under CasaOS's top bar
-   menus (30) and dialogs (40). */
+   z-index (21-29), so apps and panels stack together, over CasaOS's top bar
+   (20) and under its dialogs (40). */
 
 .cw-win {
   position: fixed;
