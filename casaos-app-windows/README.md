@@ -27,7 +27,7 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 
 ### When an app doesn't show
 
-**A blank window, or "refused to connect":** the app doesn't allow being shown inside another page. Some apps protect themselves this way (`X-Frame-Options` / `frame-ancestors`). Browsers don't tell the page, so the mod can't know. Use **open in a new tab**, and **⋯ → Always open in a new tab** for that app. Some apps can allow it in their settings:
+**A blank window, or "refused to connect":** the app doesn't allow being shown inside another page. The browser's console (F12) of the CasaOS tab then says `Refused to display … in a frame because it set 'X-Frame-Options'` (or `frame-ancestors`). Some apps protect themselves this way (`X-Frame-Options` / `frame-ancestors`). Browsers don't tell the page, so the mod can't know. Use **open in a new tab**, and **⋯ → Always open in a new tab** for that app. Some apps can allow it in their settings:
 
 | App | Setting |
 | --- | --- |
@@ -37,7 +37,7 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 
 **CasaOS on https://, or an app on https://:** an https:// address must answer before it opens in a window.
 - With CasaOS opened over HTTPS (for example `tailscale serve`), the browser blocks `http://` apps inside the page (mixed content). The mod tries the app's `https://` address on the same port first. That works where the server serves HTTPS on that port, such as `tailscale serve --bg --https=8096 http://127.0.0.1:8096`. Otherwise the app opens in a new tab, with no message. At CasaOS's `http://` address, windows just work.
-- An app with its own certificate, one the browser doesn't know (self-signed), can't show inside a window. It opens in a new tab, where you can accept the certificate; after that, it opens in windows too.
+- An app with its own certificate, one the browser doesn't know (self-signed), can't show inside a window. It opens in a new tab, where you can accept the certificate; after that, it opens in windows too. Or give it Tailscale's certificate on the same port: `tailscale serve --bg --https=9443 https+insecure://127.0.0.1:9443` (`https+insecure`: Tailscale doesn't check the app's own certificate).
 
 ## Notes
 

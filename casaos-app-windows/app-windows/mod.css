@@ -177,3 +177,6 @@ html.cw-moving * { user-select: none !important; -webkit-user-select: none !impo
   border-radius: 0 !important;
 }
 .modal.cw-panel > .modal-close { display: none !important; }
+/* The App Store pads its list for its own width (margin-left: calc(81rem - 100%)):
+   in a window of any other size that is an empty band on the left */
+.modal.cw-panel ._pl { margin-left: 0 !important; margin-right: 0 !important; }

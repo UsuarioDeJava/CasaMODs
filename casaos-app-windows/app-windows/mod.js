@@ -208,6 +208,11 @@
   function save() {
     try { localStorage.setItem(STORE, JSON.stringify(cfg)); } catch (e) { /* storage full or blocked */ }
   }
+  if (!(cfg.v >= 2)) {
+    ['Files', 'App Store'].forEach(function (n) { if (cfg.apps[n]) delete cfg.apps[n].rect; });
+    cfg.v = 2;
+    save();
+  }
   function appCfg(name) { return cfg.apps[name] || (cfg.apps[name] = {}); }
   function wcfg(w) { return appCfg(w.base || w.name); }
 
@@ -286,8 +291,8 @@
       r.x = a.x + (a.w - r.w) / 2 + n * 28;
       r.y = a.y + (a.h - r.h) / 3 + n * 28;
     }
-    if (!full) r = clamp(r, a);
-    put(b, r);
+    if (!full) r = fit(clamp(r, a), a);
+    put(b, r, true);
     b.classList.toggle('cw-max', full);
     b.classList.toggle('cw-narrow', narrow());
     var mx = b.querySelector('.cw-bar [data-cw="max"]');
@@ -300,14 +305,33 @@
 
   // A window's place, over any stylesheet (CasaOS's panels are Bulma modals,
   // whose fixed inset of 0 would win over a plain inline style)
-  function put(b, r) {
-    var st = b.style;
-    st.setProperty('left', Math.round(r.x) + 'px', 'important');
-    st.setProperty('top', Math.round(r.y) + 'px', 'important');
+  // measure: where it really lands is checked (Files sits inside CasaOS's page,
+  // where a transformed ancestor would make "fixed" relative to that ancestor)
+  // and the difference kept for the drags that follow
+  function put(b, r, measure) {
+    var st = b.style, off = b.__cwOff || { x: 0, y: 0 };
+    st.setProperty('left', Math.round(r.x - off.x) + 'px', 'important');
+    st.setProperty('top', Math.round(r.y - off.y) + 'px', 'important');
     st.setProperty('width', Math.round(r.w) + 'px', 'important');
     st.setProperty('height', Math.round(r.h) + 'px', 'important');
     st.setProperty('right', 'auto', 'important');
     st.setProperty('bottom', 'auto', 'important');
+    if (!measure) return;
+    var g = b.getBoundingClientRect();
+    if (!g.width && !g.height) return;   // hidden: nothing to measure
+    var dx = g.left - r.x, dy = g.top - r.y;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+    b.__cwOff = { x: off.x + dx, y: off.y + dy };
+    st.setProperty('left', Math.round(r.x - b.__cwOff.x) + 'px', 'important');
+    st.setProperty('top', Math.round(r.y - b.__cwOff.y) + 'px', 'important');
+  }
+
+  // All of it in sight, when it fits
+  function fit(r, a) {
+    if (r.y + r.h > a.y + a.h) r.y = Math.max(a.y, a.y + a.h - r.h);
+    if (r.x + r.w > a.x + a.w) r.x = Math.max(a.x, a.x + a.w - r.w);
+    if (r.x < a.x) r.x = a.x;
+    return r;
   }
 
   // The bar stays reachable: never above the top bar, never out of sight
@@ -931,8 +955,24 @@
       mark();
     }, 120);
   }
-  var panelStyle = new MutationObserver(later);
-  new MutationObserver(later).observe(document.body, { childList: true, subtree: true });
+  var PANEL_SEL = PANELS.map(function (p) { return p.sel; }).join(', ');
+  var panelStyle = new MutationObserver(function () {
+    scanPanels();   // before the next paint: no flash of the full-screen panel
+    later();
+  });
+  new MutationObserver(function (records) {
+    for (var i = 0; i < records.length; i++) {
+      var added = records[i].addedNodes;
+      for (var k = 0; k < added.length; k++) {
+        var n = added[k];
+        if (n.nodeType === 1 && (n.matches(PANEL_SEL) || n.querySelector(PANEL_SEL))) {
+          scanPanels();
+          break;
+        }
+      }
+    }
+    later();
+  }).observe(document.body, { childList: true, subtree: true });
 
   restore();
   scanPanels();
