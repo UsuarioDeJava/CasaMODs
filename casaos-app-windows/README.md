@@ -21,7 +21,7 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 
 - **Click an app's icon:** it opens in a window. Click it again (or after minimizing): the same window comes back, not a new one.
 - **Ctrl+click** (Cmd+click on a Mac) an icon: a new tab, as before.
-- **F5** (Ctrl+R) reloads the app you last used, not CasaOS (**Shift+F5** reloads CasaOS). Pressed while typing or clicking inside an app's page, the browser reloads the whole tab, which no page can prevent: the apps' windows then come back by themselves after the reload.
+- **F5** (Ctrl+R) reloads the app whose window you last pressed (its bar or edges), not CasaOS (**Shift+F5** reloads CasaOS). After a click inside an app's page, the keys belong to that page and the browser reloads the whole tab, which no page can prevent: click the window's bar first. After a whole reload, the apps' windows come back by themselves.
 - **⋯ (more):** **Always open in a new tab** for that app. **Shift+click** its icon still opens it in a window (to switch it back).
 - Apps opened from elsewhere (an app's **Open** in the App Store, a widget) open in windows too.
 

@@ -404,8 +404,14 @@
     [].forEach.call(b.querySelectorAll('.cw-edge'), function (edge) {
       edge.addEventListener('pointerdown', function (e) { drag(w, e, edge.getAttribute('data-edge')); });
     });
-    // anything pressed in it brings it to the front (inside an app's page: see the blur below)
-    b.addEventListener('pointerdown', function () { if (wins[wins.length - 1] !== w) focus(w); }, true);
+    // anything pressed in it brings it to the front (inside an app's page: see the blur below).
+    // On an app's bar or edges the keys come back to CasaOS's page (they stay
+    // in the app's page otherwise, and F5 there reloads the whole tab)
+    bar.setAttribute('tabindex', '-1');
+    b.addEventListener('pointerdown', function (e) {
+      if (w.kind === 'app' && !e.target.closest('.cw-menu')) bar.focus({ preventScroll: true });
+      if (wins[wins.length - 1] !== w) focus(w);
+    }, true);
   }
 
   // Dragging by the bar, resizing by an edge (pointer events: mouse, pen and touch)
