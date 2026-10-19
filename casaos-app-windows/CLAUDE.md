@@ -5,6 +5,7 @@ A CasaMOD mod: CasaOS's apps open in windows inside the CasaOS tab (an iframe ea
 - `app-windows/` is the mod as installed (`mod.js`, `mod.css`, `mod.json`, `preview.png`): no build step, copied as is to `/DATA/AppData/casamod/mod/app-windows/`.
 - It is its own project and depends on no other mod. It tells others that a window is in use with `html.cw-active` (Idle Hide reads it).
 - The CasaOS facts (README, "How it works") come from CasaOS-UI's source: `mixins/app/Business_OpenThirdApp.js` (`window.open`, the `#/launch?appDetailData=` page), `components/Apps/AppCard.vue` (`#app-<name>` cards, `.cards-content` icon, the `.app-card-drop` menu), `views/Home.vue` (Files: `b-modal` `.file-panel`, `destroy-on-hide=false`, v-show), `components/Apps/AppSection.vue` (App Store: `$buefy.modal.open`, `.app-panel`), `.top-bar`, `.close-button`.
+- `frame-proxy.sh` (not part of the mod; run on the server by the user): `tailscale serve` per Docker port → Caddy on `127.0.0.1:P+30000` (container `frame-proxy`, host network) → the app, without `X-Frame-Options` and CSP `frame-ancestors`. The Caddyfile it writes was validated with Caddy 2.8 (`caddy validate`) and the header stripping checked with curl.
 - Rules: a window's element never moves in the DOM once added (an iframe that moves reloads): order is z-index only (21–29). No per-frame work: a MutationObserver on `childList` plus the panels' own `style`, pointer events only while dragging.
 
 ## Working here

@@ -35,6 +35,18 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 | qBittorrent | Web UI → uncheck "Enable clickjacking protection" |
 | Grafana | `allow_embedding = true` |
 
+**Every app in windows: the frame proxy.** With CasaOS opened at its Tailscale HTTPS address, [`frame-proxy.sh`](frame-proxy.sh) makes every app open in a window. Run it on the CasaOS server, and again after installing an app:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/UsuarioDeJava/CasaMODs/main/casaos-app-windows/frame-proxy.sh -o frame-proxy.sh
+sudo bash frame-proxy.sh                  # apps outside Docker too: sudo EXTRA="6080" bash frame-proxy.sh
+```
+
+- For each port Docker publishes, `tailscale serve` answers `https://<machine>.<tailnet>.ts.net:<port>` with Tailscale's certificate, so there are no browser warnings, not even for apps with their own certificate.
+- It hands each request to a small Caddy container (`frame-proxy`, host network, listening only on `127.0.0.1:<port + 30000>`). Caddy passes it to the app without `X-Frame-Options` and without the CSP `frame-ancestors` directive; the rest of the app's policy stays.
+- Apps that serve HTTPS themselves (Portainer 9443, MineOS 8443 by default; `HTTPS_APPS="…"` to change) are reached over HTTPS without checking their certificate.
+- It only works inside your tailnet, and the `http://` addresses on your network don't change. Those apps lose their protection against being framed by other sites, but only on these addresses. `sudo bash frame-proxy.sh off` undoes it (CasaOS's own `https://`, port 443, stays).
+
 **CasaOS on https://:** the browser blocks `http://` apps inside an `https://` page (mixed content). So with CasaOS opened over HTTPS (for example `tailscale serve`), an app opens at its `https://` address on the same port. That works where the server serves HTTPS on that port, such as `tailscale serve --bg --https=8096 http://127.0.0.1:8096`. Otherwise the window shows the browser's error: use **open in a new tab**. At CasaOS's `http://` address, windows just work.
 
 **An app with its own certificate** (self-signed, one the browser doesn't know) can't show inside a window, because a certificate can't be accepted there. Open it in a new tab and accept the certificate; after that, it opens in windows too. Or give it Tailscale's certificate on the same port: `tailscale serve --bg --https=9443 https+insecure://127.0.0.1:9443` (`https+insecure`: Tailscale doesn't check the app's own certificate).
