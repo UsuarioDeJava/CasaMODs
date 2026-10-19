@@ -1,0 +1,230 @@
+/* App Windows — the windows, their bar and edges, and CasaOS's Files and App
+   Store panels as windows. Each window is a child of <body> with its own
+   z-index (21-29), so apps and panels stack together, under CasaOS's top bar
+   menus (30) and dialogs (40). */
+
+.cw-win {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  min-height: 160px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #16181d;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.cw-win.cw-max,
+.modal.cw-panel.cw-max { border-radius: 0; }
+.cw-hidden { display: none !important; }
+.cw-win[hidden],
+.cw-menu[hidden],
+.cw-icon[hidden],
+.cw-btn[hidden] { display: none; }
+
+/* The bar: icon and title, then more, new tab, minimize, maximize, close */
+.cw-bar {
+  flex: none;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 34px;
+  padding: 0 3px 0 10px;
+  background: rgba(32, 34, 40, 0.94);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  cursor: default;
+}
+.cw-top .cw-bar { background: rgba(44, 47, 55, 0.97); color: #fff; }
+.cw-icon { flex: none; width: 18px; height: 18px; border-radius: 4px; object-fit: contain; }
+.cw-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cw-btns { flex: none; display: flex; align-items: center; }
+.cw-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.cw-btn:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.cw-btn:focus-visible { outline: 2px solid rgba(120, 180, 255, 0.9); outline-offset: -2px; }
+.cw-close:hover { background: #e5484d; }
+
+/* The app's page */
+.cw-body { flex: 1; position: relative; min-height: 0; background: #fff; }
+.cw-body iframe { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; }
+/* An app CasaOS has just started, until it answers */
+.cw-wait { position: absolute; inset: 0; display: grid; place-items: center; background: #16181d; }
+.cw-wait::after {
+  content: '';
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: cw-spin 0.9s linear infinite;
+}
+@keyframes cw-spin { to { transform: rotate(360deg); } }
+/* While dragging or resizing, the pages under the pointer don't take it */
+html.cw-moving iframe { pointer-events: none !important; }
+html.cw-moving,
+html.cw-moving * { user-select: none !important; -webkit-user-select: none !important; }
+
+/* Edges and corners, for resizing */
+.cw-edge { position: absolute; z-index: 4; touch-action: none; }
+.cw-edge[data-edge="n"] { top: -3px; left: 10px; right: 10px; height: 7px; cursor: ns-resize; }
+.cw-edge[data-edge="s"] { bottom: -3px; left: 10px; right: 10px; height: 7px; cursor: ns-resize; }
+.cw-edge[data-edge="e"] { right: -3px; top: 10px; bottom: 10px; width: 7px; cursor: ew-resize; }
+.cw-edge[data-edge="w"] { left: -3px; top: 10px; bottom: 10px; width: 7px; cursor: ew-resize; }
+.cw-edge[data-edge="ne"] { top: -3px; right: -3px; width: 14px; height: 14px; cursor: nesw-resize; }
+.cw-edge[data-edge="sw"] { bottom: -3px; left: -3px; width: 14px; height: 14px; cursor: nesw-resize; }
+.cw-edge[data-edge="nw"] { top: -3px; left: -3px; width: 14px; height: 14px; cursor: nwse-resize; }
+.cw-edge[data-edge="se"] { bottom: -3px; right: -3px; width: 14px; height: 14px; cursor: nwse-resize; }
+.cw-max .cw-edge,
+.cw-narrow .cw-edge { display: none; }
+
+/* The app's menu (the ⋯ button) */
+.cw-menu {
+  position: absolute;
+  top: 36px;
+  right: 6px;
+  z-index: 5;
+  display: grid;
+  gap: 2px;
+  width: min(300px, calc(100% - 12px));
+  padding: 6px;
+  border-radius: 10px;
+  background: rgba(36, 38, 45, 0.98);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 13px;
+}
+.cw-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 32px;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.cw-item:hover { background: rgba(255, 255, 255, 0.1); }
+.cw-item input[type="checkbox"] { accent-color: #6aa8ff; }
+.cw-port input { width: 6.5em; margin-inline-start: auto; }
+.cw-hint { margin: 4px 0.6rem 2px; color: rgba(255, 255, 255, 0.55); font-size: 12px; line-height: 1.4; }
+
+/* An http:// app with CasaOS on https://: why, and the ways out */
+.cw-note {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  padding: 1.4rem 1.6rem;
+  background: #16181d;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.cw-note h3 { margin: 0 0 0.6rem; color: #fff; font-size: 16px; font-weight: 600; }
+.cw-note p { margin: 0 0 0.9rem; max-width: 60ch; }
+.cw-cmd { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
+.cw-cmd code {
+  flex: 1;
+  min-width: 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 12.5px;
+  overflow-wrap: anywhere;
+}
+.cw-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.cw-row input,
+.cw-port input {
+  padding: 0.3rem 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font: inherit;
+}
+.cw-row input { width: 6.5em; }
+.cw-text-btn {
+  padding: 0.35rem 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.cw-text-btn:hover { background: rgba(255, 255, 255, 0.2); }
+.cw-text-btn.cw-primary { background: #3d7cf5; }
+.cw-text-btn.cw-primary:hover { background: #5a90f7; }
+
+/* An open app's icon on the dashboard: a dot under it (dimmed while minimized) */
+[id^="app-"].cw-open .cards-content .is-relative::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+[id^="app-"].cw-open.cw-min .cards-content .is-relative::after { opacity: 0.45; }
+
+/* Files and the App Store as windows: the place of a window, no backdrop, the
+   bar on top and the panel filling the rest */
+.modal.cw-panel {
+  inset: auto !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
+  border-radius: 10px;
+  background: #16181d;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.modal.cw-panel > .modal-background { display: none !important; }
+.modal.cw-panel > .animation-content {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+.modal.cw-panel > .animation-content > .modal-card,
+.modal.cw-panel > .animation-content > * > .modal-card,
+.modal.cw-panel .animation-content > .modal-card {
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  max-height: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+.modal.cw-panel > .modal-close { display: none !important; }

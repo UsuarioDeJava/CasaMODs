@@ -564,10 +564,12 @@
   }
 
   // Never while something is being used: a menu, a dialog, the Live Wallpapers
-  // panel, a text field, or another page (login…)
+  // panel, an app window (App Windows: what's done inside it doesn't reach the
+  // page), a text field, or another page (login…)
   function blocked() {
     if (!onDashboard()) return true;
     if (document.querySelector('.dropdown.is-active')) return true;
+    if (document.documentElement.classList.contains('cw-active')) return true;
     if (dialogOpen()) return true;
     var a = document.activeElement;
     if (a && (a.isContentEditable || a.tagName === 'TEXTAREA' || a.tagName === 'SELECT' ||

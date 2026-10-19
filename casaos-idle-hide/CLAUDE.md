@@ -3,7 +3,7 @@
 A CasaMOD mod: after some minutes without activity on the dashboard (or with a switch at the far right of the top bar), everything but the wallpaper fades away in a cascade and the wallpaper is raised on top; a click or a key (only those) brings it back. The idle time and an on/off switch sit in a row of the CasaOS settings dropdown. See `README.md`.
 
 - `idle-hide/` is the mod as installed (`mod.js`, `mod.css`, `mod.json`, `preview.png`): no build step, copied as is to `/DATA/AppData/casamod/mod/idle-hide/`.
-- It is its own project and depends on no other mod. It only knows Live Wallpapers by its public markers (`html.lw-on`, `#lw-layer`, `#lw-panel`) and must keep working without it.
+- It is its own project and depends on no other mod. It only knows Live Wallpapers by its public markers (`html.lw-on`, `#lw-layer`, `#lw-panel`), and App Windows by `html.cw-active` (a window in use: never idle meanwhile), and must keep working without them.
 
 ## Working here
 

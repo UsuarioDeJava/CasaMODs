@@ -28,6 +28,7 @@ To remove it, move `idle-hide` out of `/DATA/AppData/casamod/mod/` and restart C
   Saved in the browser.
 - It never hides while something is in use:
   - an open menu or CasaOS dialog;
+  - an app window in use ([App Windows](../casaos-app-windows): what you do inside a window doesn't reach the page);
   - the Live Wallpapers settings panel;
   - a text field with the cursor in it;
   - any page other than the dashboard (login…).
