@@ -59,7 +59,13 @@
       spWebOther: 'Another CasaOS tab in this browser is the device.', spWebScope: 'Connect again (below) to allow playing in this browser.',
       spWebDrm: 'This browser can\'t play Spotify here: protected content (DRM) is off or not supported.',
       spWebFailed: 'Spotify didn\'t take this browser as a device: it needs Premium and Web Playback SDK ticked in your Spotify app.',
-      spWebTap: 'The browser held back the sound: press play.', spThisBrowser: 'This browser'
+      spWebTap: 'The browser held back the sound: press play.', spThisBrowser: 'This browser',
+      jfServer: 'Jellyfin address', jfCode: 'In Jellyfin, open your profile → Quick Connect and enter this code:',
+      jfQcOff: 'Quick Connect is off on this Jellyfin: turn it on in its Dashboard (General).',
+      jfNoServer: 'Jellyfin didn\'t answer at this address. With CasaOS on https://, Jellyfin needs an https:// address too (see the README).',
+      jfFavorite: 'Add to favorites', jfUnfavorite: 'Remove from favorites', jfFavorites: 'Favorites', jfAlbums: 'Albums', jfArtists: 'Artists',
+      jfSearch: 'Search your library', jfOn: 'On Jellyfin', jfNotConnected: 'Jellyfin is not connected', jfSettings: 'Jellyfin settings',
+      jfError: 'Jellyfin didn\'t answer. Try again in a moment.', jfLoginAgain: 'The Jellyfin login was revoked: connect again.'
     },
     ar: {
       title: 'الموسيقى', folder: 'مجلد الموسيقى', change: 'تغيير المجلد', scanning: 'جارٍ قراءة المجلد…',
@@ -91,7 +97,13 @@
       spWebOther: 'علامة تبويب أخرى لـ CasaOS في هذا المتصفح هي الجهاز.', spWebScope: 'اتصل مرة أخرى (أدناه) للسماح بالتشغيل في هذا المتصفح.',
       spWebDrm: 'لا يستطيع هذا المتصفح تشغيل Spotify هنا: المحتوى المحمي (DRM) معطّل أو غير مدعوم.',
       spWebFailed: 'لم يقبل Spotify هذا المتصفح كجهاز: يتطلب ذلك Premium وتحديد Web Playback SDK في تطبيقك على Spotify.',
-      spWebTap: 'منع المتصفح الصوت: اضغط تشغيل.', spThisBrowser: 'هذا المتصفح'
+      spWebTap: 'منع المتصفح الصوت: اضغط تشغيل.', spThisBrowser: 'هذا المتصفح',
+      jfServer: 'عنوان Jellyfin', jfCode: 'في Jellyfin، افتح ملفك الشخصي ← Quick Connect وأدخل هذا الرمز:',
+      jfQcOff: 'ميزة Quick Connect معطّلة في Jellyfin هذا: فعّلها من لوحة التحكم (عام).',
+      jfNoServer: 'لم يستجب Jellyfin على هذا العنوان. عند فتح CasaOS عبر https://، يحتاج Jellyfin أيضًا إلى عنوان https:// (راجع README).',
+      jfFavorite: 'إضافة إلى المفضلة', jfUnfavorite: 'إزالة من المفضلة', jfFavorites: 'المفضلة', jfAlbums: 'الألبومات', jfArtists: 'الفنانون',
+      jfSearch: 'ابحث في مكتبتك', jfOn: 'على Jellyfin', jfNotConnected: 'Jellyfin غير متصل', jfSettings: 'إعدادات Jellyfin',
+      jfError: 'لم يستجب Jellyfin. أعد المحاولة بعد قليل.', jfLoginAgain: 'أُلغي تسجيل الدخول إلى Jellyfin: اتصل مجددًا.'
     },
     be: {
       title: 'Музыка', folder: 'Папка з музыкай', change: 'Змяніць папку', scanning: 'Чытанне папкі…',
@@ -125,7 +137,13 @@
       spWebScope: 'Падключыцеся зноў (ніжэй), каб дазволіць прайграванне ў гэтым браўзеры.',
       spWebDrm: 'Гэты браўзер не можа прайграваць Spotify тут: абаронены змест (DRM) адключаны або не падтрымліваецца.',
       spWebFailed: 'Spotify не прыняў гэты браўзер як прыладу: патрэбныя Premium і адзначаны Web Playback SDK у вашай праграме Spotify.',
-      spWebTap: 'Браўзер заблакаваў гук: націсніце «Прайграць».', spThisBrowser: 'Гэты браўзер'
+      spWebTap: 'Браўзер заблакаваў гук: націсніце «Прайграць».', spThisBrowser: 'Гэты браўзер',
+      jfServer: 'Адрас Jellyfin', jfCode: 'У Jellyfin адкрыйце свой профіль → Quick Connect і ўвядзіце гэты код:',
+      jfQcOff: 'Quick Connect выключаны ў гэтым Jellyfin: уключыце яго ў панэлі кіравання (Агульныя).',
+      jfNoServer: 'Jellyfin не адказаў па гэтым адрасе. Калі CasaOS адкрыты праз https://, Jellyfin таксама патрэбны адрас https:// (гл. README).',
+      jfFavorite: 'Дадаць у абранае', jfUnfavorite: 'Выдаліць з абранага', jfFavorites: 'Абранае', jfAlbums: 'Альбомы', jfArtists: 'Выканаўцы',
+      jfSearch: 'Пошук у вашай бібліятэцы', jfOn: 'У Jellyfin', jfNotConnected: 'Jellyfin не падключаны', jfSettings: 'Налады Jellyfin',
+      jfError: 'Jellyfin не адказаў. Паспрабуйце яшчэ раз крыху пазней.', jfLoginAgain: 'Уваход у Jellyfin адкліканы: падключыцеся зноў.'
     },
     bg: {
       title: 'Музика', folder: 'Папка с музика', change: 'Смяна на папката', scanning: 'Четене на папката…',
@@ -160,7 +178,13 @@
       spWebScope: 'Свържете се отново (по-долу), за да разрешите възпроизвеждане в този браузър.',
       spWebDrm: 'Този браузър не може да възпроизвежда Spotify тук: защитеното съдържание (DRM) е изключено или не се поддържа.',
       spWebFailed: 'Spotify не прие този браузър като устройство: нужни са Premium и отметнат Web Playback SDK във вашето приложение в Spotify.',
-      spWebTap: 'Браузърът спря звука: натиснете „Пусни“.', spThisBrowser: 'Този браузър'
+      spWebTap: 'Браузърът спря звука: натиснете „Пусни“.', spThisBrowser: 'Този браузър',
+      jfServer: 'Адрес на Jellyfin', jfCode: 'В Jellyfin отворете профила си → Quick Connect и въведете този код:',
+      jfQcOff: 'Quick Connect е изключен в този Jellyfin: включете го от таблото (Общи).',
+      jfNoServer: 'Jellyfin не отговори на този адрес. Когато CasaOS е отворен през https://, Jellyfin също трябва да има адрес https:// (вижте README).',
+      jfFavorite: 'Добавяне в любими', jfUnfavorite: 'Премахване от любими', jfFavorites: 'Любими', jfAlbums: 'Албуми', jfArtists: 'Изпълнители',
+      jfSearch: 'Търсене в библиотеката ви', jfOn: 'В Jellyfin', jfNotConnected: 'Jellyfin не е свързан', jfSettings: 'Настройки на Jellyfin',
+      jfError: 'Jellyfin не отговори. Опитайте отново след малко.', jfLoginAgain: 'Влизането в Jellyfin е отменено: свържете се отново.'
     },
     ca: {
       title: 'Música', folder: 'Carpeta de música', change: 'Canvia la carpeta', scanning: 'Llegint la carpeta…',
@@ -195,7 +219,14 @@
       spWebScope: 'Torna a connectar (a sota) per permetre la reproducció en aquest navegador.',
       spWebDrm: 'Aquest navegador no pot reproduir Spotify aquí: el contingut protegit (DRM) està desactivat o no és compatible.',
       spWebFailed: 'Spotify no ha acceptat aquest navegador com a dispositiu: cal Premium i Web Playback SDK marcat a la teva app de Spotify.',
-      spWebTap: 'El navegador ha retingut el so: prem reproduir.', spThisBrowser: 'Aquest navegador'
+      spWebTap: 'El navegador ha retingut el so: prem reproduir.', spThisBrowser: 'Aquest navegador',
+      jfServer: 'Adreça del Jellyfin', jfCode: 'Al Jellyfin, obre el teu perfil → Quick Connect i introdueix aquest codi:',
+      jfQcOff: 'El Quick Connect està desactivat en aquest Jellyfin: activa\'l al seu tauler (General).',
+      jfNoServer: 'El Jellyfin no ha respost en aquesta adreça. Amb el CasaOS a https://, el Jellyfin també necessita una adreça https:// (consulta el README).',
+      jfFavorite: 'Afegeix als preferits', jfUnfavorite: 'Treu dels preferits', jfFavorites: 'Preferits', jfAlbums: 'Àlbums',
+      jfArtists: 'Artistes', jfSearch: 'Cerca a la teva biblioteca', jfOn: 'Al Jellyfin', jfNotConnected: 'El Jellyfin no està connectat',
+      jfSettings: 'Configuració del Jellyfin', jfError: 'El Jellyfin no ha respost. Torna-ho a provar d\'aquí a una estona.',
+      jfLoginAgain: 'La sessió del Jellyfin s\'ha revocat: torna a connectar.'
     },
     cs: {
       title: 'Hudba', folder: 'Složka s hudbou', change: 'Změnit složku', scanning: 'Čtení složky…',
@@ -229,7 +260,13 @@
       spWebScope: 'Připojte se znovu (níže), abyste povolili přehrávání v tomto prohlížeči.',
       spWebDrm: 'Tento prohlížeč tu nemůže přehrávat Spotify: chráněný obsah (DRM) je vypnutý nebo není podporován.',
       spWebFailed: 'Spotify nepřijal tento prohlížeč jako zařízení: vyžaduje Premium a zaškrtnuté Web Playback SDK ve vaší aplikaci Spotify.',
-      spWebTap: 'Prohlížeč zadržel zvuk: stiskněte přehrát.', spThisBrowser: 'Tento prohlížeč'
+      spWebTap: 'Prohlížeč zadržel zvuk: stiskněte přehrát.', spThisBrowser: 'Tento prohlížeč',
+      jfServer: 'Adresa Jellyfinu', jfCode: 'V Jellyfinu otevřete svůj profil → Quick Connect a zadejte tento kód:',
+      jfQcOff: 'Quick Connect je v tomto Jellyfinu vypnutý: zapněte ho v jeho ovládacím panelu (Obecné).',
+      jfNoServer: 'Jellyfin na této adrese neodpověděl. Když je CasaOS otevřený přes https://, potřebuje i Jellyfin adresu https:// (viz README).',
+      jfFavorite: 'Přidat do oblíbených', jfUnfavorite: 'Odebrat z oblíbených', jfFavorites: 'Oblíbené', jfAlbums: 'Alba', jfArtists: 'Interpreti',
+      jfSearch: 'Hledat ve vaší knihovně', jfOn: 'V Jellyfinu', jfNotConnected: 'Jellyfin není připojený', jfSettings: 'Nastavení Jellyfinu',
+      jfError: 'Jellyfin neodpověděl. Zkuste to za chvíli znovu.', jfLoginAgain: 'Přihlášení k Jellyfinu bylo zrušeno: připojte se znovu.'
     },
     de: {
       title: 'Musik', folder: 'Musikordner', change: 'Ordner wechseln', scanning: 'Ordner wird gelesen…',
@@ -263,7 +300,14 @@
       spWebScope: 'Verbinde dich erneut (unten), um die Wiedergabe in diesem Browser zu erlauben.',
       spWebDrm: 'Dieser Browser kann Spotify hier nicht abspielen: Geschützte Inhalte (DRM) sind aus oder werden nicht unterstützt.',
       spWebFailed: 'Spotify hat diesen Browser nicht als Gerät angenommen: Nötig sind Premium und ein Häkchen bei Web Playback SDK in deiner Spotify-App.',
-      spWebTap: 'Der Browser hat den Ton zurückgehalten: Drück auf Play.', spThisBrowser: 'Dieser Browser'
+      spWebTap: 'Der Browser hat den Ton zurückgehalten: Drück auf Play.', spThisBrowser: 'Dieser Browser',
+      jfServer: 'Jellyfin-Adresse', jfCode: 'Öffne in Jellyfin dein Profil → Quick Connect und gib diesen Code ein:',
+      jfQcOff: 'Quick Connect ist in diesem Jellyfin aus: Schalte es im Dashboard (Allgemein) ein.',
+      jfNoServer: 'Jellyfin hat unter dieser Adresse nicht geantwortet. Ist CasaOS per https:// geöffnet, braucht Jellyfin auch eine https://-Adresse (siehe README).',
+      jfFavorite: 'Zu Favoriten hinzufügen', jfUnfavorite: 'Aus Favoriten entfernen', jfFavorites: 'Favoriten', jfAlbums: 'Alben',
+      jfArtists: 'Künstler', jfSearch: 'Deine Bibliothek durchsuchen', jfOn: 'In Jellyfin', jfNotConnected: 'Jellyfin ist nicht verbunden',
+      jfSettings: 'Jellyfin-Einstellungen', jfError: 'Jellyfin hat nicht geantwortet. Versuch es gleich noch einmal.',
+      jfLoginAgain: 'Die Jellyfin-Anmeldung wurde widerrufen: verbinde dich neu.'
     },
     el: {
       title: 'Μουσική', folder: 'Φάκελος μουσικής', change: 'Αλλαγή φακέλου', scanning: 'Ανάγνωση φακέλου…',
@@ -300,7 +344,14 @@
       spWebScope: 'Συνδεθείτε ξανά (παρακάτω) για να επιτρέψετε την αναπαραγωγή σε αυτό το πρόγραμμα περιήγησης.',
       spWebDrm: 'Αυτό το πρόγραμμα περιήγησης δεν μπορεί να παίξει Spotify εδώ: το προστατευμένο περιεχόμενο (DRM) είναι απενεργοποιημένο ή δεν υποστηρίζεται.',
       spWebFailed: 'Το Spotify δεν δέχτηκε αυτό το πρόγραμμα περιήγησης ως συσκευή: χρειάζεται Premium και επιλεγμένο το Web Playback SDK στην εφαρμογή σας στο Spotify.',
-      spWebTap: 'Το πρόγραμμα περιήγησης συγκράτησε τον ήχο: πατήστε αναπαραγωγή.', spThisBrowser: 'Αυτό το πρόγραμμα περιήγησης'
+      spWebTap: 'Το πρόγραμμα περιήγησης συγκράτησε τον ήχο: πατήστε αναπαραγωγή.', spThisBrowser: 'Αυτό το πρόγραμμα περιήγησης',
+      jfServer: 'Διεύθυνση του Jellyfin', jfCode: 'Στο Jellyfin, ανοίξτε το προφίλ σας → Quick Connect και πληκτρολογήστε αυτόν τον κωδικό:',
+      jfQcOff: 'Το Quick Connect είναι απενεργοποιημένο σε αυτό το Jellyfin: ενεργοποιήστε το στον Πίνακα ελέγχου του (Γενικά).',
+      jfNoServer: 'Το Jellyfin δεν απάντησε σε αυτή τη διεύθυνση. Με το CasaOS σε https://, και το Jellyfin χρειάζεται διεύθυνση https:// (δείτε το README).',
+      jfFavorite: 'Προσθήκη στα αγαπημένα', jfUnfavorite: 'Αφαίρεση από τα αγαπημένα', jfFavorites: 'Αγαπημένα', jfAlbums: 'Άλμπουμ',
+      jfArtists: 'Καλλιτέχνες', jfSearch: 'Αναζήτηση στη βιβλιοθήκη σας', jfOn: 'Στο Jellyfin',
+      jfNotConnected: 'Το Jellyfin δεν είναι συνδεδεμένο', jfSettings: 'Ρυθμίσεις Jellyfin',
+      jfError: 'Το Jellyfin δεν απάντησε. Δοκιμάστε ξανά σε λίγο.', jfLoginAgain: 'Η σύνδεση στο Jellyfin ανακλήθηκε: συνδεθείτε ξανά.'
     },
     es: {
       title: 'Música', folder: 'Carpeta de música', change: 'Cambiar carpeta', scanning: 'Leyendo la carpeta…',
@@ -335,7 +386,13 @@
       spWebScope: 'Vuelve a conectar (abajo) para permitir reproducir en este navegador.',
       spWebDrm: 'Este navegador no puede reproducir Spotify aquí: el contenido protegido (DRM) está desactivado o no es compatible.',
       spWebFailed: 'Spotify no aceptó este navegador como dispositivo: necesita Premium y Web Playback SDK marcado en tu app de Spotify.',
-      spWebTap: 'El navegador retuvo el sonido: pulsa reproducir.', spThisBrowser: 'Este navegador'
+      spWebTap: 'El navegador retuvo el sonido: pulsa reproducir.', spThisBrowser: 'Este navegador',
+      jfServer: 'Dirección de Jellyfin', jfCode: 'En Jellyfin, abre tu perfil → Quick Connect e introduce este código:',
+      jfQcOff: 'Quick Connect está desactivado en este Jellyfin: actívalo en su Panel de control (General).',
+      jfNoServer: 'Jellyfin no respondió en esta dirección. Con CasaOS en https://, Jellyfin también necesita una dirección https:// (consulta el README).',
+      jfFavorite: 'Añadir a favoritos', jfUnfavorite: 'Quitar de favoritos', jfFavorites: 'Favoritos', jfAlbums: 'Álbumes', jfArtists: 'Artistas',
+      jfSearch: 'Buscar en tu biblioteca', jfOn: 'En Jellyfin', jfNotConnected: 'Jellyfin no está conectado', jfSettings: 'Ajustes de Jellyfin',
+      jfError: 'Jellyfin no respondió. Inténtalo de nuevo en un momento.', jfLoginAgain: 'La sesión de Jellyfin se revocó: vuelve a conectar.'
     },
     fr: {
       title: 'Musique', folder: 'Dossier de musique', change: 'Changer de dossier', scanning: 'Lecture du dossier…',
@@ -371,7 +428,14 @@
       spWebScope: 'Reconnectez-vous (ci-dessous) pour autoriser la lecture dans ce navigateur.',
       spWebDrm: 'Ce navigateur ne peut pas lire Spotify ici : le contenu protégé (DRM) est désactivé ou non pris en charge.',
       spWebFailed: 'Spotify n\'a pas accepté ce navigateur comme appareil : il faut Premium et Web Playback SDK coché dans votre appli Spotify.',
-      spWebTap: 'Le navigateur a bloqué le son : appuyez sur lecture.', spThisBrowser: 'Ce navigateur'
+      spWebTap: 'Le navigateur a bloqué le son : appuyez sur lecture.', spThisBrowser: 'Ce navigateur',
+      jfServer: 'Adresse de Jellyfin', jfCode: 'Dans Jellyfin, ouvrez votre profil → Quick Connect et saisissez ce code :',
+      jfQcOff: 'Quick Connect est désactivé sur ce Jellyfin : activez-le dans son tableau de bord (Général).',
+      jfNoServer: 'Jellyfin n\'a pas répondu à cette adresse. Avec CasaOS en https://, Jellyfin a aussi besoin d\'une adresse https:// (voir le README).',
+      jfFavorite: 'Ajouter aux favoris', jfUnfavorite: 'Retirer des favoris', jfFavorites: 'Favoris', jfAlbums: 'Albums', jfArtists: 'Artistes',
+      jfSearch: 'Rechercher dans votre bibliothèque', jfOn: 'Sur Jellyfin', jfNotConnected: 'Jellyfin n\'est pas connecté',
+      jfSettings: 'Réglages Jellyfin', jfError: 'Jellyfin n\'a pas répondu. Réessayez dans un instant.',
+      jfLoginAgain: 'La connexion à Jellyfin a été révoquée : reconnectez-vous.'
     },
     hr: {
       title: 'Glazba', folder: 'Mapa s glazbom', change: 'Promijeni mapu', scanning: 'Čitanje mape…',
@@ -406,7 +470,13 @@
       spWebScope: 'Ponovno se povežite (ispod) da biste dopustili reprodukciju u ovom pregledniku.',
       spWebDrm: 'Ovaj preglednik ovdje ne može reproducirati Spotify: zaštićeni sadržaj (DRM) je isključen ili nije podržan.',
       spWebFailed: 'Spotify nije prihvatio ovaj preglednik kao uređaj: potrebni su Premium i označen Web Playback SDK u vašoj Spotify aplikaciji.',
-      spWebTap: 'Preglednik je zadržao zvuk: pritisnite reprodukciju.', spThisBrowser: 'Ovaj preglednik'
+      spWebTap: 'Preglednik je zadržao zvuk: pritisnite reprodukciju.', spThisBrowser: 'Ovaj preglednik',
+      jfServer: 'Adresa Jellyfina', jfCode: 'U Jellyfinu otvorite svoj profil → Quick Connect i unesite ovaj kôd:',
+      jfQcOff: 'Quick Connect je isključen na ovom Jellyfinu: uključite ga na njegovoj nadzornoj ploči (Općenito).',
+      jfNoServer: 'Jellyfin nije odgovorio na ovoj adresi. Kad je CasaOS otvoren preko https://, i Jellyfin treba adresu https:// (pogledajte README).',
+      jfFavorite: 'Dodaj u favorite', jfUnfavorite: 'Ukloni iz favorita', jfFavorites: 'Favoriti', jfAlbums: 'Albumi', jfArtists: 'Izvođači',
+      jfSearch: 'Pretraži svoju biblioteku', jfOn: 'Na Jellyfinu', jfNotConnected: 'Jellyfin nije povezan', jfSettings: 'Postavke Jellyfina',
+      jfError: 'Jellyfin nije odgovorio. Pokušajte ponovno za trenutak.', jfLoginAgain: 'Prijava na Jellyfin je opozvana: povežite se ponovno.'
     },
     hu: {
       title: 'Zene', folder: 'Zenemappa', change: 'Mappa módosítása', scanning: 'Mappa beolvasása…',
@@ -442,7 +512,14 @@
       spWebScope: 'Csatlakozz újra (lent), hogy engedélyezd a lejátszást ebben a böngészőben.',
       spWebDrm: 'Ez a böngésző itt nem tudja lejátszani a Spotifyt: a védett tartalom (DRM) ki van kapcsolva, vagy nem támogatott.',
       spWebFailed: 'A Spotify nem fogadta el ezt a böngészőt eszközként: Premium kell, és a Spotify-alkalmazásodban bejelölt Web Playback SDK.',
-      spWebTap: 'A böngésző visszatartotta a hangot: nyomd meg a lejátszást.', spThisBrowser: 'Ez a böngésző'
+      spWebTap: 'A böngésző visszatartotta a hangot: nyomd meg a lejátszást.', spThisBrowser: 'Ez a böngésző',
+      jfServer: 'A Jellyfin címe', jfCode: 'A Jellyfinben nyisd meg a profilodat → Quick Connect, és írd be ezt a kódot:',
+      jfQcOff: 'A Quick Connect ki van kapcsolva ebben a Jellyfinben: kapcsold be a vezérlőpultján (Általános).',
+      jfNoServer: 'A Jellyfin nem válaszolt ezen a címen. Ha a CasaOS https://-en van megnyitva, a Jellyfinnek is https:// cím kell (lásd a README-t).',
+      jfFavorite: 'Hozzáadás a kedvencekhez', jfUnfavorite: 'Eltávolítás a kedvencek közül', jfFavorites: 'Kedvencek', jfAlbums: 'Albumok',
+      jfArtists: 'Előadók', jfSearch: 'Keresés a könyvtáradban', jfOn: 'A Jellyfinben', jfNotConnected: 'A Jellyfin nincs csatlakoztatva',
+      jfSettings: 'Jellyfin-beállítások', jfError: 'A Jellyfin nem válaszolt. Próbáld újra egy kicsit később.',
+      jfLoginAgain: 'A Jellyfin-bejelentkezést visszavonták: csatlakozz újra.'
     },
     id: {
       title: 'Musik', folder: 'Folder musik', change: 'Ganti folder', scanning: 'Membaca folder…',
@@ -477,7 +554,13 @@
       spWebScope: 'Hubungkan lagi (di bawah) untuk mengizinkan pemutaran di browser ini.',
       spWebDrm: 'Browser ini tidak dapat memutar Spotify di sini: konten terlindungi (DRM) mati atau tidak didukung.',
       spWebFailed: 'Spotify tidak menerima browser ini sebagai perangkat: perlu Premium dan Web Playback SDK dicentang di aplikasi Spotify Anda.',
-      spWebTap: 'Browser menahan suaranya: tekan putar.', spThisBrowser: 'Browser ini'
+      spWebTap: 'Browser menahan suaranya: tekan putar.', spThisBrowser: 'Browser ini',
+      jfServer: 'Alamat Jellyfin', jfCode: 'Di Jellyfin, buka profilmu → Quick Connect lalu masukkan kode ini:',
+      jfQcOff: 'Quick Connect nonaktif di Jellyfin ini: aktifkan di Dasbornya (Umum).',
+      jfNoServer: 'Jellyfin tidak menjawab di alamat ini. Jika CasaOS dibuka lewat https://, Jellyfin juga perlu alamat https:// (lihat README).',
+      jfFavorite: 'Tambahkan ke favorit', jfUnfavorite: 'Hapus dari favorit', jfFavorites: 'Favorit', jfAlbums: 'Album', jfArtists: 'Artis',
+      jfSearch: 'Cari di koleksimu', jfOn: 'Di Jellyfin', jfNotConnected: 'Jellyfin belum terhubung', jfSettings: 'Pengaturan Jellyfin',
+      jfError: 'Jellyfin tidak menjawab. Coba lagi sebentar lagi.', jfLoginAgain: 'Login Jellyfin dicabut: hubungkan lagi.'
     },
     it: {
       title: 'Musica', folder: 'Cartella della musica', change: 'Cambia cartella', scanning: 'Lettura della cartella…',
@@ -511,7 +594,14 @@
       spWebScope: 'Ricollegati (qui sotto) per consentire la riproduzione in questo browser.',
       spWebDrm: 'Questo browser non può riprodurre Spotify qui: i contenuti protetti (DRM) sono disattivati o non supportati.',
       spWebFailed: 'Spotify non ha accettato questo browser come dispositivo: servono Premium e Web Playback SDK spuntato nella tua app Spotify.',
-      spWebTap: 'Il browser ha bloccato l\'audio: premi play.', spThisBrowser: 'Questo browser'
+      spWebTap: 'Il browser ha bloccato l\'audio: premi play.', spThisBrowser: 'Questo browser',
+      jfServer: 'Indirizzo di Jellyfin', jfCode: 'In Jellyfin, apri il tuo profilo → Quick Connect e inserisci questo codice:',
+      jfQcOff: 'Quick Connect è disattivato in questo Jellyfin: attivalo nella sua Dashboard (Generale).',
+      jfNoServer: 'Jellyfin non ha risposto a questo indirizzo. Con CasaOS su https://, anche Jellyfin ha bisogno di un indirizzo https:// (vedi il README).',
+      jfFavorite: 'Aggiungi ai preferiti', jfUnfavorite: 'Rimuovi dai preferiti', jfFavorites: 'Preferiti', jfAlbums: 'Album',
+      jfArtists: 'Artisti', jfSearch: 'Cerca nella tua libreria', jfOn: 'Su Jellyfin', jfNotConnected: 'Jellyfin non è collegato',
+      jfSettings: 'Impostazioni di Jellyfin', jfError: 'Jellyfin non ha risposto. Riprova tra poco.',
+      jfLoginAgain: 'L\'accesso a Jellyfin è stato revocato: ricollegati.'
     },
     ja: {
       title: '音楽', folder: '音楽フォルダー', change: 'フォルダーを変更', scanning: 'フォルダーを読み込み中…',
@@ -539,7 +629,13 @@
       spWebStarting: 'このブラウザでプレーヤーを起動しています…', spWebReady: '準備完了：{name} が Spotify のデバイスに表示されます。', spWebOther: 'このブラウザの別の CasaOS タブがデバイスになっています。',
       spWebScope: 'このブラウザで再生できるよう、もう一度接続してください（下のボタン）。', spWebDrm: 'このブラウザではここで Spotify を再生できません：保護されたコンテンツ（DRM）がオフか、対応していません。',
       spWebFailed: 'Spotify はこのブラウザをデバイスとして受け付けませんでした：Premium と、Spotify アプリで Web Playback SDK のチェックが必要です。', spWebTap: 'ブラウザが音声を止めました：再生を押してください。',
-      spThisBrowser: 'このブラウザ'
+      spThisBrowser: 'このブラウザ',
+      jfServer: 'Jellyfin のアドレス', jfCode: 'Jellyfin でプロフィール → Quick Connect を開き、このコードを入力してください:',
+      jfQcOff: 'この Jellyfin では Quick Connect がオフです。ダッシュボード（一般）でオンにしてください。',
+      jfNoServer: 'このアドレスで Jellyfin から応答がありません。CasaOS を https:// で開いている場合、Jellyfin にも https:// のアドレスが必要です（README を参照）。', jfFavorite: 'お気に入りに追加',
+      jfUnfavorite: 'お気に入りから削除', jfFavorites: 'お気に入り', jfAlbums: 'アルバム', jfArtists: 'アーティスト', jfSearch: 'ライブラリを検索', jfOn: 'Jellyfin で',
+      jfNotConnected: 'Jellyfin に接続していません', jfSettings: 'Jellyfin の設定', jfError: 'Jellyfin から応答がありません。少ししてからもう一度お試しください。',
+      jfLoginAgain: 'Jellyfin のログインが取り消されました。もう一度接続してください。'
     },
     ko: {
       title: '음악', folder: '음악 폴더', change: '폴더 변경', scanning: '폴더를 읽는 중…',
@@ -567,7 +663,13 @@
       spWebStarting: '이 브라우저에서 플레이어를 시작하는 중…', spWebReady: '준비됨: {name}이(가) Spotify 기기 목록에 있습니다.', spWebOther: '이 브라우저의 다른 CasaOS 탭이 기기로 쓰이고 있습니다.',
       spWebScope: '이 브라우저에서 재생하려면 다시 연결하세요(아래).', spWebDrm: '이 브라우저는 여기서 Spotify를 재생할 수 없습니다: 보호된 콘텐츠(DRM)가 꺼져 있거나 지원되지 않습니다.',
       spWebFailed: 'Spotify가 이 브라우저를 기기로 받아들이지 않았습니다: Premium과 Spotify 앱에서 Web Playback SDK 선택이 필요합니다.', spWebTap: '브라우저가 소리를 막았습니다: 재생을 누르세요.',
-      spThisBrowser: '이 브라우저'
+      spThisBrowser: '이 브라우저',
+      jfServer: 'Jellyfin 주소', jfCode: 'Jellyfin에서 프로필 → Quick Connect를 열고 이 코드를 입력하세요:',
+      jfQcOff: '이 Jellyfin에서 Quick Connect가 꺼져 있습니다. 대시보드(일반)에서 켜세요.',
+      jfNoServer: '이 주소에서 Jellyfin이 응답하지 않습니다. CasaOS를 https://로 열었다면 Jellyfin에도 https:// 주소가 필요합니다(README 참고).', jfFavorite: '즐겨찾기에 추가',
+      jfUnfavorite: '즐겨찾기에서 제거', jfFavorites: '즐겨찾기', jfAlbums: '앨범', jfArtists: '아티스트', jfSearch: '라이브러리에서 검색', jfOn: 'Jellyfin에서',
+      jfNotConnected: 'Jellyfin이 연결되지 않음', jfSettings: 'Jellyfin 설정', jfError: 'Jellyfin이 응답하지 않습니다. 잠시 후 다시 시도하세요.',
+      jfLoginAgain: 'Jellyfin 로그인이 취소되었습니다. 다시 연결하세요.'
     },
     nl: {
       title: 'Muziek', folder: 'Muziekmap', change: 'Map wijzigen', scanning: 'Map wordt gelezen…',
@@ -600,7 +702,14 @@
       spWebScope: 'Verbind opnieuw (hieronder) om afspelen in deze browser toe te staan.',
       spWebDrm: 'Deze browser kan Spotify hier niet afspelen: beveiligde inhoud (DRM) staat uit of wordt niet ondersteund.',
       spWebFailed: 'Spotify accepteerde deze browser niet als apparaat: vereist Premium en Web Playback SDK aangevinkt in je Spotify-app.',
-      spWebTap: 'De browser hield het geluid tegen: druk op afspelen.', spThisBrowser: 'Deze browser'
+      spWebTap: 'De browser hield het geluid tegen: druk op afspelen.', spThisBrowser: 'Deze browser',
+      jfServer: 'Jellyfin-adres', jfCode: 'Open in Jellyfin je profiel → Quick Connect en voer deze code in:',
+      jfQcOff: 'Quick Connect staat uit op deze Jellyfin: zet het aan in het dashboard (Algemeen).',
+      jfNoServer: 'Jellyfin reageerde niet op dit adres. Met CasaOS op https:// heeft Jellyfin ook een https://-adres nodig (zie de README).',
+      jfFavorite: 'Toevoegen aan favorieten', jfUnfavorite: 'Verwijderen uit favorieten', jfFavorites: 'Favorieten', jfAlbums: 'Albums',
+      jfArtists: 'Artiesten', jfSearch: 'Zoeken in je bibliotheek', jfOn: 'Op Jellyfin', jfNotConnected: 'Jellyfin is niet verbonden',
+      jfSettings: 'Jellyfin-instellingen', jfError: 'Jellyfin reageerde niet. Probeer het zo opnieuw.',
+      jfLoginAgain: 'De Jellyfin-login is ingetrokken: verbind opnieuw.'
     },
     no: {
       title: 'Musikk', folder: 'Musikkmappe', change: 'Bytt mappe', scanning: 'Leser mappen …',
@@ -633,7 +742,14 @@
       spWebScope: 'Koble til på nytt (nedenfor) for å tillate avspilling i denne nettleseren.',
       spWebDrm: 'Denne nettleseren kan ikke spille Spotify her: beskyttet innhold (DRM) er av eller støttes ikke.',
       spWebFailed: 'Spotify godtok ikke denne nettleseren som enhet: krever Premium og Web Playback SDK avkrysset i Spotify-appen din.',
-      spWebTap: 'Nettleseren holdt tilbake lyden: trykk spill av.', spThisBrowser: 'Denne nettleseren'
+      spWebTap: 'Nettleseren holdt tilbake lyden: trykk spill av.', spThisBrowser: 'Denne nettleseren',
+      jfServer: 'Jellyfin-adresse', jfCode: 'I Jellyfin åpner du profilen din → Quick Connect og skriver inn denne koden:',
+      jfQcOff: 'Quick Connect er slått av på denne Jellyfin: slå det på i kontrollpanelet (Generelt).',
+      jfNoServer: 'Jellyfin svarte ikke på denne adressen. Når CasaOS er åpnet med https://, trenger Jellyfin også en https://-adresse (se README).',
+      jfFavorite: 'Legg til i favoritter', jfUnfavorite: 'Fjern fra favoritter', jfFavorites: 'Favoritter', jfAlbums: 'Album',
+      jfArtists: 'Artister', jfSearch: 'Søk i biblioteket ditt', jfOn: 'På Jellyfin', jfNotConnected: 'Jellyfin er ikke tilkoblet',
+      jfSettings: 'Jellyfin-innstillinger', jfError: 'Jellyfin svarte ikke. Prøv igjen om litt.',
+      jfLoginAgain: 'Jellyfin-påloggingen ble trukket tilbake: koble til på nytt.'
     },
     pl: {
       title: 'Muzyka', folder: 'Folder z muzyką', change: 'Zmień folder', scanning: 'Odczytywanie folderu…',
@@ -667,7 +783,13 @@
       spWebScope: 'Połącz ponownie (poniżej), aby zezwolić na odtwarzanie w tej przeglądarce.',
       spWebDrm: 'Ta przeglądarka nie może tu odtwarzać Spotify: chronione treści (DRM) są wyłączone lub nieobsługiwane.',
       spWebFailed: 'Spotify nie przyjął tej przeglądarki jako urządzenia: wymaga Premium i zaznaczonego Web Playback SDK w Twojej aplikacji Spotify.',
-      spWebTap: 'Przeglądarka zablokowała dźwięk: naciśnij odtwarzaj.', spThisBrowser: 'Ta przeglądarka'
+      spWebTap: 'Przeglądarka zablokowała dźwięk: naciśnij odtwarzaj.', spThisBrowser: 'Ta przeglądarka',
+      jfServer: 'Adres Jellyfin', jfCode: 'W Jellyfin otwórz swój profil → Quick Connect i wpisz ten kod:',
+      jfQcOff: 'Quick Connect jest wyłączone w tym Jellyfin: włącz je w panelu sterowania (Ogólne).',
+      jfNoServer: 'Jellyfin nie odpowiedział pod tym adresem. Gdy CasaOS jest otwarty przez https://, Jellyfin też potrzebuje adresu https:// (zobacz README).',
+      jfFavorite: 'Dodaj do ulubionych', jfUnfavorite: 'Usuń z ulubionych', jfFavorites: 'Ulubione', jfAlbums: 'Albumy', jfArtists: 'Wykonawcy',
+      jfSearch: 'Szukaj w swojej bibliotece', jfOn: 'W Jellyfin', jfNotConnected: 'Jellyfin nie jest połączony', jfSettings: 'Ustawienia Jellyfin',
+      jfError: 'Jellyfin nie odpowiedział. Spróbuj ponownie za chwilę.', jfLoginAgain: 'Logowanie do Jellyfin zostało cofnięte: połącz ponownie.'
     },
     pt: {
       title: 'Música', folder: 'Pasta de músicas', change: 'Trocar pasta', scanning: 'Lendo a pasta…',
@@ -701,7 +823,14 @@
       spWebOther: 'Outra aba do CasaOS neste navegador é o dispositivo.', spWebScope: 'Conecte de novo (abaixo) para permitir tocar neste navegador.',
       spWebDrm: 'Este navegador não consegue tocar o Spotify aqui: o conteúdo protegido (DRM) está desativado ou não é suportado.',
       spWebFailed: 'O Spotify não aceitou este navegador como dispositivo: precisa do Premium e do Web Playback SDK marcado no seu app do Spotify.',
-      spWebTap: 'O navegador segurou o som: aperte play.', spThisBrowser: 'Este navegador'
+      spWebTap: 'O navegador segurou o som: aperte play.', spThisBrowser: 'Este navegador',
+      jfServer: 'Endereço do Jellyfin', jfCode: 'No Jellyfin, abra seu perfil → Conexão Rápida (Quick Connect) e digite este código:',
+      jfQcOff: 'A Conexão Rápida (Quick Connect) está desligada neste Jellyfin: ative no Painel dele (Geral).',
+      jfNoServer: 'O Jellyfin não respondeu neste endereço. Com o CasaOS em https://, o Jellyfin também precisa de um endereço https:// (veja o README).',
+      jfFavorite: 'Adicionar aos favoritos', jfUnfavorite: 'Remover dos favoritos', jfFavorites: 'Favoritos', jfAlbums: 'Álbuns',
+      jfArtists: 'Artistas', jfSearch: 'Pesquisar na sua biblioteca', jfOn: 'No Jellyfin', jfNotConnected: 'Jellyfin não conectado',
+      jfSettings: 'Configurações do Jellyfin', jfError: 'O Jellyfin não respondeu. Tente de novo daqui a pouco.',
+      jfLoginAgain: 'O login do Jellyfin foi revogado: conecte de novo.'
     },
     // Only what differs from pt
     'pt-pt': {
@@ -728,7 +857,13 @@
       spWebScope: 'Ligue novamente (abaixo) para permitir a reprodução neste navegador.',
       spWebDrm: 'Este navegador não consegue reproduzir o Spotify aqui: o conteúdo protegido (DRM) está desativado ou não é suportado.',
       spWebFailed: 'O Spotify não aceitou este navegador como dispositivo: precisa do Premium e do Web Playback SDK assinalado na sua aplicação do Spotify.',
-      spWebTap: 'O navegador reteve o som: carregue em reproduzir.'
+      spWebTap: 'O navegador reteve o som: carregue em reproduzir.',
+      jfCode: 'No Jellyfin, abra o seu perfil → Quick Connect e introduza este código:',
+      jfQcOff: 'O Quick Connect está desligado neste Jellyfin: ative-o no respetivo Painel (Geral).',
+      jfNoServer: 'O Jellyfin não respondeu neste endereço. Com o CasaOS em https://, o Jellyfin também precisa de um endereço https:// (consulte o README).',
+      jfNotConnected: 'Jellyfin não ligado', jfSettings: 'Definições do Jellyfin',
+      jfError: 'O Jellyfin não respondeu. Tente novamente daqui a pouco.',
+      jfLoginAgain: 'O início de sessão do Jellyfin foi revogado: ligue novamente.'
     },
     ro: {
       title: 'Muzică', folder: 'Dosarul cu muzică', change: 'Schimbă dosarul', scanning: 'Se citește dosarul…',
@@ -762,7 +897,14 @@
       spWebScope: 'Conectează-te din nou (mai jos) pentru a permite redarea în acest browser.',
       spWebDrm: 'Acest browser nu poate reda Spotify aici: conținutul protejat (DRM) este dezactivat sau nu este acceptat.',
       spWebFailed: 'Spotify nu a acceptat acest browser ca dispozitiv: are nevoie de Premium și de Web Playback SDK bifat în aplicația ta Spotify.',
-      spWebTap: 'Browserul a reținut sunetul: apasă redare.', spThisBrowser: 'Acest browser'
+      spWebTap: 'Browserul a reținut sunetul: apasă redare.', spThisBrowser: 'Acest browser',
+      jfServer: 'Adresa Jellyfin', jfCode: 'În Jellyfin, deschide profilul tău → Quick Connect și introdu acest cod:',
+      jfQcOff: 'Quick Connect este dezactivat pe acest Jellyfin: activează-l din panoul de control (General).',
+      jfNoServer: 'Jellyfin nu a răspuns la această adresă. Cu CasaOS pe https://, și Jellyfin are nevoie de o adresă https:// (vezi README).',
+      jfFavorite: 'Adaugă la favorite', jfUnfavorite: 'Elimină de la favorite', jfFavorites: 'Favorite', jfAlbums: 'Albume', jfArtists: 'Artiști',
+      jfSearch: 'Caută în biblioteca ta', jfOn: 'Pe Jellyfin', jfNotConnected: 'Jellyfin nu este conectat', jfSettings: 'Setări Jellyfin',
+      jfError: 'Jellyfin nu a răspuns. Încearcă din nou peste puțin timp.',
+      jfLoginAgain: 'Autentificarea Jellyfin a fost revocată: conectează-te din nou.'
     },
     ru: {
       title: 'Музыка', folder: 'Папка с музыкой', change: 'Сменить папку', scanning: 'Чтение папки…',
@@ -796,7 +938,14 @@
       spWebScope: 'Подключитесь заново (ниже), чтобы разрешить воспроизведение в этом браузере.',
       spWebDrm: 'Этот браузер не может воспроизводить Spotify здесь: защищённый контент (DRM) отключён или не поддерживается.',
       spWebFailed: 'Spotify не принял этот браузер как устройство: нужны Premium и отмеченный Web Playback SDK в вашем приложении Spotify.',
-      spWebTap: 'Браузер заблокировал звук: нажмите «Воспроизвести».', spThisBrowser: 'Этот браузер'
+      spWebTap: 'Браузер заблокировал звук: нажмите «Воспроизвести».', spThisBrowser: 'Этот браузер',
+      jfServer: 'Адрес Jellyfin', jfCode: 'В Jellyfin откройте свой профиль → Quick Connect и введите этот код:',
+      jfQcOff: 'Quick Connect выключен в этом Jellyfin: включите его в панели управления (Общие).',
+      jfNoServer: 'Jellyfin не ответил по этому адресу. Если CasaOS открыт по https://, Jellyfin тоже нужен адрес https:// (см. README).',
+      jfFavorite: 'Добавить в избранное', jfUnfavorite: 'Убрать из избранного', jfFavorites: 'Избранное', jfAlbums: 'Альбомы',
+      jfArtists: 'Исполнители', jfSearch: 'Поиск в вашей медиатеке', jfOn: 'В Jellyfin', jfNotConnected: 'Jellyfin не подключён',
+      jfSettings: 'Настройки Jellyfin', jfError: 'Jellyfin не ответил. Попробуйте ещё раз чуть позже.',
+      jfLoginAgain: 'Вход в Jellyfin отозван: подключитесь снова.'
     },
     sk: {
       title: 'Hudba', folder: 'Priečinok s hudbou', change: 'Zmeniť priečinok', scanning: 'Číta sa priečinok…',
@@ -831,7 +980,14 @@
       spWebScope: 'Pripojte sa znova (nižšie), aby ste povolili prehrávanie v tomto prehliadači.',
       spWebDrm: 'Tento prehliadač tu nemôže prehrávať Spotify: chránený obsah (DRM) je vypnutý alebo nie je podporovaný.',
       spWebFailed: 'Spotify neprijal tento prehliadač ako zariadenie: vyžaduje Premium a začiarknuté Web Playback SDK vo vašej aplikácii Spotify.',
-      spWebTap: 'Prehliadač zadržal zvuk: stlačte prehrať.', spThisBrowser: 'Tento prehliadač'
+      spWebTap: 'Prehliadač zadržal zvuk: stlačte prehrať.', spThisBrowser: 'Tento prehliadač',
+      jfServer: 'Adresa Jellyfinu', jfCode: 'V Jellyfine otvorte svoj profil → Quick Connect a zadajte tento kód:',
+      jfQcOff: 'Quick Connect je v tomto Jellyfine vypnutý: zapnite ho v jeho ovládacom paneli (Všeobecné).',
+      jfNoServer: 'Jellyfin na tejto adrese neodpovedal. Keď je CasaOS otvorený cez https://, aj Jellyfin potrebuje adresu https:// (pozri README).',
+      jfFavorite: 'Pridať do obľúbených', jfUnfavorite: 'Odstrániť z obľúbených', jfFavorites: 'Obľúbené', jfAlbums: 'Albumy',
+      jfArtists: 'Interpreti', jfSearch: 'Hľadať vo vašej knižnici', jfOn: 'V Jellyfine', jfNotConnected: 'Jellyfin nie je pripojený',
+      jfSettings: 'Nastavenia Jellyfinu', jfError: 'Jellyfin neodpovedal. Skúste to o chvíľu znova.',
+      jfLoginAgain: 'Prihlásenie do Jellyfinu bolo zrušené: pripojte sa znova.'
     },
     sl: {
       title: 'Glasba', folder: 'Mapa z glasbo', change: 'Zamenjaj mapo', scanning: 'Branje mape …',
@@ -864,7 +1020,14 @@
       spWebOther: 'Naprava je drug zavihek CasaOS v tem brskalniku.', spWebScope: 'Znova se povežite (spodaj), da dovolite predvajanje v tem brskalniku.',
       spWebDrm: 'Ta brskalnik tu ne more predvajati Spotifyja: zaščitena vsebina (DRM) je izklopljena ali ni podprta.',
       spWebFailed: 'Spotify tega brskalnika ni sprejel kot naprave: potrebna sta Premium in označen Web Playback SDK v vaši aplikaciji Spotify.',
-      spWebTap: 'Brskalnik je zadržal zvok: pritisnite predvajaj.', spThisBrowser: 'Ta brskalnik'
+      spWebTap: 'Brskalnik je zadržal zvok: pritisnite predvajaj.', spThisBrowser: 'Ta brskalnik',
+      jfServer: 'Naslov Jellyfina', jfCode: 'V Jellyfinu odprite svoj profil → Quick Connect in vnesite to kodo:',
+      jfQcOff: 'Quick Connect je v tem Jellyfinu izklopljen: vklopite ga na njegovi nadzorni plošči (Splošno).',
+      jfNoServer: 'Jellyfin se na tem naslovu ni odzval. Ko je CasaOS odprt prek https://, tudi Jellyfin potrebuje naslov https:// (glejte README).',
+      jfFavorite: 'Dodaj med priljubljene', jfUnfavorite: 'Odstrani iz priljubljenih', jfFavorites: 'Priljubljene', jfAlbums: 'Albumi',
+      jfArtists: 'Izvajalci', jfSearch: 'Iskanje po vaši knjižnici', jfOn: 'V Jellyfinu', jfNotConnected: 'Jellyfin ni povezan',
+      jfSettings: 'Nastavitve Jellyfina', jfError: 'Jellyfin se ni odzval. Poskusite znova čez trenutek.',
+      jfLoginAgain: 'Prijava v Jellyfin je bila preklicana: znova se povežite.'
     },
     sv: {
       title: 'Musik', folder: 'Musikmapp', change: 'Byt mapp', scanning: 'Läser mappen…',
@@ -897,7 +1060,14 @@
       spWebScope: 'Anslut igen (nedan) för att tillåta uppspelning i den här webbläsaren.',
       spWebDrm: 'Den här webbläsaren kan inte spela Spotify här: skyddat innehåll (DRM) är av eller stöds inte.',
       spWebFailed: 'Spotify godtog inte den här webbläsaren som enhet: kräver Premium och Web Playback SDK ikryssat i din Spotify-app.',
-      spWebTap: 'Webbläsaren höll tillbaka ljudet: tryck på spela.', spThisBrowser: 'Den här webbläsaren'
+      spWebTap: 'Webbläsaren höll tillbaka ljudet: tryck på spela.', spThisBrowser: 'Den här webbläsaren',
+      jfServer: 'Jellyfin-adress', jfCode: 'Öppna din profil i Jellyfin → Quick Connect och ange den här koden:',
+      jfQcOff: 'Quick Connect är avstängt på den här Jellyfin: slå på det i kontrollpanelen (Allmänt).',
+      jfNoServer: 'Jellyfin svarade inte på den här adressen. Med CasaOS på https:// behöver Jellyfin också en https://-adress (se README).',
+      jfFavorite: 'Lägg till i favoriter', jfUnfavorite: 'Ta bort från favoriter', jfFavorites: 'Favoriter', jfAlbums: 'Album',
+      jfArtists: 'Artister', jfSearch: 'Sök i ditt bibliotek', jfOn: 'På Jellyfin', jfNotConnected: 'Jellyfin är inte anslutet',
+      jfSettings: 'Jellyfin-inställningar', jfError: 'Jellyfin svarade inte. Försök igen om en stund.',
+      jfLoginAgain: 'Jellyfin-inloggningen har återkallats: anslut igen.'
     },
     tr: {
       title: 'Müzik', folder: 'Müzik klasörü', change: 'Klasörü değiştir', scanning: 'Klasör okunuyor…',
@@ -930,7 +1100,13 @@
       spWebOther: 'Cihaz, bu tarayıcıdaki başka bir CasaOS sekmesi.', spWebScope: 'Bu tarayıcıda çalmaya izin vermek için yeniden bağlanın (aşağıda).',
       spWebDrm: 'Bu tarayıcı Spotify\'ı burada çalamıyor: korumalı içerik (DRM) kapalı ya da desteklenmiyor.',
       spWebFailed: 'Spotify bu tarayıcıyı cihaz olarak kabul etmedi: Premium ve Spotify uygulamanızda işaretli Web Playback SDK gerekir.',
-      spWebTap: 'Tarayıcı sesi engelledi: oynat\'a basın.', spThisBrowser: 'Bu tarayıcı'
+      spWebTap: 'Tarayıcı sesi engelledi: oynat\'a basın.', spThisBrowser: 'Bu tarayıcı',
+      jfServer: 'Jellyfin adresi', jfCode: 'Jellyfin\'de profilinizden Quick Connect\'i açın ve bu kodu girin:',
+      jfQcOff: 'Bu Jellyfin\'de Quick Connect kapalı: Kontrol Paneli\'nden (Genel) açın.',
+      jfNoServer: 'Jellyfin bu adreste yanıt vermedi. CasaOS https:// ile açıksa Jellyfin\'in de https:// adresi olmalı (README\'ye bakın).',
+      jfFavorite: 'Favorilere ekle', jfUnfavorite: 'Favorilerden çıkar', jfFavorites: 'Favoriler', jfAlbums: 'Albümler', jfArtists: 'Sanatçılar',
+      jfSearch: 'Kitaplıkta ara', jfOn: 'Jellyfin\'de', jfNotConnected: 'Jellyfin bağlı değil', jfSettings: 'Jellyfin ayarları',
+      jfError: 'Jellyfin yanıt vermedi. Biraz sonra yeniden deneyin.', jfLoginAgain: 'Jellyfin oturumu iptal edildi: yeniden bağlanın.'
     },
     uk: {
       title: 'Музика', folder: 'Тека з музикою', change: 'Змінити теку', scanning: 'Читання теки…',
@@ -965,7 +1141,13 @@
       spWebScope: 'Підключіться знову (нижче), щоб дозволити відтворення в цьому браузері.',
       spWebDrm: 'Цей браузер не може відтворювати Spotify тут: захищений вміст (DRM) вимкнено або не підтримується.',
       spWebFailed: 'Spotify не прийняв цей браузер як пристрій: потрібні Premium і позначений Web Playback SDK у вашому застосунку Spotify.',
-      spWebTap: 'Браузер заблокував звук: натисніть «Відтворити».', spThisBrowser: 'Цей браузер'
+      spWebTap: 'Браузер заблокував звук: натисніть «Відтворити».', spThisBrowser: 'Цей браузер',
+      jfServer: 'Адреса Jellyfin', jfCode: 'У Jellyfin відкрийте свій профіль → Quick Connect і введіть цей код:',
+      jfQcOff: 'Quick Connect вимкнено в цьому Jellyfin: увімкніть його в панелі керування (Загальні).',
+      jfNoServer: 'Jellyfin не відповів за цією адресою. Якщо CasaOS відкрито через https://, Jellyfin теж потрібна адреса https:// (див. README).',
+      jfFavorite: 'Додати до обраного', jfUnfavorite: 'Прибрати з обраного', jfFavorites: 'Обране', jfAlbums: 'Альбоми', jfArtists: 'Виконавці',
+      jfSearch: 'Пошук у вашій бібліотеці', jfOn: 'У Jellyfin', jfNotConnected: 'Jellyfin не підключено', jfSettings: 'Налаштування Jellyfin',
+      jfError: 'Jellyfin не відповів. Спробуйте ще раз трохи згодом.', jfLoginAgain: 'Вхід у Jellyfin відкликано: підключіться знову.'
     },
     vi: {
       title: 'Âm nhạc', folder: 'Thư mục nhạc', change: 'Đổi thư mục', scanning: 'Đang đọc thư mục…',
@@ -1000,7 +1182,13 @@
       spWebScope: 'Hãy kết nối lại (bên dưới) để cho phép phát trong trình duyệt này.',
       spWebDrm: 'Trình duyệt này không thể phát Spotify ở đây: nội dung được bảo vệ (DRM) đang tắt hoặc không được hỗ trợ.',
       spWebFailed: 'Spotify không nhận trình duyệt này làm thiết bị: cần Premium và đánh dấu Web Playback SDK trong ứng dụng Spotify của bạn.',
-      spWebTap: 'Trình duyệt đã chặn âm thanh: hãy nhấn phát.', spThisBrowser: 'Trình duyệt này'
+      spWebTap: 'Trình duyệt đã chặn âm thanh: hãy nhấn phát.', spThisBrowser: 'Trình duyệt này',
+      jfServer: 'Địa chỉ Jellyfin', jfCode: 'Trong Jellyfin, mở hồ sơ của bạn → Quick Connect và nhập mã này:',
+      jfQcOff: 'Quick Connect đang tắt trên Jellyfin này: hãy bật trong Bảng điều khiển (Chung).',
+      jfNoServer: 'Jellyfin không phản hồi ở địa chỉ này. Khi mở CasaOS bằng https://, Jellyfin cũng cần địa chỉ https:// (xem README).',
+      jfFavorite: 'Thêm vào yêu thích', jfUnfavorite: 'Xóa khỏi yêu thích', jfFavorites: 'Yêu thích', jfAlbums: 'Album', jfArtists: 'Nghệ sĩ',
+      jfSearch: 'Tìm trong thư viện của bạn', jfOn: 'Trên Jellyfin', jfNotConnected: 'Chưa kết nối Jellyfin', jfSettings: 'Cài đặt Jellyfin',
+      jfError: 'Jellyfin không phản hồi. Hãy thử lại sau giây lát.', jfLoginAgain: 'Phiên đăng nhập Jellyfin đã bị thu hồi: hãy kết nối lại.'
     },
     'zh-cn': {
       title: '音乐', folder: '音乐文件夹', change: '更换文件夹', scanning: '正在读取文件夹…',
@@ -1025,7 +1213,11 @@
       spWeb: '在此浏览器中播放', spWebHint: '此标签页会成为一台 Spotify 设备并播放音乐。需要 Premium，并在你的 Spotify 应用中勾选 Web Playback SDK。', spWebStarting: '正在此浏览器中启动播放器…',
       spWebReady: '就绪：{name} 已在你的 Spotify 设备中。', spWebOther: '此浏览器中的另一个 CasaOS 标签页是该设备。', spWebScope: '请重新连接（下方），以允许在此浏览器中播放。',
       spWebDrm: '此浏览器无法在这里播放 Spotify：受保护内容（DRM）已关闭或不受支持。', spWebFailed: 'Spotify 未接受此浏览器作为设备：需要 Premium，并在你的 Spotify 应用中勾选 Web Playback SDK。',
-      spWebTap: '浏览器拦截了声音：请按播放。', spThisBrowser: '此浏览器'
+      spWebTap: '浏览器拦截了声音：请按播放。', spThisBrowser: '此浏览器',
+      jfServer: 'Jellyfin 地址', jfCode: '在 Jellyfin 中打开你的个人资料 → Quick Connect，然后输入此代码：', jfQcOff: '此 Jellyfin 已关闭 Quick Connect：请在其控制台（常规）中开启。',
+      jfNoServer: '此地址上的 Jellyfin 没有响应。CasaOS 通过 https:// 打开时，Jellyfin 也需要 https:// 地址（参见 README）。', jfFavorite: '添加到收藏', jfUnfavorite: '从收藏中移除',
+      jfFavorites: '收藏', jfAlbums: '专辑', jfArtists: '艺人', jfSearch: '搜索你的音乐库', jfOn: 'Jellyfin 上', jfNotConnected: '未连接 Jellyfin',
+      jfSettings: 'Jellyfin 设置', jfError: 'Jellyfin 没有响应，请稍后再试。', jfLoginAgain: 'Jellyfin 登录已被撤销：请重新连接。'
     },
     'zh-tw': {
       title: '音樂', folder: '音樂資料夾', change: '更換資料夾', scanning: '正在讀取資料夾…',
@@ -1050,7 +1242,11 @@
       spWeb: '在此瀏覽器中播放', spWebHint: '此分頁會成為一台 Spotify 裝置並播放音樂。需要 Premium，並在你的 Spotify 應用程式中勾選 Web Playback SDK。', spWebStarting: '正在此瀏覽器中啟動播放器…',
       spWebReady: '就緒：{name} 已在你的 Spotify 裝置中。', spWebOther: '此瀏覽器中的另一個 CasaOS 分頁是該裝置。', spWebScope: '請重新連線（下方），以允許在此瀏覽器中播放。',
       spWebDrm: '此瀏覽器無法在這裡播放 Spotify：受保護內容（DRM）已關閉或不受支援。', spWebFailed: 'Spotify 未接受此瀏覽器作為裝置：需要 Premium，並在你的 Spotify 應用程式中勾選 Web Playback SDK。',
-      spWebTap: '瀏覽器擋下了聲音：請按播放。', spThisBrowser: '此瀏覽器'
+      spWebTap: '瀏覽器擋下了聲音：請按播放。', spThisBrowser: '此瀏覽器',
+      jfServer: 'Jellyfin 位址', jfCode: '在 Jellyfin 中開啟你的個人資料 → Quick Connect，然後輸入此代碼：', jfQcOff: '此 Jellyfin 已關閉 Quick Connect：請在其控制台（一般）中開啟。',
+      jfNoServer: '此位址上的 Jellyfin 沒有回應。CasaOS 透過 https:// 開啟時，Jellyfin 也需要 https:// 位址（參見 README）。', jfFavorite: '加入我的最愛', jfUnfavorite: '從我的最愛移除',
+      jfFavorites: '我的最愛', jfAlbums: '專輯', jfArtists: '藝人', jfSearch: '搜尋你的音樂庫', jfOn: 'Jellyfin 上', jfNotConnected: '尚未連接 Jellyfin',
+      jfSettings: 'Jellyfin 設定', jfError: 'Jellyfin 沒有回應，請稍後再試。', jfLoginAgain: 'Jellyfin 登入已被撤銷：請重新連接。'
     }
   };
 
@@ -1095,6 +1291,9 @@
     queue: '<path d="M4 7h11M4 12h11M4 17h7"/><path d="M18 14v6M15 17h6"/>',
     note: '<path d="M9 17.5V6l10-2v11.5"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/>',
     spotify: '<circle cx="12" cy="12" r="9"/><path d="M7.3 9.6c3.1-1 6.6-.8 9.4.8M7.8 12.7c2.6-.7 5.3-.5 7.6.8M8.4 15.5c2-.5 4-.3 5.7.6"/>',
+    jellyfin: '<path d="M12 3.8c-1.2 0-8.9 13.7-8.3 14.8.6 1.1 16 1.1 16.6 0 .6-1.1-7.1-14.8-8.3-14.8z"/><path d="M12 9.6c-.6 0-3.9 5.8-3.6 6.3.3.5 6.9.5 7.2 0 .3-.5-3-6.3-3.6-6.3z" fill="currentColor" stroke="none"/>',
+    disc: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2"/>',
+    person: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1-3.6 3.8-5.5 7-5.5s6 1.9 7 5.5"/>',
     device: '<rect x="3.5" y="5" width="17" height="11" rx="1.5"/><path d="M9 20h6M12 16v4"/>',
     gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/>',
     heart: '<path d="M12 19.5s-7-4.3-7-9.6A4 4 0 0112 7.3a4 4 0 017 2.6c0 5.3-7 9.6-7 9.6z"/>',
@@ -1129,7 +1328,7 @@
     search: '',
     loading: false, message: '',
     showList: false, showFolder: false, browsePath: '',
-    source: saved.source === 'spotify' ? 'spotify' : 'local',   // local files or Spotify
+    source: saved.source === 'spotify' || saved.source === 'jellyfin' ? saved.source : 'local',   // local files, Spotify or Jellyfin
     web: !!saved.web,                         // Spotify plays in this browser too (a Spotify device)
     webVolume: typeof saved.webVolume === 'number' ? saved.webVolume : 0.8,
     showDevices: false, showSettings: false, showNext: false
@@ -1141,7 +1340,7 @@
       localStorage.setItem(STORE, JSON.stringify({
         folder: state.folder, recursive: state.recursive, volume: state.volume, muted: state.muted,
         shuffle: state.shuffle, repeat: state.repeat, current: state.current, source: state.source,
-        web: state.web, webVolume: state.webVolume,
+        web: state.web, webVolume: state.webVolume, jf: jfSaved(),
         time: Math.floor(audio.currentTime || 0),
         queue: pendingQueue || state.queue.map(function (i) { return state.tracks[i] && state.tracks[i].path; }).filter(Boolean)
       }));
@@ -1595,9 +1794,9 @@
     return -1;
   }
 
-  // Playback order: natural or shuffled (current track first when shuffling)
-  function buildOrder() {
-    var n = state.tracks.length, order = [];
+  // Playback order of n tracks: natural or shuffled (from first when shuffling)
+  function playOrder(n, from) {
+    var order = [];
     for (var i = 0; i < n; i++) order.push(i);
     if (state.shuffle) {
       for (var j = n - 1; j > 0; j--) {
@@ -1605,11 +1804,13 @@
         order[j] = order[k];
         order[k] = tmp;
       }
-      var from = state.context >= 0 ? state.context : state.index;
       var pos = order.indexOf(from);
       if (pos > 0) { order.splice(pos, 1); order.unshift(from); }
     }
-    state.order = order;
+    return order;
+  }
+  function buildOrder() {
+    state.order = playOrder(state.tracks.length, state.context >= 0 ? state.context : state.index);
   }
 
   // ---------------------------------------------------------------------------
@@ -1722,6 +1923,15 @@
       return;
     }
     if (ms.setPositionState) try { ms.setPositionState(); } catch (e) { /* older browsers */ }
+    if (state.source === 'jellyfin') {
+      var j = jf.now;
+      if (j) {
+        m = { title: j.name, artist: j.artist, album: j.album };
+        if (j.image) m.artwork = [{ src: jfImg(j.image, 512), sizes: '512x512' }];
+      }
+      ms.metadata = m ? new MediaMetadata(m) : null;
+      return;
+    }
     var tr = state.tracks[state.index];
     if (!tr) {
       ms.metadata = null;
@@ -1733,8 +1943,10 @@
     ms.metadata = new MediaMetadata(m);
   }
   function updatePlaybackState() {
-    if ('mediaSession' in navigator && state.source !== 'spotify') navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
+    if ('mediaSession' in navigator && state.source !== 'spotify') navigator.mediaSession.playbackState = player().paused ? 'paused' : 'playing';
   }
+  // The audio element of the mode (local files or Jellyfin)
+  function player() { return state.source === 'jellyfin' ? jfAudio : audio; }
   // Where the Spotify song is, for the browser's and the system's media
   // controls (the local file's comes from the audio element itself)
   function sessionPosition() {
@@ -1753,13 +1965,15 @@
       // (in Spotify mode, the keys that reach this tab go to Spotify; play and
       // pause both toggle there: the browser picks one from this tab's own
       // audio, which is paused while Spotify plays elsewhere)
-      ms.setActionHandler('play', function () { if (state.source === 'spotify') spToggle(); else togglePlay(); });
-      ms.setActionHandler('pause', function () { if (state.source === 'spotify') spToggle(); else audio.pause(); });
-      ms.setActionHandler('nexttrack', function () { if (state.source === 'spotify') spNext(); else step(1, false); });
-      ms.setActionHandler('previoustrack', function () { if (state.source === 'spotify') spPrev(); else prev(); });
+      var jelly = function () { return state.source === 'jellyfin'; };
+      ms.setActionHandler('play', function () { if (state.source === 'spotify') spToggle(); else if (jelly()) jfToggle(); else togglePlay(); });
+      ms.setActionHandler('pause', function () { if (state.source === 'spotify') spToggle(); else player().pause(); });
+      ms.setActionHandler('nexttrack', function () { if (state.source === 'spotify') spNext(); else if (jelly()) jfNext(false); else step(1, false); });
+      ms.setActionHandler('previoustrack', function () { if (state.source === 'spotify') spPrev(); else if (jelly()) jfPrev(); else prev(); });
       ms.setActionHandler('seekto', function (d) {
         if (d.seekTime == null) return;
         if (state.source === 'spotify') spSeek(d.seekTime * 1000);
+        else if (jelly()) jfSeek(d.seekTime);
         else audio.currentTime = d.seekTime;
       });
       // the 10 s buttons (the browser's own ones would move the paused local file)
@@ -1767,6 +1981,7 @@
         ms.setActionHandler(a, function (d) {
           var by = ((d && d.seekOffset) || 10) * (a === 'seekbackward' ? -1 : 1);
           if (state.source === 'spotify') spSeek(position() + by * 1000);
+          else if (jelly()) jfSeek(jfTime() + by);
           else if (audio.duration) audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + by));
         });
       });
@@ -2020,7 +2235,7 @@
   var SHARED_DIR = '/DATA/AppData/casamod/data';
   var SHARED = SHARED_DIR + '/music-player-spotify.json';
   var SHARED_KEYS = ['clientId', 'access', 'refresh', 'expires', 'scope', 'user', 'at'];
-  var sharedMade = false, sharedQueue = Promise.resolve();
+  var made = {}, sharedQueue = Promise.resolve();   // made: the file exists (by path)
 
   function casa(method, path, body) {
     var init = { method: method, headers: { Authorization: token(), Accept: 'application/json' }, credentials: 'include' };
@@ -2033,10 +2248,11 @@
     });
   }
 
-  // The server's login: an object, null (none saved yet), or a rejection (it couldn't be asked)
-  function sharedRead() {
+  // The server's login (Spotify's, or file's): an object, null (none saved
+  // yet), or a rejection (it couldn't be asked)
+  function sharedRead(file) {
     if (!token()) return Promise.reject(new Error('not logged in to CasaOS'));
-    return fetch('/v1/file/content?path=' + encodeURIComponent(SHARED), {
+    return fetch('/v1/file/content?path=' + encodeURIComponent(file || SHARED), {
       headers: { Authorization: token(), Accept: 'application/json' }, credentials: 'include'
     }).then(function (r) {
       return r.json().then(function (j) {
@@ -2051,27 +2267,31 @@
     });
   }
 
-  // Saves this browser's login on the server (one write at a time, the latest wins)
-  function sharedWrite() {
-    var data = {};
-    SHARED_KEYS.forEach(function (k) { if (auth[k] != null) data[k] = auth[k]; });
+  // Saves a login on the server (one write at a time, the latest wins)
+  function sharedSave(file, data) {
     var text = JSON.stringify(data);
-    var put = function () { return casa('PUT', '/v1/file', { path: SHARED, content: text }); };
+    var put = function () { return casa('PUT', '/v1/file', { path: file, content: text }); };
     var make = function () {   // the folder and the file, then its content
       return casa('POST', '/v1/folder', { path: SHARED_DIR }).then(function () {
-        return casa('POST', '/v1/file', { path: SHARED });
+        return casa('POST', '/v1/file', { path: file });
       }).then(put);
     };
     sharedQueue = sharedQueue.then(function () {
       if (!token()) return;
-      return (sharedMade ? put() : make()).then(function (code) {
-        return code === 200 || !sharedMade ? code : make();   // the file went away: again
+      return (made[file] ? put() : make()).then(function (code) {
+        return code === 200 || !made[file] ? code : make();   // the file went away: again
       }).then(function (code) {
-        sharedMade = code === 200;
-        if (!sharedMade) console.warn(TAG, 'the login could not be saved on CasaOS:', code);
+        made[file] = code === 200;
+        if (!made[file]) console.warn(TAG, 'the login could not be saved on CasaOS:', code);
       });
     }).then(null, function (e) { console.warn(TAG, 'the login could not be saved on CasaOS:', e.message); });
     return sharedQueue;
+  }
+  // This browser's Spotify login, on the server
+  function sharedWrite() {
+    var data = {};
+    SHARED_KEYS.forEach(function (k) { if (auth[k] != null) data[k] = auth[k]; });
+    return sharedSave(SHARED, data);
   }
 
   // A newer login from the server replaces this one (another browser's login,
@@ -2092,7 +2312,7 @@
   // (or the server has none), is saved there unless keep. true: the login changed
   function sharedPull(keep) {
     return sharedRead().then(function (v) {
-      sharedMade = sharedMade || !!v;
+      made[SHARED] = made[SHARED] || !!v;
       if (adopt(v)) return true;
       if (!keep && connected() && (!v || (v.at || 0) < (auth.at || 0) || !auth.at)) {
         if (!auth.at) {   // a login from before 1.3.0: from now on, everyone's
@@ -3051,23 +3271,646 @@
     render();
   }
 
+  // ---------------------------------------------------------------------------
+  // Jellyfin: your Jellyfin music library, played in this tab (an audio
+  // element of the page, so Live Wallpapers hears it and the media controls
+  // reach it). The login is Jellyfin's Quick Connect: the widget shows a code,
+  // you enter it in Jellyfin (your profile → Quick Connect) and the access
+  // token it gets is kept like Spotify's login, here and on the CasaOS server.
+  // Jellyfin is another site (its own port): its API answers any page (CORS),
+  // and from an https:// CasaOS it needs an https:// address too (App
+  // Windows' frame proxy gives it one, at the same port).
+  // ---------------------------------------------------------------------------
+  var JF_AUTH = STORE + '-jellyfin';
+  var JF_SHARED = SHARED_DIR + '/music-player-jellyfin.json';
+  var JF_KEYS = ['server', 'token', 'user', 'device', 'at'];
+  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '1.4.0';
+  var JF_HELP = 'https://github.com/UsuarioDeJava/CasaMODs/tree/main/casaos-music-player-spotify#jellyfin';
+  var JF_PAGE = 200;
+  // What this browser plays as it is (Jellyfin converts the rest to MP3)
+  var JF_FORMATS = [['opus', 'audio/ogg; codecs="opus"'], ['webm|opus', 'audio/webm; codecs="opus"'], ['mp3', 'audio/mpeg'],
+    ['aac,m4a|aac,m4b|aac', 'audio/mp4; codecs="mp4a.40.2"'], ['flac', 'audio/flac'], ['webma,webm|webma', 'audio/webm'],
+    ['wav', 'audio/wav'], ['ogg', 'audio/ogg']];
+
+  // { server (':8096': this CasaOS host at that port; or a full address), token, user: {id, name}, device, at }
+  function loadJf() {
+    var a;
+    try { a = JSON.parse(localStorage.getItem(JF_AUTH) || '{}') || {}; } catch (e) { a = {}; }
+    return typeof a === 'object' ? a : {};
+  }
+  var jfAuth = loadJf();
+  function saveJf() {
+    try { localStorage.setItem(JF_AUTH, JSON.stringify(jfAuth)); } catch (e) { /* storage blocked */ }
+  }
+  // Another tab connected or disconnected
+  window.addEventListener('storage', function (e) {
+    if (e.key !== JF_AUTH) return;
+    var was = jfOn();
+    jfAuth = loadJf();
+    if (was && !jfOn()) jfReset();
+    render();
+  });
+
+  var jf = {
+    tracks: [], order: [], index: -1,   // the list a track was picked in, its play order, where it is
+    now: null,                          // the track playing (from the list or the queue)
+    queue: [],                          // tracks to play next, in order
+    resume: 0,                          // where the restored track goes on from (not loaded yet)
+    session: '',                        // this play's id, for Jellyfin's playback reports
+    playlists: null, playlistsLoading: false,
+    stack: [],                          // the library's open lists: { kind, id, name, rows, total, loading, failed, paged, search }
+    rows: [], results: [], resultsFor: '',
+    qc: null,                           // Quick Connect: { code, secret, server, base }
+    note: '', message: '', errors: 0, reported: null
+  };
+  var jfAudio = new Audio();
+  jfAudio.preload = 'metadata';
+  jfAudio.crossOrigin = 'anonymous';   // Jellyfin allows it (CORS): the wallpapers can hear it
+  jfAudio.volume = state.volume;
+  jfAudio.muted = state.muted;
+  var jfContainers = JF_FORMATS.filter(function (f) { return jfAudio.canPlayType(f[1]); })
+    .map(function (f) { return f[0]; }).join(',') || 'mp3';
+
+  function jfOn() { return !!(jfAuth.token && jfAuth.user && jfAuth.user.id); }
+
+  // Jellyfin's address: ':8096' is this CasaOS host at that port, with the
+  // page's scheme (http://casaos:8096, or https://….ts.net:8096 through the frame proxy)
+  function jfBase(s) {
+    s = s == null ? jfAuth.server || ':8096' : s;
+    return s.charAt(0) === ':' ? location.protocol + '//' + location.hostname + s : s;
+  }
+  // What was typed → what is kept (null: not an address). The CasaOS host
+  // keeps only its port, so the login works at every CasaOS address.
+  function jfAddress(text) {
+    text = String(text || '').trim();
+    if (!text) return ':8096';
+    if (/^\d+$/.test(text)) return ':' + text;
+    if (!/^https?:\/\//i.test(text)) text = location.protocol + '//' + text;
+    var u;
+    try { u = new URL(text); } catch (e) { return null; }
+    var path = u.pathname.replace(/\/web(\/.*)?$/i, '').replace(/\/+$/, '');   // a pasted …:8096/web/#/home
+    if (u.hostname === location.hostname && u.protocol === location.protocol && u.port) return ':' + u.port + path;
+    return u.origin + path;
+  }
+
+  function jfDevice() {
+    if (!jfAuth.device) {
+      jfAuth.device = 'casaos-' + randomString(16);
+      saveJf();
+    }
+    return jfAuth.device;
+  }
+  function jfHeader(tok) {
+    return 'MediaBrowser Client="' + JF_CLIENT + '", Device="CasaOS", DeviceId="' + jfDevice() + '", Version="' + JF_VERSION + '"' +
+      (tok ? ', Token="' + tok + '"' : '');
+  }
+
+  // Jellyfin's API: JSON in and out (PascalCase, as every version answers it).
+  // base: an address to log in at (no token yet). A 401 means the login was revoked.
+  function jfApi(method, path, body, base) {
+    var tok = base ? '' : jfAuth.token;
+    var init = { method: method, headers: { Authorization: jfHeader(tok), Accept: 'application/json; profile="PascalCase"' } };
+    if (body) {
+      init.headers['Content-Type'] = 'application/json';
+      init.body = JSON.stringify(body);
+    }
+    if (window.AbortController) {
+      var ctl = new AbortController();
+      init.signal = ctl.signal;
+      setTimeout(function () { ctl.abort(); }, 20000);
+    }
+    return fetch((base || jfBase()) + path, init).then(function (r) {
+      if (r.status === 401 && tok && tok === jfAuth.token) jfLost();
+      if (!r.ok) {
+        var e = new Error('Jellyfin ' + r.status);
+        e.status = r.status;
+        throw e;
+      }
+      return r.status === 204 ? null : r.json().then(null, function () { return null; });
+    });
+  }
+  // A path with the user (older versions want it)
+  function jfQuery(path, params) {
+    return path + (path.indexOf('?') < 0 ? '?' : '&') + (params ? params + '&' : '') + 'UserId=' + jfAuth.user.id;
+  }
+
+  // ---- The login on the CasaOS server, as Spotify's ----
+  function jfShare() {
+    var data = {};
+    JF_KEYS.forEach(function (k) { if (jfAuth[k] != null) data[k] = jfAuth[k]; });
+    return sharedSave(JF_SHARED, data);
+  }
+  // A newer login from the server is taken; this browser's, when newer, is
+  // saved there unless keep. true: the login changed
+  function jfPull(keep) {
+    return sharedRead(JF_SHARED).then(function (v) {
+      made[JF_SHARED] = made[JF_SHARED] || !!v;
+      if (v && (v.at || 0) > (jfAuth.at || 0)) {
+        JF_KEYS.forEach(function (k) {
+          if (v[k] != null) jfAuth[k] = v[k];
+          else if (k === 'token' || k === 'user') delete jfAuth[k];
+        });
+        saveJf();
+        return true;
+      }
+      if (!keep && jfOn() && (!v || (v.at || 0) < (jfAuth.at || 0))) jfShare();
+      return false;
+    }, function () { return false; });
+  }
+  function jfChanged(changed) {
+    if (!changed) return;
+    if (!jfOn()) jfReset();
+    else if (state.source === 'jellyfin') {
+      state.showSettings = false;
+      jfRestore();
+    }
+    render();
+  }
+  // Not connected here: a login made in another browser may be there now
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && root && !jfOn() && state.source === 'jellyfin') jfPull().then(jfChanged);
+  });
+
+  // The token stopped working (Disconnect elsewhere, or removed in
+  // Jellyfin's Devices): another browser may have a new one on the server
+  var jfLosing = false;
+  function jfLost() {
+    if (jfLosing) return;
+    jfLosing = true;
+    var was = jfAuth.token;
+    jfPull(true).then(function (changed) {
+      jfLosing = false;
+      if (jfAuth.token !== was) return jfChanged(changed);
+      jfLogout(t('jfLoginAgain'));
+    });
+  }
+
+  // ---- Quick Connect: a code to enter in Jellyfin; the login comes once it's approved ----
+  var qcTimer = 0, qcId = 0;
+  function jfConnect() {
+    var server = jfAddress(el.jfServer.value);
+    jfCancelCode();
+    jf.note = '';
+    if (!server) {
+      jf.note = t('jfNoServer');
+      return render();
+    }
+    var base = jfBase(server), id = qcId;
+    jf.qc = { code: '', server: server, base: base };
+    render();
+    jfApi('GET', '/QuickConnect/Enabled', null, base).then(function (on) {
+      if (on === false) throw new Error('off');
+      return jfApi('POST', '/QuickConnect/Initiate', null, base).then(null, function (e) {
+        if (e.status === 404 || e.status === 405) return jfApi('GET', '/QuickConnect/Initiate', null, base);   // before 10.9
+        throw e;
+      });
+    }).then(function (q) {
+      if (id !== qcId || !q || !q.Secret) return;
+      jf.qc.code = q.Code;
+      jf.qc.secret = q.Secret;
+      render();
+      qcWait(id);
+    }, function (e) {
+      if (id !== qcId) return;
+      jf.qc = null;
+      jf.note = e.message === 'off' || e.status === 401 ? t('jfQcOff') : t('jfNoServer');
+      render();
+    });
+  }
+  function qcWait(id) {
+    clearTimeout(qcTimer);
+    qcTimer = setTimeout(function () {
+      var q = jf.qc;
+      if (id !== qcId || !q) return;
+      if (jfOn()) {   // connected meanwhile (another tab, or the server's login)
+        jfCancelCode();
+        return render();
+      }
+      jfApi('GET', '/QuickConnect/Connect?Secret=' + encodeURIComponent(q.secret), null, q.base).then(function (s) {
+        if (id !== qcId) return;
+        if (!s || !s.Authenticated) return qcWait(id);
+        return jfApi('POST', '/Users/AuthenticateWithQuickConnect', { Secret: q.secret }, q.base).then(function (a) {
+          if (id !== qcId || !a || !a.AccessToken || !a.User) throw new Error('no login');
+          jfCancelCode();
+          jfReset();
+          jfAuth.server = q.server;
+          jfAuth.token = a.AccessToken;
+          jfAuth.user = { id: a.User.Id, name: a.User.Name || '' };
+          jfAuth.at = Date.now();
+          jf.typed = null;
+          saveJf();
+          jfShare();
+          state.showSettings = false;
+          render();
+        });
+      }).then(null, function (e) {
+        if (id !== qcId) return;
+        if (e.status !== 404) return qcWait(id);   // a hiccup: ask again
+        // the code expired (10 minutes): a new one while the settings are in view
+        if (state.source === 'jellyfin' && state.showSettings && !document.hidden) return jfConnect();
+        jfCancelCode();
+        render();
+      });
+    }, 3000);
+  }
+  function jfCancelCode() {
+    qcId++;
+    clearTimeout(qcTimer);
+    jf.qc = null;
+  }
+
+  // Disconnect: the token stops working everywhere (Jellyfin forgets it), here and on the server
+  function jfForget() {
+    if (jfOn()) jfApi('POST', '/Sessions/Logout').then(null, function () {});
+    jfLogout('');
+  }
+  function jfLogout(message) {
+    jfReset();
+    delete jfAuth.token;
+    delete jfAuth.user;
+    jfAuth.at = Date.now();
+    saveJf();
+    jfShare();
+    jf.message = message;
+    render();
+  }
+  // Nothing of the last login stays: what played, the library
+  function jfReset() {
+    jfReportStop();
+    jfAudio.pause();
+    jfAudio.removeAttribute('src');
+    jf.tracks = [];
+    jf.order = [];
+    jf.queue = [];
+    jf.index = -1;
+    jf.now = jf.playlists = null;
+    jf.stack = [];
+    jf.results = [];
+    jf.resultsFor = '';
+    jf.message = jf.note = '';
+    saved.jf = null;
+    if (state.source === 'jellyfin') updateSession();
+  }
+
+  // ---- The library ----
+  // An item's picture (a track without its own: its album's), as a path with its tag
+  function jfImage(i) {
+    if (i.ImageTags && i.ImageTags.Primary) return '/Items/' + i.Id + '/Images/Primary?tag=' + i.ImageTags.Primary;
+    if (i.AlbumPrimaryImageTag && i.AlbumId) return '/Items/' + i.AlbumId + '/Images/Primary?tag=' + i.AlbumPrimaryImageTag;
+    return '';
+  }
+  function jfImg(path, size) {
+    return path ? jfBase() + path + '&fillWidth=' + size + '&fillHeight=' + size + '&quality=90' : '';
+  }
+  var JF_KINDS = { Audio: 'track', MusicAlbum: 'album', MusicArtist: 'artist', Playlist: 'playlist' };
+  function jfRow(i) {
+    var kind = JF_KINDS[i.Type] || 'other', name = i.Name || '?';
+    if (kind === 'track') {
+      var artist = (i.Artists && i.Artists.join(', ')) || i.AlbumArtist || '';
+      return {
+        kind: kind, id: i.Id, name: name, artist: artist, album: i.Album || '', duration: (i.RunTimeTicks || 0) / 1e7,
+        image: jfImage(i), fav: !!(i.UserData && i.UserData.IsFavorite), key: fold(name + ' ' + artist + ' ' + (i.Album || ''))
+      };
+    }
+    var sub = kind === 'album' ? [i.AlbumArtist, i.ProductionYear].filter(Boolean).join(' · ') : '';
+    return { kind: kind, id: i.Id, name: name, sub: sub, count: kind === 'playlist' ? i.ChildCount : null, image: jfImage(i), key: fold(name + ' ' + sub) };
+  }
+  // The first level: Favorites, Albums, Artists, then your playlists
+  function jfRoot() {
+    return [
+      { kind: 'favs', name: t('jfFavorites') }, { kind: 'albums', name: t('jfAlbums') }, { kind: 'artists', name: t('jfArtists') }
+    ].map(function (r) { r.key = fold(r.name); return r; }).concat(jf.playlists || []);
+  }
+  function jfLoadRoot() {
+    if (jf.playlistsLoading || !jfOn()) return;
+    jf.playlistsLoading = true;
+    jfApi('GET', jfQuery('/Items', 'Recursive=true&IncludeItemTypes=Playlist&SortBy=SortName&Fields=ChildCount')).then(function (j) {
+      jf.playlists = ((j && j.Items) || []).filter(function (i) { return i.MediaType !== 'Video'; }).map(jfRow);
+    }, jfTrouble).then(function () {
+      jf.playlistsLoading = false;
+      renderList();
+    });
+  }
+  // What each list asks for (albums and artists come in pages, searched on the server)
+  var JF_OPEN = {
+    favs: function () { return '/Items?Recursive=true&IncludeItemTypes=Audio&Filters=IsFavorite&SortBy=AlbumArtist,Album,ParentIndexNumber,IndexNumber,SortName'; },
+    albums: function () { return '/Items?Recursive=true&IncludeItemTypes=MusicAlbum&SortBy=SortName'; },
+    artists: function () { return '/Artists/AlbumArtists?SortBy=SortName'; },
+    artist: function (id) { return '/Items?Recursive=true&IncludeItemTypes=MusicAlbum&SortBy=ProductionYear,SortName&AlbumArtistIds=' + id; },
+    album: function (id) { return '/Items?Recursive=true&IncludeItemTypes=Audio&SortBy=ParentIndexNumber,IndexNumber,SortName&ParentId=' + id; },
+    playlist: function (id) { return '/Playlists/' + id + '/Items'; }
+  };
+  function jfOpen(r) {
+    if (!JF_OPEN[r.kind]) return;
+    var lv = { kind: r.kind, id: r.id, name: r.name, rows: [], total: null, loading: false, failed: false, paged: r.kind === 'albums' || r.kind === 'artists', search: '' };
+    jf.stack.push(lv);
+    state.search = el.search.value = '';
+    el.list.scrollTop = 0;
+    jfMore(lv);
+    render();
+  }
+  // The open list: all of it, or its next page
+  function jfMore(lv) {
+    lv = lv || jf.stack[jf.stack.length - 1];
+    if (!lv || !jfOn() || lv.loading || lv.failed || (lv.total != null && lv.rows.length >= lv.total)) return;
+    lv.loading = true;
+    var search = lv.search;
+    var q = lv.paged ? 'StartIndex=' + lv.rows.length + '&Limit=' + JF_PAGE + (search ? '&SearchTerm=' + encodeURIComponent(search) : '') : '';
+    jfApi('GET', jfQuery(JF_OPEN[lv.kind](lv.id), q)).then(function (j) {
+      if (lv.search !== search) return;
+      var items = (j && j.Items) || [];
+      lv.rows = lv.rows.concat(items.map(jfRow));
+      lv.total = !lv.paged || items.length < JF_PAGE ? lv.rows.length : (j.TotalRecordCount || lv.rows.length + 1);
+    }, function (e) {
+      if (lv.search === search) lv.failed = true;
+      jfTrouble(e);
+    }).then(function () {
+      lv.loading = false;
+      if (lv.search !== search) return jfMore(lv);   // searched again meanwhile
+      renderList();
+    });
+  }
+  // Typing: the first level searches all of Jellyfin, albums and artists
+  // search on the server, a list of tracks is only filtered
+  var jfSearchTimer = 0;
+  function jfSearch() {
+    clearTimeout(jfSearchTimer);
+    var lv = jf.stack[jf.stack.length - 1];
+    if (lv && !lv.paged) return;
+    jfSearchTimer = setTimeout(function () {
+      var q = state.search.trim();
+      if (!jfOn()) return;
+      if (lv) {
+        if (lv.search === q) return;
+        lv.search = q;
+        lv.rows = [];
+        lv.total = null;
+        lv.failed = false;
+        jfMore(lv);
+        return renderList();
+      }
+      if (q.length < 2) {
+        jf.results = [];
+        jf.resultsFor = '';
+        return renderList();
+      }
+      jfApi('GET', jfQuery('/Items', 'Recursive=true&IncludeItemTypes=MusicArtist,MusicAlbum,Playlist,Audio&Limit=40&SearchTerm=' + encodeURIComponent(q))).then(function (j) {
+        if (state.search.trim() !== q) return;
+        var rows = ((j && j.Items) || []).map(jfRow).filter(function (r) { return r.kind !== 'other'; });
+        // artists, albums and playlists first, then the tracks
+        jf.results = rows.filter(function (r) { return r.kind !== 'track'; }).concat(rows.filter(function (r) { return r.kind === 'track'; }));
+        jf.resultsFor = q;
+        renderList();
+      }, jfTrouble);
+    }, 300);
+  }
+  function jfTrouble(e) {
+    if (e && e.status === 401) return;   // jfLost() says it
+    jf.message = t('jfError');
+    render();
+    clearTimeout(jf.messageTimer);
+    jf.messageTimer = setTimeout(function () { jf.message = ''; render(); }, 5000);
+  }
+
+  // ---- Playing ----
+  function jfStream(tr) {
+    return jfBase() + '/Audio/' + tr.id + '/universal?UserId=' + jfAuth.user.id + '&DeviceId=' + encodeURIComponent(jfDevice()) +
+      '&MaxStreamingBitrate=140000000&Container=' + encodeURIComponent(jfContainers) +
+      '&TranscodingContainer=mp3&TranscodingProtocol=http&AudioCodec=mp3&PlaySessionId=' + jf.session +
+      '&ApiKey=' + encodeURIComponent(jfAuth.token);
+  }
+  function jfPlay(tr, at) {
+    if (!tr || !jfOn()) return;
+    jfReportStop();
+    jf.now = tr;
+    jf.resume = at || 0;
+    jf.session = randomString(16);
+    jf.message = '';
+    jfAudio.src = jfStream(tr);
+    var p = jfAudio.play();
+    if (p && p.catch) p.catch(function () { /* autoplay blocked: user presses play */ });
+    updateSession();
+    save();
+    render();
+  }
+  // A track of the list (it leaves the queue)
+  function jfPlayIndex(i) {
+    var tr = jf.tracks[i];
+    if (!tr) return;
+    jf.index = i;
+    var k = jfQueued(tr.id);
+    if (k >= 0) jf.queue.splice(k, 1);
+    jfPlay(tr);
+  }
+  function jfOrder() { jf.order = playOrder(jf.tracks.length, jf.index); }
+  // A track picked in a list: that list plays from it
+  function jfPick(r) {
+    var lv = jf.stack[jf.stack.length - 1];
+    var rows = lv ? lv.rows : jf.results.indexOf(r) >= 0 ? jf.results : jfRoot();
+    jf.tracks = rows.filter(function (x) { return x.kind === 'track'; });
+    jf.index = jf.tracks.indexOf(r);
+    jfOrder();
+    jfPlayIndex(jf.index);
+  }
+  function jfToggle() {
+    if (!jf.now) {
+      if (jf.queue.length) return jfPlay(jf.queue.shift());
+      if (jf.tracks.length) return jfPlayIndex(jf.order[0]);
+      // nothing yet: the library
+      state.showList = true;
+      state.showNext = state.showSettings = false;
+      jfLoadRoot();
+      return render();
+    }
+    if (!jfAudio.src) return jfPlay(jf.now, jf.resume);   // restored after a reload
+    if (jfAudio.paused) {
+      var p = jfAudio.play();
+      if (p && p.catch) p.catch(function () {});
+    } else jfAudio.pause();
+  }
+  // The queue first, then the list from where it was
+  function jfNext(auto) {
+    if (auto && state.repeat === 'one' && jf.now) return jfPlay(jf.now);
+    if (jf.queue.length) return jfPlay(jf.queue.shift());
+    var n = jf.order.length, pos = jf.order.indexOf(jf.index) + 1;
+    if (!n) return;
+    if (pos >= n) {
+      if (auto && state.repeat === 'off') { jfAudio.pause(); render(); return; }
+      if (state.shuffle) jfOrder();
+      pos = 0;
+    }
+    jfPlayIndex(jf.order[pos]);
+  }
+  function jfPrev() {
+    if (jfTime() > 3) return jfSeek(0);
+    var cur = jf.tracks[jf.index];
+    if (cur && jf.now !== cur) return jfPlayIndex(jf.index);   // from a queued track: back to the list
+    var n = jf.order.length;
+    if (!n) return;
+    jfPlayIndex(jf.order[(jf.order.indexOf(jf.index) - 1 + n) % n]);
+  }
+  function jfTime() { return jfAudio.src ? jfAudio.currentTime : jf.resume; }
+  function jfDuration() {
+    var d = jfAudio.duration;
+    return isFinite(d) && d > 0 ? d : jf.now ? jf.now.duration : 0;   // a converted track has no length of its own
+  }
+  function jfSeek(sec) {
+    sec = Math.max(0, Math.min(jfDuration() || 0, sec));
+    if (jfAudio.src) jfAudio.currentTime = sec;
+    else jf.resume = sec;
+    updateProgress();
+  }
+  function jfQueued(id) {
+    for (var k = 0; k < jf.queue.length; k++) if (jf.queue[k].id === id) return k;
+    return -1;
+  }
+  function jfQueue(r) {
+    var k = jfQueued(r.id);
+    if (k >= 0) jf.queue.splice(k, 1);
+    else jf.queue.push(r);
+    save();
+    renderList();
+    renderNext();
+  }
+  // ❤: Jellyfin's favorites (the route of 10.9 and later, else the older one)
+  function jfFavorite() {
+    var tr = jf.now;
+    if (!tr) return;
+    var on = !tr.fav, method = on ? 'POST' : 'DELETE';
+    tr.fav = on;
+    render();
+    jfApi(method, '/UserFavoriteItems/' + tr.id).then(null, function (e) {
+      if (e.status === 404) return jfApi(method, '/Users/' + jfAuth.user.id + '/FavoriteItems/' + tr.id);
+      throw e;
+    }).then(function () {
+      var fav = jf.stack[0] && jf.stack[0].kind === 'favs' ? jf.stack[0] : null;
+      if (fav) { fav.rows = []; fav.total = null; fav.failed = false; jfMore(fav); }
+    }, function (e) {
+      tr.fav = !on;
+      jfTrouble(e);
+    });
+  }
+
+  jfAudio.addEventListener('playing', function () {
+    jf.errors = 0;
+    jfReportStart();
+    render();
+  });
+  jfAudio.addEventListener('pause', function () {
+    jfReportProgress();
+    render();
+  });
+  jfAudio.addEventListener('ended', function () {
+    jfReportStop(true);
+    jfNext(true);
+  });
+  jfAudio.addEventListener('error', function () {
+    if (!jf.now || !jfAudio.src) return;
+    if (!jf.errors) jfApi('GET', '/Users/Me').then(null, function () {});   // a revoked login answers 401 there
+    jf.message = t('loadError');
+    render();
+    if (++jf.errors < 5) setTimeout(function () { jfNext(true); }, 800);
+  });
+  jfAudio.addEventListener('loadedmetadata', function () {
+    if (jf.resume) {
+      try { jfAudio.currentTime = jf.resume; } catch (e) { /* a converted track starts over */ }
+      jf.resume = 0;
+    }
+    updateProgress();
+  });
+  jfAudio.addEventListener('timeupdate', function () {
+    updateProgress();
+    var now = Date.now();
+    if (now - lastSave > 2000) { lastSave = now; save(); }
+  });
+  jfAudio.addEventListener('play', updatePlaybackState);
+  jfAudio.addEventListener('pause', updatePlaybackState);
+
+  // Jellyfin learns what plays here (its dashboard, play counts, scrobbling plugins)
+  function jfSession(path, tr, paused, sec) {
+    jfApi('POST', path, {
+      ItemId: tr.id, PlaySessionId: tr.session, PositionTicks: Math.round((sec || 0) * 1e7), IsPaused: paused, CanSeek: true
+    }).then(null, function () {});
+  }
+  function jfReportStart() {
+    var tr = jf.now;
+    if (!tr || !jfOn()) return;
+    if (jf.reported === tr && tr.session === jf.session) return jfReportProgress();   // resumed
+    jfReportStop();
+    tr.session = jf.session;
+    jf.reported = tr;
+    jfSession('/Sessions/Playing', tr, false, jfAudio.currentTime);
+  }
+  function jfReportProgress() {
+    if (jf.reported && jfOn()) jfSession('/Sessions/Playing/Progress', jf.reported, jfAudio.paused, jfAudio.currentTime);
+  }
+  function jfReportStop(ended) {
+    var tr = jf.reported;
+    jf.reported = null;
+    if (tr && jfOn()) jfSession('/Sessions/Playing/Stopped', tr, false, ended ? tr.duration : jfAudio.currentTime);
+  }
+
+  // ---- After a reload: the list, the track and where it was ----
+  function jfSaved() {
+    if (!jf || (!jf.now && !jf.tracks.length && !jf.queue.length)) return saved.jf || null;   // not restored yet
+    var id = function (tr) { return tr.id; };
+    var from = Math.max(0, Math.min(jf.index - 100, jf.tracks.length - 400));
+    return {
+      ids: jf.tracks.slice(from, from + 400).map(id), now: jf.now ? jf.now.id : null,
+      queue: jf.queue.slice(0, 50).map(id), time: Math.floor(jfTime() || 0)
+    };
+  }
+  var jfRestored = false;
+  function jfRestore() {
+    var s = saved.jf;
+    if (jfRestored || !jfOn() || !s || !Array.isArray(s.ids)) return;
+    jfRestored = true;
+    var ids = s.ids.concat(s.queue || [], s.now ? [s.now] : []).filter(function (x, k, all) { return x && all.indexOf(x) === k; });
+    var parts = [];
+    for (var k = 0; k < ids.length; k += 100) parts.push(jfApi('GET', jfQuery('/Items', 'Ids=' + ids.slice(k, k + 100).join(','))));
+    Promise.all(parts).then(function (all) {
+      if (jf.now || jf.tracks.length) return;   // something else plays already
+      var byId = {};
+      all.forEach(function (j) { ((j && j.Items) || []).forEach(function (i) { byId[i.Id] = jfRow(i); }); });
+      var pick = function (list) { return (list || []).map(function (x) { return byId[x]; }).filter(Boolean); };
+      jf.tracks = pick(s.ids);
+      jf.queue = pick(s.queue);
+      jf.now = byId[s.now] || null;
+      jf.index = jf.tracks.indexOf(jf.now);
+      jf.resume = jf.now ? s.time || 0 : 0;
+      jfOrder();
+      updateSession();
+      render();
+    }, function () { jfRestored = false; });
+  }
+
   function setSource(src) {
-    if (src !== 'spotify') src = 'local';
+    if (src !== 'spotify' && src !== 'jellyfin') src = 'local';
     if (state.source === src) return;
+    var was = state.source;
     state.source = src;
     state.showList = state.showFolder = state.showDevices = state.showSettings = state.showNext = false;
     sp.info = false;
     state.search = el.search.value = '';
+    jfCancelCode();
+    if (was === 'local' && !audio.paused) audio.pause();   // one mode plays at a time
+    if (was === 'jellyfin' && !jfAudio.paused) jfAudio.pause();
     if (src === 'spotify') {
-      if (!audio.paused) audio.pause();
       if (!connected()) state.showSettings = true;
       else {
         if (!auth.user) loadMe();
         poll();
       }
     } else {
-      if (web.active) webDo('pause');   // nothing plays over the local files
+      if (web.active) webDo('pause');
       stopSpotify();
+    }
+    if (src === 'jellyfin') {
+      if (jfOn()) jfRestore();
+      else {
+        state.showSettings = true;
+        jfPull().then(jfChanged);   // a login made in another browser
+      }
     }
     webSync();
     save();
@@ -3105,6 +3948,7 @@
       '      <span class="smp-source" dir="ltr">' +
       '        <button type="button" class="smp-src" data-act="source" data-src="local">' + icon('note') + '</button>' +
       '        <button type="button" class="smp-src" data-act="source" data-src="spotify">' + icon('spotify') + '</button>' +
+      '        <button type="button" class="smp-src" data-act="source" data-src="jellyfin">' + icon('jellyfin') + '</button>' +
       '      </span>' +
       '      <button type="button" class="smp-btn smp-small" data-act="list">' + icon('list') + '</button>' +
       '      <button type="button" class="smp-btn smp-small" data-act="next-up">' + icon('upnext') + '</button>' +
@@ -3173,6 +4017,18 @@
       '      <button type="button" class="smp-text-btn smp-primary" data-act="sp-connect"></button>' +
       '    </div>' +
       '  </div>' +
+      '  <div class="smp-jfset" hidden>' +
+      '    <label class="smp-label smp-jf-label"></label>' +
+      '    <input type="text" class="smp-path smp-jf-server" spellcheck="false" autocomplete="off" dir="ltr">' +
+      '    <p class="smp-note smp-jf-note" hidden></p>' +
+      '    <div class="smp-jf-wait" hidden><p class="smp-web-note smp-jf-how"></p><div class="smp-jf-code" dir="ltr"></div></div>' +
+      '    <div class="smp-account smp-jf-account" hidden></div>' +
+      '    <div class="smp-folder-btns">' +
+      '      <a class="smp-help smp-jf-help" target="_blank" rel="noopener"></a>' +
+      '      <button type="button" class="smp-text-btn" data-act="jf-disconnect"></button>' +
+      '      <button type="button" class="smp-text-btn smp-primary" data-act="jf-connect"></button>' +
+      '    </div>' +
+      '  </div>' +
       '  <div class="smp-listbox" hidden>' +
       '    <div class="smp-sp-head" hidden>' +
       '      <button type="button" class="smp-btn smp-small" data-act="sp-back">' + icon('back') + '</button>' +
@@ -3196,7 +4052,8 @@
     el.upnext = root.querySelector('.smp-upnext');
     el.nlist = root.querySelector('.smp-nlist');
     el.settingsBtn = root.querySelector('[data-act="settings"]');
-    ['info', 'pop', 'like', 'device', 'devices', 'spset', 'https', 'cid', 'uri', 'account', 'help', 'controls', 'volume', 'web', 'web-row', 'web-note']
+    ['info', 'pop', 'like', 'device', 'devices', 'spset', 'https', 'cid', 'uri', 'account', 'help', 'controls', 'volume', 'web', 'web-row', 'web-note',
+      'jfset', 'jf-server', 'jf-note', 'jf-wait', 'jf-how', 'jf-code', 'jf-account', 'jf-help']
       .forEach(function (k) { el[k.replace(/-(\w)/g, function (m, c) { return c.toUpperCase(); })] = root.querySelector('.smp-' + k); });
     el.devList = root.querySelector('.smp-dev-list');
     el.spHead = root.querySelector('.smp-sp-head');
@@ -3206,7 +4063,7 @@
     root.addEventListener('click', onClick);
     el.seek.addEventListener('input', function () {
       seeking = true;
-      var d = state.source === 'spotify' ? (sp.playback ? sp.playback.duration / 1000 : 0) : audio.duration;
+      var d = state.source === 'spotify' ? (sp.playback ? sp.playback.duration / 1000 : 0) : state.source === 'jellyfin' ? jfDuration() : audio.duration;
       if (d) el.time.textContent = fmt(el.seek.value / 1000 * d);
     });
     el.seek.addEventListener('change', function () {
@@ -3215,13 +4072,17 @@
         if (sp.playback && sp.playback.duration) spSeek(el.seek.value / 1000 * sp.playback.duration);
         return;
       }
+      if (state.source === 'jellyfin') {
+        if (jfDuration()) jfSeek(el.seek.value / 1000 * jfDuration());
+        return;
+      }
       if (audio.duration) audio.currentTime = el.seek.value / 1000 * audio.duration;
     });
     el.vol.addEventListener('input', function () {
       if (state.source === 'spotify') return spVolume(Number(el.vol.value));
       state.volume = el.vol.value / 100;
-      audio.volume = state.volume;
-      if (state.muted && state.volume > 0) { state.muted = false; audio.muted = false; }
+      audio.volume = jfAudio.volume = state.volume;
+      if (state.muted && state.volume > 0) { state.muted = false; audio.muted = jfAudio.muted = false; }
       renderButtons();
       save();
     });
@@ -3235,7 +4096,7 @@
       if (state.source === 'spotify') {
         searchSpotify();
         if (state.search) more();
-      }
+      } else if (state.source === 'jellyfin') jfSearch();
       renderList();
     });
     // Enter plays the first result
@@ -3246,14 +4107,23 @@
         if (row) row.click();
         return;
       }
+      if (state.source === 'jellyfin') {
+        var jr = el.list.querySelector('[data-act="jf-row"][data-track]') || el.list.querySelector('[data-act="jf-row"]');
+        if (jr) jr.click();
+        return;
+      }
       var first = el.list.querySelector('[data-act="track"]');
       if (first) playIndex(Number(first.getAttribute('data-index')));
     });
     // The open playlist's next page when its end comes into view
     el.list.addEventListener('scroll', function () {
-      if (state.source === 'spotify' && sp.open && el.list.scrollTop + el.list.clientHeight > el.list.scrollHeight - 120) more();
+      if (el.list.scrollTop + el.list.clientHeight < el.list.scrollHeight - 120) return;
+      if (state.source === 'spotify' && sp.open) more();
+      else if (state.source === 'jellyfin' && jf.stack.length) jfMore();
     }, { passive: true });
     el.cid.addEventListener('keydown', function (e) { if (e.key === 'Enter') connect(el.cid.value); });
+    el.jfServer.addEventListener('keydown', function (e) { if (e.key === 'Enter') jfConnect(); });
+    el.jfServer.addEventListener('input', function () { jf.typed = el.jfServer.value; });
     // Play in this browser: at once (switching it off and on also tries again after a failure)
     el.web.addEventListener('change', function () {
       state.web = el.web.checked;
@@ -3329,6 +4199,59 @@
   };
   var SP_FREE = { settings: 1, info: 1, 'sp-connect': 1, 'sp-copy': 1, 'sp-disconnect': 1 };
 
+  // Jellyfin mode's buttons (shuffle, repeat and the volume are the local player's)
+  var JF_ACTS = {
+    play: jfToggle, next: function () { jfNext(false); }, prev: jfPrev, like: jfFavorite,
+    list: function () {
+      state.showList = !state.showList;
+      state.showNext = state.showSettings = false;
+      state.search = el.search.value = '';
+      jf.results = [];
+      jf.resultsFor = '';
+      if (state.showList) jfLoadRoot();
+      render();
+    },
+    settings: function () {
+      state.showSettings = !state.showSettings;
+      state.showList = state.showNext = false;
+      if (!state.showSettings) jfCancelCode();
+      render();
+    },
+    'jf-connect': function () {
+      if (!jf.qc) return jfConnect();
+      jfCancelCode();
+      render();
+    },
+    'jf-disconnect': jfForget,
+    'sp-back': function () {
+      jf.stack.pop();
+      state.search = el.search.value = '';
+      jf.results = [];
+      jf.resultsFor = '';
+      var lv = jf.stack[jf.stack.length - 1];
+      if (lv && lv.paged && lv.search) {   // its search is gone with the box's text
+        lv.search = '';
+        lv.rows = [];
+        lv.total = null;
+        lv.failed = false;
+        jfMore(lv);
+      }
+      el.list.scrollTop = 0;
+      render();
+    },
+    'jf-row': function (btn) {
+      var r = jf.rows[Number(btn.getAttribute('data-i'))];
+      if (!r) return;
+      if (r.kind === 'track') jfPick(r);
+      else jfOpen(r);
+    },
+    'jf-queue': function (btn) {
+      var r = jf.rows[Number(btn.getAttribute('data-i'))];
+      if (r) jfQueue(r);
+    }
+  };
+  var JF_FREE = { settings: 1, 'jf-connect': 1, 'jf-disconnect': 1 };
+
   function onClick(e) {
     var btn = e.target.closest('[data-act]');
     if (btn) {
@@ -3343,7 +4266,21 @@
             state.showSettings = true;
           } else loadNext();
         }
+        if (state.showNext && state.source === 'jellyfin' && !jfOn()) {
+          state.showNext = false;
+          state.showSettings = true;
+        }
         return render();
+      }
+      if (state.source === 'jellyfin' && /^nx-/.test(act)) {
+        var k = Number(btn.getAttribute('data-index'));
+        if (act === 'nx-unqueue') {
+          jf.queue.splice(k, 1);
+          save();
+          return render();
+        }
+        if (btn.hasAttribute('data-queued')) return jfPlay(jf.queue.splice(k, 1)[0]);
+        return jfPlayIndex(k);
       }
       if (act === 'nx-play') return playIndex(Number(btn.getAttribute('data-index')), btn.hasAttribute('data-queued'));
       if (act === 'nx-unqueue') return toggleQueue(Number(btn.getAttribute('data-index')));
@@ -3359,15 +4296,23 @@
         if (web.player) webDo('activateElement');
         return SP_ACTS[act](btn);
       }
+      if (state.source === 'jellyfin' && JF_ACTS[act]) {
+        if (!jfOn() && !JF_FREE[act]) {
+          state.showSettings = true;
+          state.showList = state.showNext = false;
+          return render();
+        }
+        return JF_ACTS[act](btn);
+      }
       if (act === 'play') togglePlay();
       else if (act === 'next') step(1, false);
       else if (act === 'prev') prev();
-      else if (act === 'shuffle') { state.shuffle = !state.shuffle; buildOrder(); save(); render(); }
+      else if (act === 'shuffle') { state.shuffle = !state.shuffle; buildOrder(); jfOrder(); save(); render(); }
       else if (act === 'repeat') {
         state.repeat = state.repeat === 'all' ? 'one' : state.repeat === 'one' ? 'off' : 'all';
         save();
         render();
-      } else if (act === 'mute') { state.muted = !state.muted; audio.muted = state.muted; save(); render(); }
+      } else if (act === 'mute') { state.muted = !state.muted; audio.muted = jfAudio.muted = state.muted; save(); render(); }
       else if (act === 'list') {
         state.showList = !state.showList;
         state.showFolder = state.showNext = false;
@@ -3442,6 +4387,7 @@
   function renderList() {
     if (!state.showList) return;
     if (state.source === 'spotify') return renderSpotifyList();
+    if (state.source === 'jellyfin') return renderJellyfinList();
     var words = fold(state.search).split(/\s+/).filter(Boolean);
     var shown = [], html = '';
     state.tracks.forEach(function (tr, i) {
@@ -3528,10 +4474,64 @@
     if (liked) liked.innerHTML = icon('heart');
   }
 
+  // Jellyfin's list: the first level (with Jellyfin's search results while
+  // searching), or the open list's rows
+  var JF_ICON = { favs: 'heart', albums: 'disc', artists: 'person', album: 'disc', artist: 'person', playlist: 'list' };
+  function renderJellyfinList() {
+    var lv = jf.stack[jf.stack.length - 1], words = fold(state.search).split(/\s+/).filter(Boolean), cur = jf.now && jf.now.id;
+    var hit = function (r) { return matches(r, words); }, rows, results = [], html = '';
+    if (lv) rows = lv.paged ? lv.rows : lv.rows.filter(hit);   // albums and artists are searched on the server
+    else {
+      rows = jfRoot().filter(hit);
+      if (words.length && jf.resultsFor) results = jf.results;
+    }
+    jf.rows = rows.concat(results);
+    function line(r, i) {
+      var track = r.kind === 'track', q = track ? jfQueued(r.id) : -1;
+      return '<div class="smp-track' + (track && r.id === cur ? ' smp-current' : '') + '">' +
+        '<button type="button" class="smp-track-play" data-act="jf-row" data-i="' + i + '"' + (track ? ' data-track' : '') + '>' +
+        (track ? '<span class="smp-track-n">' + (i < rows.length ? i + 1 : '') + '</span>' : '<span class="smp-pl-img"></span>') +
+        '<span class="smp-track-t"></span><span class="smp-track-s"></span></button>' +
+        (track ? '<button type="button" class="smp-queue' + (q >= 0 ? ' smp-on' : '') + '" data-act="jf-queue" data-i="' + i + '">' +
+          (q >= 0 ? q + 1 : icon('queue')) + '</button>' : '') + '</div>';
+    }
+    rows.forEach(function (r, i) { html += line(r, i); });
+    if (results.length) {
+      html += '<div class="smp-section"></div>';
+      results.forEach(function (r, k) { html += line(r, rows.length + k); });
+    }
+    var note = '';
+    if (lv && lv.failed && !lv.rows.length) note = t('jfError');
+    else if ((lv ? lv.loading : jf.playlistsLoading && !jf.playlists) && !rows.length) note = t('spLoading');
+    else if (!rows.length && !results.length) note = t('noMatch');
+    if (note) html += '<div class="smp-none"></div>';
+    el.list.innerHTML = html;
+    var none = el.list.querySelector('.smp-none');
+    if (none) none.textContent = note;
+    var sec = el.list.querySelector('.smp-section');
+    if (sec) sec.textContent = t('jfOn');
+    var titles = el.list.querySelectorAll('.smp-track-t'), subs = el.list.querySelectorAll('.smp-track-s');
+    var imgs = el.list.querySelectorAll('.smp-pl-img'), qs = el.list.querySelectorAll('.smp-queue'), n = 0;
+    jf.rows.forEach(function (r, i) {
+      titles[i].textContent = r.name;
+      subs[i].textContent = r.kind === 'track' ? r.artist : r.count != null ? trackCount(r.count) : r.sub || '';
+      if (r.kind === 'track') return;
+      var box = imgs[n++];
+      if (!r.image) return (box.innerHTML = icon(JF_ICON[r.kind] || 'list'));
+      var img = document.createElement('img');   // only the pictures scrolled into view load
+      img.loading = 'lazy';
+      img.alt = '';
+      img.src = jfImg(r.image, 96);
+      box.appendChild(img);
+    });
+    for (var k = 0; k < qs.length; k++) qs[k].title = qs[k].classList.contains('smp-on') ? t('queueRemove') : t('queueAdd');
+  }
+
   function renderButtons() {
     if (state.source === 'spotify') return renderSpotifyButtons();
-    el.play.innerHTML = icon(audio.paused ? 'play' : 'pause');
-    el.play.title = audio.paused ? t('play') : t('pause');
+    var paused = player().paused, jelly = state.source === 'jellyfin';
+    el.play.innerHTML = icon(paused ? 'play' : 'pause');
+    el.play.title = paused ? t('play') : t('pause');
     el.shuffle.classList.toggle('smp-on', state.shuffle);
     el.shuffle.title = t('shuffle');
     el.repeat.innerHTML = state.repeat === 'one'
@@ -3543,10 +4543,12 @@
     el.mute.title = t('volume');
     root.querySelector('[data-act="next"]').title = t('next');
     root.querySelector('[data-act="prev"]').title = t('prev');
-    el.listBtn.title = t('playlist');
+    el.listBtn.title = jelly ? t('spLibrary') : t('playlist');
     el.folderBtn.title = t('change');
     el.listBtn.classList.toggle('smp-on', state.showList);
     el.folderBtn.classList.toggle('smp-on', state.showFolder);
+    el.settingsBtn.title = t('jfSettings');
+    el.settingsBtn.classList.toggle('smp-on', jelly && state.showSettings);
   }
 
   var REPEAT_SHOWN = { context: 'all', track: 'one', off: 'off' };
@@ -3581,8 +4583,9 @@
 
   function updateProgress() {
     if (!root) return;
-    var spotify = state.source === 'spotify', p = sp.playback;
-    var d = spotify ? (p ? p.duration / 1000 : 0) : audio.duration, c = spotify ? position() / 1000 : audio.currentTime;
+    var spotify = state.source === 'spotify', jelly = state.source === 'jellyfin', p = sp.playback;
+    var d = spotify ? (p ? p.duration / 1000 : 0) : jelly ? jfDuration() : audio.duration;
+    var c = spotify ? position() / 1000 : jelly ? jfTime() : audio.currentTime;
     el.dur.textContent = fmt(d);
     if (!seeking) {
       el.time.textContent = fmt(c);
@@ -3592,7 +4595,7 @@
 
   function render() {
     if (!root) return;
-    var spotify = state.source === 'spotify';
+    var spotify = state.source === 'spotify', jelly = state.source === 'jellyfin', local = !spotify && !jelly;
     var l = lang();
     if (root.lang !== l) {
       root.lang = l;
@@ -3604,17 +4607,19 @@
       var mine = el.src[i].getAttribute('data-src') === state.source;
       el.src[i].classList.toggle('smp-on', mine);
       el.src[i].setAttribute('aria-pressed', String(mine));
-      el.src[i].title = el.src[i].getAttribute('data-src') === 'spotify' ? 'Spotify' : t('srcLocal');
+      var src = el.src[i].getAttribute('data-src');
+      el.src[i].title = src === 'spotify' ? 'Spotify' : src === 'jellyfin' ? 'Jellyfin' : t('srcLocal');
     }
-    el.heading.textContent = spotify ? 'Spotify' : t('title');
-    el.folderBtn.hidden = spotify;
-    el.settingsBtn.hidden = !spotify;
+    el.heading.textContent = spotify ? 'Spotify' : jelly ? 'Jellyfin' : t('title');
+    el.folderBtn.hidden = !local;
+    el.settingsBtn.hidden = local;
     el.nextBtn.hidden = spotify && !!auth.off.queue;
     el.nextBtn.title = t('upNext');
     el.nextBtn.classList.toggle('smp-on', state.showNext);
     el.upnext.hidden = !state.showNext;
 
     if (spotify) renderSpotifyNow();
+    else if (jelly) renderJellyfinNow();
     else {
       var tr = state.tracks[state.index];
       var info = (tr && tr.info) || {};
@@ -3630,13 +4635,15 @@
       el.like.hidden = el.device.hidden = el.info.hidden = el.pop.hidden = true;
       el.seek.disabled = false;
     }
-    el.folder.hidden = spotify || !state.showFolder;
+    el.folder.hidden = !local || !state.showFolder;
     el.devices.hidden = !(spotify && state.showDevices);
     el.spset.hidden = !(spotify && state.showSettings);
+    el.jfset.hidden = !(jelly && state.showSettings);
     el.listbox.hidden = !state.showList;
-    el.spHead.hidden = !(spotify && sp.open);
-    if (spotify && sp.open) el.spName.textContent = sp.open.name;
-    el.search.placeholder = spotify && !sp.open ? t('spSearch') : t('search');
+    var lv = jelly ? jf.stack[jf.stack.length - 1] : null, open = spotify ? sp.open : lv;
+    el.spHead.hidden = !open;
+    if (open) el.spName.textContent = open.name;
+    el.search.placeholder = spotify && !sp.open ? t('spSearch') : jelly && (!lv || lv.paged) ? t('jfSearch') : t('search');
     el.search.setAttribute('aria-label', el.search.placeholder);
     el.label.textContent = t('folder');
     el.recursive.checked = state.recursive;
@@ -3703,39 +4710,42 @@
       }
       return;
     }
-    var cur = state.tracks[state.index];
+    // Jellyfin: its queue holds the tracks themselves (data-index: their place in it)
+    var jelly = state.source === 'jellyfin', list = jelly ? jf.tracks : state.tracks, cur = jelly ? jf.now : list[state.index];
+    var name = function (tr) { return jelly ? tr.name : (tr.info && tr.info.title) || tr.title; };
+    var by = function (tr) { return jelly ? tr.artist : (tr.info && tr.info.artist) || tr.album; };
     if (cur) {
-      var info = cur.info || {};
       box.appendChild(nextSection(t('playingNow')));
-      box.appendChild(nextRow('', info.title || cur.title, info.artist || cur.album)).classList.add('smp-current');
+      box.appendChild(nextRow('', name(cur), by(cur))).classList.add('smp-current');
     }
     box.appendChild(nextSection(t('upNext')));
-    state.queue.forEach(function (i, k) {
-      var tr = state.tracks[i];
+    (jelly ? jf.queue : state.queue).forEach(function (q, k) {
+      var tr = jelly ? q : list[q];
       if (!tr) return;
       var x = document.createElement('button');
       x.type = 'button';
       x.className = 'smp-queue';
       x.setAttribute('data-act', 'nx-unqueue');
-      x.setAttribute('data-index', i);
+      x.setAttribute('data-index', jelly ? k : q);
       x.title = t('queueRemove');
       x.textContent = '✕';
-      var row = nextRow(k + 1, tr.title, tr.album, 'nx-play', { index: i, queued: 1 }, x);
+      var row = nextRow(k + 1, jelly ? tr.name : tr.title, jelly ? tr.artist : tr.album, 'nx-play', { index: jelly ? k : q, queued: 1 }, x);
       row.classList.add('smp-queued');
       box.appendChild(row);
       added++;
     });
     // then the playlist, from where it goes on (around again when repeating)
-    var n = state.order.length, from = state.order.indexOf(state.context >= 0 ? state.context : state.index);
+    var order = jelly ? jf.order : state.order, at = jelly ? jf.index : state.context >= 0 ? state.context : state.index;
+    var n = order.length, from = order.indexOf(at);
     for (var k = 1, shown = 0; k < n + 1 && shown < 20; k++) {
       var p = from + k;
       if (p >= n) {
         if (state.repeat === 'off' && from >= 0) break;
         p %= n;
       }
-      var i = state.order[p];
-      if (i === state.index || state.queue.indexOf(i) >= 0 || !state.tracks[i]) continue;
-      box.appendChild(nextRow('', state.tracks[i].title, state.tracks[i].album, 'nx-play', { index: i }));
+      var i = order[p], tr = list[i];
+      if (!tr || tr === cur || (jelly ? jfQueued(tr.id) >= 0 : state.queue.indexOf(i) >= 0)) continue;
+      box.appendChild(nextRow('', jelly ? tr.name : tr.title, jelly ? tr.artist : tr.album, 'nx-play', { index: i }));
       shown++;
       added++;
     }
@@ -3839,6 +4849,52 @@
     disconnectBtn.hidden = !on;
   }
 
+  // Jellyfin mode: what plays, the login and its settings
+  function renderJellyfinNow() {
+    var on = jfOn(), tr = jf.now;
+    if (!on) {
+      el.title.textContent = t('jfNotConnected');
+      el.sub.textContent = t('spConnectHint');
+    } else if (!tr) {
+      el.title.textContent = t('nothing');
+      el.sub.textContent = t('pick');
+    } else {
+      el.title.textContent = tr.name;
+      el.sub.textContent = [tr.artist, tr.album].filter(Boolean).join(' — ');
+    }
+    el.art.classList.toggle('smp-playing', !!tr && !jfAudio.paused);
+    setCover(tr ? jfImg(tr.image, 300) : '');
+    el.vol.value = Math.round(state.volume * 100);
+    el.vol.disabled = el.mute.disabled = false;
+    el.seek.disabled = !tr;
+    el.msg.hidden = !jf.message;
+    el.msg.textContent = jf.message;
+    el.device.hidden = el.info.hidden = el.pop.hidden = true;
+    el.like.hidden = !(on && tr);
+    el.like.classList.toggle('smp-on', !!(tr && tr.fav));
+    el.like.title = tr && tr.fav ? t('jfUnfavorite') : t('jfFavorite');
+
+    // Settings: the address, Quick Connect's code, the account
+    root.querySelector('.smp-jf-label').textContent = t('jfServer');
+    if (on || jf.typed == null) el.jfServer.value = jfBase();
+    el.jfServer.disabled = on || !!jf.qc;
+    el.jfNote.hidden = !jf.note;
+    el.jfNote.textContent = jf.note;
+    var code = jf.qc && jf.qc.code;
+    el.jfWait.hidden = !code;
+    el.jfHow.textContent = t('jfCode');
+    el.jfCode.textContent = code || '';
+    el.jfAccount.hidden = !on;
+    el.jfAccount.textContent = on ? t('spConnectedAs').replace('{name}', jfAuth.user.name) : '';
+    el.jfHelp.textContent = t('spHelp');
+    el.jfHelp.href = JF_HELP;
+    var connectBtn = root.querySelector('[data-act="jf-connect"]'), disconnectBtn = root.querySelector('[data-act="jf-disconnect"]');
+    connectBtn.textContent = jf.qc ? t('cancel') : t('spConnect');
+    connectBtn.hidden = on;
+    disconnectBtn.textContent = t('spDisconnect');
+    disconnectBtn.hidden = !on;
+  }
+
   // Where the widget goes: where the widget-sortable mod last left it (Sortable
   // keeps the order in localStorage 'widget-sortable', widget ids joined by '|'),
   // otherwise first. That mod sorts only once, before this widget is added.
@@ -3868,7 +4924,8 @@
     if (!root) {
       build();
       render();
-      sharedPull().then(sharedChanged);   // the login kept on the CasaOS server
+      sharedPull().then(sharedChanged);   // the logins kept on the CasaOS server
+      if (state.source === 'jellyfin' || jfOn()) jfPull().then(jfChanged);
     }
     if (root.parentNode !== container) container.insertBefore(root, slot(container));
   }
@@ -3888,6 +4945,7 @@
     poll();
   }
   webSync();
+  if (state.source === 'jellyfin') jfRestore();
   console.info(TAG, 'loaded');
 
   // For other mods and debugging
@@ -3910,6 +4968,12 @@
       // this browser as a Spotify device
       get here() { return { on: state.web, ready: web.ready, active: web.active, device: web.id, failed: web.failed }; },
       playHere: function () { playHere(); }
+    },
+    jellyfin: {
+      audio: jfAudio,
+      get connected() { return jfOn(); },
+      get playing() { return jf.now ? { id: jf.now.id, title: jf.now.name, artist: jf.now.artist, album: jf.now.album } : null; },
+      disconnect: jfForget
     },
     get nowPlaying() {
       var tr = state.tracks[state.index];

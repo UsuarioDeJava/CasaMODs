@@ -324,8 +324,9 @@
   color: #111827;
 }
 
-/* ---------- The source switch and the Spotify mode ---------- */
+/* ---------- The source switch, the Spotify and Jellyfin modes ---------- */
 .smp-widget[data-source="spotify"] { --smp-accent: hsl(141, 63%, 58%); }
+.smp-widget[data-source="jellyfin"] { --smp-accent: hsl(196, 100%, 62%); }
 .smp-head-left { display: flex; align-items: center; gap: 0.4rem; min-width: 0; }
 .smp-head-btns { align-items: center; }
 .smp-source {
@@ -355,6 +356,7 @@
 .smp-src:focus-visible { outline: 2px solid var(--smp-accent); outline-offset: 1px; }
 .smp-src.smp-on { background: rgba(255, 255, 255, 0.9); color: #111827; opacity: 1; }
 .smp-src[data-src="spotify"].smp-on { background: hsl(141, 73%, 42%); color: #fff; }
+.smp-src[data-src="jellyfin"].smp-on { background: linear-gradient(135deg, #aa5cc3, #00a4dc); color: #fff; }
 .smp-btn[hidden],
 .smp-like[hidden],
 .smp-device[hidden],
@@ -363,6 +365,8 @@
 .smp-devices[hidden],
 .smp-upnext[hidden],
 .smp-spset[hidden],
+.smp-jfset[hidden],
+.smp-jf-wait[hidden],
 .smp-sp-head[hidden],
 .smp-account[hidden],
 .smp-check[hidden],
@@ -430,7 +434,8 @@
 /* Up next, devices and settings panels (the folder picker's look) */
 .smp-upnext,
 .smp-devices,
-.smp-spset {
+.smp-spset,
+.smp-jfset {
   display: grid;
   gap: 0.45rem;
   padding-top: 0.25rem;
@@ -444,8 +449,11 @@
 .smp-dev:disabled { opacity: 0.45; cursor: default; }
 /* Text fields never widen the widget (a grid item's min-content width otherwise would) */
 .smp-content > *,
-.smp-spset > * { min-width: 0; }
-.smp-spset .smp-cid { width: 100%; box-sizing: border-box; }
+.smp-spset > *,
+.smp-jfset > * { min-width: 0; }
+.smp-spset .smp-cid,
+.smp-jfset .smp-jf-server { width: 100%; box-sizing: border-box; }
+.smp-jf-server:disabled { opacity: 0.6; }
 .smp-spset .smp-path-row .smp-path { width: 0; }
 .smp-note {
   margin: 0;
@@ -464,7 +472,19 @@
   background: rgba(255, 190, 60, 0.16);
   color: inherit;
 }
-.smp-spset .smp-folder-btns { align-items: center; }
+.smp-spset .smp-folder-btns,
+.smp-jfset .smp-folder-btns { align-items: center; }
+/* Jellyfin's Quick Connect: the code to enter in Jellyfin */
+.smp-jf-wait { display: grid; gap: 0.35rem; }
+.smp-jf-code {
+  padding: 0.3rem;
+  border-radius: 0.45rem;
+  background: rgba(0, 0, 0, 0.25);
+  font: 600 1.5rem/1.25 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.25em;
+  text-align: center;
+  user-select: all;
+}
 .smp-help {
   margin-inline-end: auto;
   color: var(--smp-muted);
@@ -494,8 +514,10 @@
   border-radius: 0.3rem;
   background: rgba(255, 255, 255, 0.12) center / cover no-repeat;
 }
+.smp-pl-img img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+.smp-pl-img svg { width: 15px; height: 15px; opacity: 0.8; }
 .smp-liked-img { background: linear-gradient(135deg, hsl(250, 70%, 55%), hsl(190, 60%, 70%)); }
-.smp-liked-img svg { width: 15px; height: 15px; }
+.smp-liked-img svg { width: 15px; height: 15px; opacity: 1; }
 .smp-liked-img svg path { fill: #fff; }
 .smp-track-play { flex-wrap: nowrap; }
 .smp-track-t { flex: 0 1 auto; min-width: 0; }
