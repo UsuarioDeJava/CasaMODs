@@ -8,7 +8,7 @@ Mods for the [CasaOS](https://casaos.io) dashboard, installed with [CasaMOD](htt
 - [`casaos-app-windows`](casaos-app-windows) — **App Windows**: apps open in windows inside the CasaOS tab instead of new tabs (drag, resize, maximize, minimize while the app keeps running, open in a new tab); Files and the App Store become windows too. Its frame proxy (a script run once on the server) lets every app open in a window over HTTPS, F5 reload the app inside it, and wallpapers hear and show what the app plays.
 - [`casaos-hide-footer`](casaos-hide-footer) — **Hide Footer**: hides the dashboard footer (CasaOS logo, text and social buttons) and gives the space to apps and widgets.
 - [`casaos-hide-widget-settings`](casaos-hide-widget-settings) — **Hide Widget Settings**: hides the "Widget settings" card of the widget column. With Hide Footer, they also fix CasaOS's widget column so it ends on the apps' line at any window size.
-- [`casaos-transparence-everywhere`](casaos-transparence-everywhere) — **Transparence Everywhere**: the widgets' frosted glass on the top bar, its menus and the CasaOS dialogs. CSS only.
+- [`casaos-transparency-everywhere`](casaos-transparency-everywhere) — **Transparency Everywhere**: the widgets' frosted glass on the top bar, its menus and the CasaOS dialogs. CSS only.
 
 ## Install
 

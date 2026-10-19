@@ -83,7 +83,7 @@ It checks:
 - where the switch sits (1440, 1000 and 400 px wide);
 - the settings row (place, markup, defaults, limits, persistence, re-renders);
 - the cascade order and timing, the raised wallpaper (a copy, or Live Wallpapers' layer), and the catcher;
-- that the frosted glass keeps blurring through the cascade, both ways, also with Transparence Everywhere's top bar;
+- that the frosted glass keeps blurring through the cascade, both ways, also with Transparency Everywhere's top bar;
 - that moves and media keys don't wake it and cost nothing (no timers, no animation frames);
 - waking by click, right click, tap or key with nothing else happening, while modifiers and synthetic events don't wake it;
 - every case that keeps it from hiding;

@@ -1,4 +1,4 @@
-/* ===== transparence-everywhere: frosted glass like the widgets' ===== */
+/* ===== transparency-everywhere: frosted glass like the widgets' ===== */
 
 /* Top bar. The blur sits on a ::before so it doesn't limit
    the blur of the menus that open from it */
@@ -30,20 +30,29 @@ html body .modal .modal-card:not(.file-panel .modal-card) .modal-card-foot {
   background: transparent !important; border-color: rgba(255, 255, 255, .1) !important;
 }
 
-/* Light text (buttons and colored texts keep their color) */
-html body .top-bar .dropdown-content *:not(.button):not(.button *):not(option):not([class*="has-text-"]),
-html body .modal .modal-card:not(.file-panel .modal-card) *:not(.button):not(.button *):not(option):not([class*="has-text-"]):not(.xterm *) {
+/* Light text. Buttons, colored texts, colored icons (casa-color-*), error
+   messages and links in app descriptions keep their color;
+   gray and black texts become a dimmer light */
+html body .top-bar .dropdown-content *:not(.button, .button *, option, [class*="has-text-red"], [class*="has-text-danger"], [class*="has-text-primary"], [class*="has-text-success"], [class*="has-text-green"], [class*="has-text-warning"], [class*="has-text-info"], [class*="has-text-link"], [class*="has-text-gray"], [class*="has-text-grey"], [class*="has-text-black"], .has-text-dark, [class*="casa-color-"], [class*="casa-color-"] *, .help.is-danger),
+html body .modal .modal-card:not(.file-panel .modal-card) *:not(.button, .button *, option, [class*="has-text-red"], [class*="has-text-danger"], [class*="has-text-primary"], [class*="has-text-success"], [class*="has-text-green"], [class*="has-text-warning"], [class*="has-text-info"], [class*="has-text-link"], [class*="has-text-gray"], [class*="has-text-grey"], [class*="has-text-black"], .has-text-dark, [class*="casa-color-"], [class*="casa-color-"] *, .help.is-danger, .v-md-editor a, .xterm *) {
   color: rgba(255, 255, 255, .92) !important;
 }
+html body .top-bar .dropdown-content :is([class*="has-text-gray"], [class*="has-text-grey"], [class*="has-text-black"], .has-text-dark):not(.button, .button *),
+html body .modal .modal-card:not(.file-panel .modal-card) :is([class*="has-text-gray"], [class*="has-text-grey"], [class*="has-text-black"], .has-text-dark):not(.button, .button *) {
+  color: rgba(255, 255, 255, .6) !important;
+}
 
-/* Fields, selects and inner boxes */
+/* Fields (password ones too), selects and inner boxes */
 html body .top-bar .dropdown-content select,
-html body .top-bar .dropdown-content input[type=text],
+html body .top-bar .dropdown-content input,
+html body .top-bar .dropdown-content textarea,
 html body .modal .modal-card:not(.file-panel .modal-card) select,
 html body .modal .modal-card:not(.file-panel .modal-card) input,
 html body .modal .modal-card:not(.file-panel .modal-card) textarea {
   background: rgba(0, 0, 0, .25) !important; border-color: rgba(255, 255, 255, .15) !important;
 }
+html body .top-bar .dropdown-content input::placeholder,
+html body .top-bar .dropdown-content textarea::placeholder { color: rgba(255, 255, 255, .4) !important; }
 html body .top-bar .dropdown-content option,
 html body .modal .modal-card option { background: #35363a; color: #fff; }
 html body .top-bar .dropdown-content .select:not(.is-multiple):not(.is-loading)::after { border-color: #fff !important; }
@@ -52,6 +61,19 @@ html body .modal .modal-card:not(.file-panel .modal-card) .flight-bg { backgroun
 html body .modal .modal-card:not(.file-panel .modal-card) .card {
   background: rgba(0, 0, 0, .2) !important; border: 1px solid rgba(255, 255, 255, .08); box-shadow: none !important;
 }
+/* Boxes CasaOS draws light gray: the folder list of "Select shared folder"
+   (Files > Shared), the notes of an update and of sharing */
+html body .modal .modal-card:not(.file-panel .modal-card) :is(.folder-list, .update-info-container) {
+  background: rgba(0, 0, 0, .2) !important; border-color: rgba(255, 255, 255, .08) !important;
+}
+html body .modal .modal-card:not(.file-panel .modal-card) .folder-list .list-item:hover,
+html body .modal .modal-card:not(.file-panel .modal-card) .folder-list .list-item.active,
+html body .modal .modal-card:not(.file-panel .modal-card) .pri-mrl-2rem div:hover { background: rgba(255, 255, 255, .08) !important; }
+/* Warning notes (light orange or pink boxes): tinted glass */
+html body .modal .modal-card:not(.file-panel .modal-card) :is(.message-alert, .pri-message-alert, ._is-normal:not([class*="_has-background-"])) {
+  background: rgba(255, 170, 0, .15) !important;
+}
+html body .modal .modal-card:not(.file-panel .modal-card) .pri-message-danger { background: rgba(255, 60, 90, .15) !important; }
 html body .modal .modal-card .tabs li.is-active a { border-bottom-color: #4a9eff !important; }
 
 /* ===== App Store tweaks (and other dialogs) ===== */

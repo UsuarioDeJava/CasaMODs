@@ -1,6 +1,6 @@
 {
-  "name": "Transparence Everywhere",
-  "version": "1.0.0",
+  "name": "Transparency Everywhere",
+  "version": "1.1.0",
   "description": "The frosted glass of the dashboard widgets on the top bar, its menus and the CasaOS dialogs.",
   "author": "UsuarioDeJava",
   "casaos_min_version": "0.4.0",

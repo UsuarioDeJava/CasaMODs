@@ -201,11 +201,11 @@ try {
   let gs = await glassDuringCascade();
   check('while the cascade runs (both ways), the frosted glass (widgets, app cards) fades by itself and keeps blurring: nothing above it is half transparent',
     gs.every((x) => x.cut.length === 0) && gs.some((x) => x.fading >= 3) && gs[0].glass >= 10, gs.map((x) => ({ g: x.glass, f: x.fading, cut: x.cut.slice(0, 2) })));
-  // the same with Transparence Everywhere (the top bar's glass is a ::before)
-  const te = fs.readFileSync(new URL('../../casaos-transparence-everywhere/transparence-everywhere/mod.css', import.meta.url), 'utf8');
+  // the same with Transparency Everywhere (the top bar's glass is a ::before)
+  const te = fs.readFileSync(new URL('../../casaos-transparency-everywhere/transparency-everywhere/mod.css', import.meta.url), 'utf8');
   await ev(`(() => { const s = document.createElement('style'); s.id = 'te'; s.textContent = ${JSON.stringify(te)}; document.head.appendChild(s); })()`);
   gs = await glassDuringCascade();
-  check('…also with Transparence Everywhere: the top bar\'s glass (its ::before) fades by itself, the bar doesn\'t',
+  check('…also with Transparency Everywhere: the top bar\'s glass (its ::before) fades by itself, the bar doesn\'t',
     gs.every((x) => x.cut.length === 0) && gs.some((x) => x.fading >= 3) && gs[0].glass >= 13 && gs.topGlass === 'before' && gs.topOpacity === '1',
     { top: [gs.topGlass, gs.topOpacity], s: gs.map((x) => ({ g: x.glass, f: x.fading, cut: x.cut.slice(0, 2) })) });
   await waitFor(`!document.documentElement.classList.contains('idh-anim')`, 3000);
