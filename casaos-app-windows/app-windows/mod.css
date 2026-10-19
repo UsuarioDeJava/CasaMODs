@@ -126,57 +126,7 @@ html.cw-moving * { user-select: none !important; -webkit-user-select: none !impo
 }
 .cw-item:hover { background: rgba(255, 255, 255, 0.1); }
 .cw-item input[type="checkbox"] { accent-color: #6aa8ff; }
-.cw-port input { width: 6.5em; margin-inline-start: auto; }
 .cw-hint { margin: 4px 0.6rem 2px; color: rgba(255, 255, 255, 0.55); font-size: 12px; line-height: 1.4; }
-
-/* An http:// app with CasaOS on https://: why, and the ways out */
-.cw-note {
-  position: absolute;
-  inset: 0;
-  overflow: auto;
-  padding: 1.4rem 1.6rem;
-  background: #16181d;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 14px;
-  line-height: 1.5;
-}
-.cw-note h3 { margin: 0 0 0.6rem; color: #fff; font-size: 16px; font-weight: 600; }
-.cw-note p { margin: 0 0 0.9rem; max-width: 60ch; }
-.cw-cmd { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
-.cw-cmd code {
-  flex: 1;
-  min-width: 0;
-  padding: 0.45rem 0.6rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  font-size: 12.5px;
-  overflow-wrap: anywhere;
-}
-.cw-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
-.cw-row input,
-.cw-port input {
-  padding: 0.3rem 0.45rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.25);
-  color: #fff;
-  font: inherit;
-}
-.cw-row input { width: 6.5em; }
-.cw-text-btn {
-  padding: 0.35rem 0.8rem;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-}
-.cw-text-btn:hover { background: rgba(255, 255, 255, 0.2); }
-.cw-text-btn.cw-primary { background: #3d7cf5; }
-.cw-text-btn.cw-primary:hover { background: #5a90f7; }
 
 /* An open app's icon on the dashboard: a dot under it (dimmed while minimized) */
 [id^="app-"].cw-open .cards-content .is-relative::after {
@@ -197,7 +147,6 @@ html.cw-moving * { user-select: none !important; -webkit-user-select: none !impo
 /* Files and the App Store as windows: the place of a window, no backdrop, the
    bar on top and the panel filling the rest */
 .modal.cw-panel {
-  inset: auto !important;
   flex-direction: column !important;
   align-items: stretch !important;
   justify-content: flex-start !important;

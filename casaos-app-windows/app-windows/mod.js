@@ -30,241 +30,150 @@
   // ---------------------------------------------------------------------------
   var TEXT = {
     en: {
-      newTab: 'Open in a new tab', minimize: 'Minimize', maximize: 'Maximize', restore: 'Restore', close: 'Close', more: 'More', reload: 'Reload',
-      alwaysTab: 'Always open in a new tab', tabHint: 'Blank, or "refused to connect"? This app doesn\'t allow windows: open it in a new tab.',
-      mixedTitle: 'This app can\'t open in a window here',
-      mixedText: 'CasaOS is open over HTTPS and this app only over HTTP, so the browser blocks it inside the page. Open it in a new tab, open CasaOS at its http:// address, or give the app an HTTPS port on the server (with Tailscale, this command, with any free port):',
-      httpsPort: 'HTTPS port', useHttps: 'Use this port', copy: 'Copy', copied: 'Copied'
+      newTab: 'Open in a new tab', minimize: 'Minimize', maximize: 'Maximize', restore: 'Restore', close: 'Close', more: 'More',
+      alwaysTab: 'Always open in a new tab', tabHint: 'Blank, or "refused to connect"? This app doesn\'t allow windows: open it in a new tab.'
     },
     ar: {
       newTab: 'فتح في علامة تبويب جديدة', minimize: 'تصغير', maximize: 'تكبير', restore: 'استعادة', close: 'إغلاق', more: 'المزيد',
-      reload: 'إعادة التحميل', alwaysTab: 'الفتح دائمًا في علامة تبويب جديدة',
-      tabHint: 'صفحة فارغة أو "رُفض الاتصال"؟ هذا التطبيق لا يسمح بالنوافذ: افتحه في علامة تبويب جديدة.',
-      mixedTitle: 'لا يمكن فتح هذا التطبيق في نافذة هنا',
-      mixedText: 'CasaOS مفتوح عبر HTTPS وهذا التطبيق عبر HTTP فقط، لذلك يحظره المتصفح داخل الصفحة. افتحه في علامة تبويب جديدة، أو افتح CasaOS على عنوان http://، أو امنح التطبيق منفذ HTTPS على الخادم (مع Tailscale، هذا الأمر، مع أي منفذ متاح):',
-      httpsPort: 'منفذ HTTPS', useHttps: 'استخدام هذا المنفذ', copy: 'نسخ', copied: 'تم النسخ'
+      alwaysTab: 'الفتح دائمًا في علامة تبويب جديدة',
+      tabHint: 'صفحة فارغة أو "رُفض الاتصال"؟ هذا التطبيق لا يسمح بالنوافذ: افتحه في علامة تبويب جديدة.'
     },
     be: {
       newTab: 'Адкрыць у новай укладцы', minimize: 'Згарнуць', maximize: 'Разгарнуць', restore: 'Аднавіць', close: 'Закрыць', more: 'Яшчэ',
-      reload: 'Перазагрузіць', alwaysTab: 'Заўсёды адкрываць у новай укладцы',
-      tabHint: 'Пуста або «адмоўлена ў злучэнні»? Гэта праграма не дазваляе вокны: адкрыйце яе ў новай укладцы.',
-      mixedTitle: 'Гэту праграму нельга адкрыць тут у акне',
-      mixedText: 'CasaOS адкрыты праз HTTPS, а гэта праграма толькі праз HTTP, таму браўзер блакуе яе ўнутры старонкі. Адкрыйце яе ў новай укладцы, адкрыйце CasaOS па адрасе http:// або дайце праграме HTTPS-порт на серверы (з Tailscale — гэта каманда, з любым вольным портам):',
-      httpsPort: 'HTTPS-порт', useHttps: 'Выкарыстаць гэты порт', copy: 'Капіяваць', copied: 'Скапіявана'
+      alwaysTab: 'Заўсёды адкрываць у новай укладцы',
+      tabHint: 'Пуста або «адмоўлена ў злучэнні»? Гэта праграма не дазваляе вокны: адкрыйце яе ў новай укладцы.'
     },
     bg: {
       newTab: 'Отвори в нов раздел', minimize: 'Минимизирай', maximize: 'Максимизирай', restore: 'Възстанови', close: 'Затвори', more: 'Още',
-      reload: 'Презареди', alwaysTab: 'Винаги отваряй в нов раздел',
-      tabHint: 'Празно или „връзката е отказана“? Това приложение не позволява прозорци: отворете го в нов раздел.',
-      mixedTitle: 'Това приложение не може да се отвори тук в прозорец',
-      mixedText: 'CasaOS е отворен през HTTPS, а това приложение само през HTTP, затова браузърът го блокира в страницата. Отворете го в нов раздел, отворете CasaOS на адреса му http:// или дайте на приложението HTTPS порт на сървъра (с Tailscale – тази команда, с който и да е свободен порт):',
-      httpsPort: 'HTTPS порт', useHttps: 'Използвай този порт', copy: 'Копирай', copied: 'Копирано'
+      alwaysTab: 'Винаги отваряй в нов раздел',
+      tabHint: 'Празно или „връзката е отказана“? Това приложение не позволява прозорци: отворете го в нов раздел.'
     },
     ca: {
       newTab: 'Obre en una pestanya nova', minimize: 'Minimitza', maximize: 'Maximitza', restore: 'Restaura', close: 'Tanca', more: 'Més',
-      reload: 'Torna a carregar', alwaysTab: 'Obre sempre en una pestanya nova',
-      tabHint: 'En blanc o «connexió rebutjada»? Aquesta app no permet finestres: obre-la en una pestanya nova.',
-      mixedTitle: 'Aquesta app no es pot obrir en una finestra aquí',
-      mixedText: 'El CasaOS està obert per HTTPS i aquesta app només per HTTP, així que el navegador la bloqueja dins la pàgina. Obre-la en una pestanya nova, obre el CasaOS per la seva adreça http:// o dona a l\'app un port HTTPS al servidor (amb Tailscale, aquesta ordre, amb qualsevol port lliure):',
-      httpsPort: 'Port HTTPS', useHttps: 'Fes servir aquest port', copy: 'Copia', copied: 'Copiat'
+      alwaysTab: 'Obre sempre en una pestanya nova',
+      tabHint: 'En blanc o «connexió rebutjada»? Aquesta app no permet finestres: obre-la en una pestanya nova.'
     },
     cs: {
       newTab: 'Otevřít na nové kartě', minimize: 'Minimalizovat', maximize: 'Maximalizovat', restore: 'Obnovit', close: 'Zavřít', more: 'Další',
-      reload: 'Znovu načíst', alwaysTab: 'Vždy otevírat na nové kartě',
-      tabHint: 'Prázdné nebo „připojení odmítnuto“? Tato aplikace nepovoluje okna: otevřete ji na nové kartě.',
-      mixedTitle: 'Tuto aplikaci zde nelze otevřít v okně',
-      mixedText: 'CasaOS je otevřen přes HTTPS a tato aplikace jen přes HTTP, proto ji prohlížeč na stránce blokuje. Otevřete ji na nové kartě, otevřete CasaOS na adrese http:// nebo dejte aplikaci na serveru port HTTPS (s Tailscale tento příkaz, s libovolným volným portem):',
-      httpsPort: 'Port HTTPS', useHttps: 'Použít tento port', copy: 'Kopírovat', copied: 'Zkopírováno'
+      alwaysTab: 'Vždy otevírat na nové kartě',
+      tabHint: 'Prázdné nebo „připojení odmítnuto“? Tato aplikace nepovoluje okna: otevřete ji na nové kartě.'
     },
     de: {
       newTab: 'In neuem Tab öffnen', minimize: 'Minimieren', maximize: 'Maximieren', restore: 'Wiederherstellen', close: 'Schließen', more: 'Mehr',
-      reload: 'Neu laden', alwaysTab: 'Immer in neuem Tab öffnen',
-      tabHint: 'Leer oder „Verbindung abgelehnt“? Diese App erlaubt keine Fenster: Öffne sie in einem neuen Tab.',
-      mixedTitle: 'Diese App kann hier nicht in einem Fenster geöffnet werden',
-      mixedText: 'CasaOS ist über HTTPS geöffnet und diese App nur über HTTP, daher blockiert der Browser sie innerhalb der Seite. Öffne sie in einem neuen Tab, öffne CasaOS über seine http://-Adresse oder gib der App einen HTTPS-Port auf dem Server (mit Tailscale dieser Befehl, mit einem beliebigen freien Port):',
-      httpsPort: 'HTTPS-Port', useHttps: 'Diesen Port verwenden', copy: 'Kopieren', copied: 'Kopiert'
+      alwaysTab: 'Immer in neuem Tab öffnen',
+      tabHint: 'Leer oder „Verbindung abgelehnt“? Diese App erlaubt keine Fenster: Öffne sie in einem neuen Tab.'
     },
     el: {
       newTab: 'Άνοιγμα σε νέα καρτέλα', minimize: 'Ελαχιστοποίηση', maximize: 'Μεγιστοποίηση', restore: 'Επαναφορά', close: 'Κλείσιμο',
-      more: 'Περισσότερα', reload: 'Επαναφόρτωση', alwaysTab: 'Άνοιγμα πάντα σε νέα καρτέλα',
-      tabHint: 'Κενό ή «άρνηση σύνδεσης»; Αυτή η εφαρμογή δεν επιτρέπει παράθυρα: ανοίξτε την σε νέα καρτέλα.',
-      mixedTitle: 'Αυτή η εφαρμογή δεν ανοίγει εδώ σε παράθυρο',
-      mixedText: 'Το CasaOS είναι ανοιχτό μέσω HTTPS και αυτή η εφαρμογή μόνο μέσω HTTP, γι\' αυτό το πρόγραμμα περιήγησης την μπλοκάρει μέσα στη σελίδα. Ανοίξτε την σε νέα καρτέλα, ανοίξτε το CasaOS από τη διεύθυνση http:// ή δώστε στην εφαρμογή μια θύρα HTTPS στον διακομιστή (με το Tailscale, αυτή η εντολή, με οποιαδήποτε ελεύθερη θύρα):',
-      httpsPort: 'Θύρα HTTPS', useHttps: 'Χρήση αυτής της θύρας', copy: 'Αντιγραφή', copied: 'Αντιγράφηκε'
+      more: 'Περισσότερα', alwaysTab: 'Άνοιγμα πάντα σε νέα καρτέλα',
+      tabHint: 'Κενό ή «άρνηση σύνδεσης»; Αυτή η εφαρμογή δεν επιτρέπει παράθυρα: ανοίξτε την σε νέα καρτέλα.'
     },
     es: {
       newTab: 'Abrir en una pestaña nueva', minimize: 'Minimizar', maximize: 'Maximizar', restore: 'Restaurar', close: 'Cerrar', more: 'Más',
-      reload: 'Recargar', alwaysTab: 'Abrir siempre en una pestaña nueva',
-      tabHint: '¿En blanco o «rechazó la conexión»? Esta app no permite ventanas: ábrela en una pestaña nueva.',
-      mixedTitle: 'Esta app no puede abrirse en una ventana aquí',
-      mixedText: 'CasaOS está abierto por HTTPS y esta app solo por HTTP, así que el navegador la bloquea dentro de la página. Ábrela en una pestaña nueva, abre CasaOS por su dirección http:// o dale a la app un puerto HTTPS en el servidor (con Tailscale, este comando, con cualquier puerto libre):',
-      httpsPort: 'Puerto HTTPS', useHttps: 'Usar este puerto', copy: 'Copiar', copied: 'Copiado'
+      alwaysTab: 'Abrir siempre en una pestaña nueva',
+      tabHint: '¿En blanco o «rechazó la conexión»? Esta app no permite ventanas: ábrela en una pestaña nueva.'
     },
     fr: {
       newTab: 'Ouvrir dans un nouvel onglet', minimize: 'Réduire', maximize: 'Agrandir', restore: 'Restaurer', close: 'Fermer', more: 'Plus',
-      reload: 'Recharger', alwaysTab: 'Toujours ouvrir dans un nouvel onglet',
-      tabHint: 'Page blanche ou « connexion refusée » ? Cette appli n\'accepte pas les fenêtres : ouvrez-la dans un nouvel onglet.',
-      mixedTitle: 'Cette appli ne peut pas s\'ouvrir dans une fenêtre ici',
-      mixedText: 'CasaOS est ouvert en HTTPS et cette appli seulement en HTTP : le navigateur la bloque dans la page. Ouvrez-la dans un nouvel onglet, ouvrez CasaOS à son adresse http:// ou donnez à l\'appli un port HTTPS sur le serveur (avec Tailscale, cette commande, avec n\'importe quel port libre) :',
-      httpsPort: 'Port HTTPS', useHttps: 'Utiliser ce port', copy: 'Copier', copied: 'Copié'
+      alwaysTab: 'Toujours ouvrir dans un nouvel onglet',
+      tabHint: 'Page blanche ou « connexion refusée » ? Cette appli n\'accepte pas les fenêtres : ouvrez-la dans un nouvel onglet.'
     },
     hr: {
       newTab: 'Otvori u novoj kartici', minimize: 'Smanji', maximize: 'Povećaj', restore: 'Vrati', close: 'Zatvori', more: 'Više',
-      reload: 'Ponovno učitaj', alwaysTab: 'Uvijek otvaraj u novoj kartici',
-      tabHint: 'Prazno ili „veza odbijena”? Ova aplikacija ne dopušta prozore: otvorite je u novoj kartici.',
-      mixedTitle: 'Ova se aplikacija ovdje ne može otvoriti u prozoru',
-      mixedText: 'CasaOS je otvoren preko HTTPS-a, a ova aplikacija samo preko HTTP-a, pa je preglednik blokira unutar stranice. Otvorite je u novoj kartici, otvorite CasaOS na njegovoj http:// adresi ili dajte aplikaciji HTTPS priključak na poslužitelju (s Tailscaleom, ova naredba, s bilo kojim slobodnim priključkom):',
-      httpsPort: 'HTTPS priključak', useHttps: 'Koristi ovaj priključak', copy: 'Kopiraj', copied: 'Kopirano'
+      alwaysTab: 'Uvijek otvaraj u novoj kartici',
+      tabHint: 'Prazno ili „veza odbijena”? Ova aplikacija ne dopušta prozore: otvorite je u novoj kartici.'
     },
     hu: {
       newTab: 'Megnyitás új lapon', minimize: 'Kis méret', maximize: 'Teljes méret', restore: 'Előző méret', close: 'Bezárás', more: 'Több',
-      reload: 'Újratöltés', alwaysTab: 'Mindig új lapon nyíljon',
-      tabHint: 'Üres vagy „a kapcsolat elutasítva”? Ez az alkalmazás nem engedi az ablakokat: nyisd meg új lapon.',
-      mixedTitle: 'Ez az alkalmazás itt nem nyitható meg ablakban',
-      mixedText: 'A CasaOS HTTPS-en, ez az alkalmazás csak HTTP-n érhető el, ezért a böngésző letiltja az oldalon belül. Nyisd meg új lapon, nyisd meg a CasaOS-t a http:// címén, vagy adj az alkalmazásnak HTTPS-portot a szerveren (Tailscale-lel ezzel a paranccsal, bármely szabad porttal):',
-      httpsPort: 'HTTPS-port', useHttps: 'Ez a port legyen', copy: 'Másolás', copied: 'Másolva'
+      alwaysTab: 'Mindig új lapon nyíljon',
+      tabHint: 'Üres vagy „a kapcsolat elutasítva”? Ez az alkalmazás nem engedi az ablakokat: nyisd meg új lapon.'
     },
     id: {
       newTab: 'Buka di tab baru', minimize: 'Perkecil', maximize: 'Perbesar', restore: 'Pulihkan', close: 'Tutup', more: 'Lainnya',
-      reload: 'Muat ulang', alwaysTab: 'Selalu buka di tab baru',
-      tabHint: 'Kosong atau "koneksi ditolak"? Aplikasi ini tidak mengizinkan jendela: buka di tab baru.',
-      mixedTitle: 'Aplikasi ini tidak bisa dibuka di jendela di sini',
-      mixedText: 'CasaOS dibuka melalui HTTPS dan aplikasi ini hanya melalui HTTP, jadi browser memblokirnya di dalam halaman. Buka di tab baru, buka CasaOS di alamat http://-nya, atau beri aplikasi port HTTPS di server (dengan Tailscale, perintah ini, dengan port bebas mana pun):',
-      httpsPort: 'Port HTTPS', useHttps: 'Gunakan port ini', copy: 'Salin', copied: 'Tersalin'
+      alwaysTab: 'Selalu buka di tab baru', tabHint: 'Kosong atau "koneksi ditolak"? Aplikasi ini tidak mengizinkan jendela: buka di tab baru.'
     },
     it: {
       newTab: 'Apri in una nuova scheda', minimize: 'Riduci a icona', maximize: 'Ingrandisci', restore: 'Ripristina', close: 'Chiudi',
-      more: 'Altro', reload: 'Ricarica', alwaysTab: 'Apri sempre in una nuova scheda',
-      tabHint: 'Pagina bianca o "connessione rifiutata"? Questa app non consente le finestre: aprila in una nuova scheda.',
-      mixedTitle: 'Questa app non può aprirsi in una finestra qui',
-      mixedText: 'CasaOS è aperto in HTTPS e questa app solo in HTTP, quindi il browser la blocca dentro la pagina. Aprila in una nuova scheda, apri CasaOS dal suo indirizzo http:// o dai all\'app una porta HTTPS sul server (con Tailscale, questo comando, con una porta libera qualsiasi):',
-      httpsPort: 'Porta HTTPS', useHttps: 'Usa questa porta', copy: 'Copia', copied: 'Copiato'
+      more: 'Altro', alwaysTab: 'Apri sempre in una nuova scheda',
+      tabHint: 'Pagina bianca o "connessione rifiutata"? Questa app non consente le finestre: aprila in una nuova scheda.'
     },
     ja: {
-      newTab: '新しいタブで開く', minimize: '最小化', maximize: '最大化', restore: '元に戻す', close: '閉じる', more: 'その他', reload: '再読み込み', alwaysTab: '常に新しいタブで開く',
-      tabHint: '真っ白、または「接続が拒否されました」？ このアプリはウィンドウ表示を許可していません。新しいタブで開いてください。', mixedTitle: 'このアプリはここではウィンドウで開けません',
-      mixedText: 'CasaOS は HTTPS で、このアプリは HTTP だけで開かれているため、ブラウザがページ内での表示をブロックします。新しいタブで開くか、CasaOS を http:// のアドレスで開くか、サーバーでアプリに HTTPS ポートを割り当ててください（Tailscale なら、空いている任意のポートでこのコマンド）：',
-      httpsPort: 'HTTPS ポート', useHttps: 'このポートを使う', copy: 'コピー', copied: 'コピーしました'
+      newTab: '新しいタブで開く', minimize: '最小化', maximize: '最大化', restore: '元に戻す', close: '閉じる', more: 'その他', alwaysTab: '常に新しいタブで開く',
+      tabHint: '真っ白、または「接続が拒否されました」？ このアプリはウィンドウ表示を許可していません。新しいタブで開いてください。'
     },
     ko: {
-      newTab: '새 탭에서 열기', minimize: '최소화', maximize: '최대화', restore: '복원', close: '닫기', more: '더 보기', reload: '새로고침', alwaysTab: '항상 새 탭에서 열기',
-      tabHint: '빈 화면이거나 "연결이 거부됨"인가요? 이 앱은 창을 허용하지 않습니다. 새 탭에서 여세요.', mixedTitle: '이 앱은 여기서 창으로 열 수 없습니다',
-      mixedText: 'CasaOS는 HTTPS로, 이 앱은 HTTP로만 열려 있어 브라우저가 페이지 안에서 차단합니다. 새 탭에서 열거나, CasaOS를 http:// 주소로 열거나, 서버에서 앱에 HTTPS 포트를 지정하세요(Tailscale이라면 비어 있는 아무 포트로 이 명령):',
-      httpsPort: 'HTTPS 포트', useHttps: '이 포트 사용', copy: '복사', copied: '복사됨'
+      newTab: '새 탭에서 열기', minimize: '최소화', maximize: '최대화', restore: '복원', close: '닫기', more: '더 보기', alwaysTab: '항상 새 탭에서 열기',
+      tabHint: '빈 화면이거나 "연결이 거부됨"인가요? 이 앱은 창을 허용하지 않습니다. 새 탭에서 여세요.'
     },
     nl: {
       newTab: 'Openen in nieuw tabblad', minimize: 'Minimaliseren', maximize: 'Maximaliseren', restore: 'Herstellen', close: 'Sluiten',
-      more: 'Meer', reload: 'Herladen', alwaysTab: 'Altijd in een nieuw tabblad openen',
-      tabHint: 'Leeg of "verbinding geweigerd"? Deze app staat geen vensters toe: open hem in een nieuw tabblad.',
-      mixedTitle: 'Deze app kan hier niet in een venster openen',
-      mixedText: 'CasaOS is geopend via HTTPS en deze app alleen via HTTP, dus de browser blokkeert hem in de pagina. Open hem in een nieuw tabblad, open CasaOS via zijn http://-adres of geef de app een HTTPS-poort op de server (met Tailscale deze opdracht, met een willekeurige vrije poort):',
-      httpsPort: 'HTTPS-poort', useHttps: 'Deze poort gebruiken', copy: 'Kopiëren', copied: 'Gekopieerd'
+      more: 'Meer', alwaysTab: 'Altijd in een nieuw tabblad openen',
+      tabHint: 'Leeg of "verbinding geweigerd"? Deze app staat geen vensters toe: open hem in een nieuw tabblad.'
     },
     no: {
       newTab: 'Åpne i ny fane', minimize: 'Minimer', maximize: 'Maksimer', restore: 'Gjenopprett', close: 'Lukk', more: 'Mer',
-      reload: 'Last inn på nytt', alwaysTab: 'Åpne alltid i ny fane',
-      tabHint: 'Tomt eller «tilkobling avvist»? Denne appen tillater ikke vinduer: åpne den i en ny fane.',
-      mixedTitle: 'Denne appen kan ikke åpnes i et vindu her',
-      mixedText: 'CasaOS er åpnet over HTTPS og denne appen bare over HTTP, så nettleseren blokkerer den inne på siden. Åpne den i en ny fane, åpne CasaOS på http://-adressen eller gi appen en HTTPS-port på serveren (med Tailscale, denne kommandoen, med en hvilken som helst ledig port):',
-      httpsPort: 'HTTPS-port', useHttps: 'Bruk denne porten', copy: 'Kopier', copied: 'Kopiert'
+      alwaysTab: 'Åpne alltid i ny fane', tabHint: 'Tomt eller «tilkobling avvist»? Denne appen tillater ikke vinduer: åpne den i en ny fane.'
     },
     pl: {
       newTab: 'Otwórz w nowej karcie', minimize: 'Minimalizuj', maximize: 'Maksymalizuj', restore: 'Przywróć', close: 'Zamknij', more: 'Więcej',
-      reload: 'Odśwież', alwaysTab: 'Zawsze otwieraj w nowej karcie',
-      tabHint: 'Pusto albo „odmowa połączenia”? Ta aplikacja nie pozwala na okna: otwórz ją w nowej karcie.',
-      mixedTitle: 'Tej aplikacji nie można tu otworzyć w oknie',
-      mixedText: 'CasaOS jest otwarty przez HTTPS, a ta aplikacja tylko przez HTTP, więc przeglądarka blokuje ją na stronie. Otwórz ją w nowej karcie, otwórz CasaOS pod adresem http:// albo daj aplikacji port HTTPS na serwerze (z Tailscale to polecenie, z dowolnym wolnym portem):',
-      httpsPort: 'Port HTTPS', useHttps: 'Użyj tego portu', copy: 'Kopiuj', copied: 'Skopiowano'
+      alwaysTab: 'Zawsze otwieraj w nowej karcie',
+      tabHint: 'Pusto albo „odmowa połączenia”? Ta aplikacja nie pozwala na okna: otwórz ją w nowej karcie.'
     },
     pt: {
       newTab: 'Abrir em nova aba', minimize: 'Minimizar', maximize: 'Maximizar', restore: 'Restaurar', close: 'Fechar', more: 'Mais',
-      reload: 'Recarregar', alwaysTab: 'Sempre abrir em nova aba',
-      tabHint: 'Em branco ou "recusou a conexão"? Este app não permite janelas: abra em uma nova aba.',
-      mixedTitle: 'Este app não abre numa janela aqui',
-      mixedText: 'O CasaOS está aberto por HTTPS e este app só por HTTP, então o navegador o bloqueia dentro da página. Abra em uma nova aba, abra o CasaOS pelo endereço http:// ou dê ao app uma porta HTTPS no servidor (com o Tailscale, este comando, com qualquer porta livre):',
-      httpsPort: 'Porta HTTPS', useHttps: 'Usar esta porta', copy: 'Copiar', copied: 'Copiado'
+      alwaysTab: 'Sempre abrir em nova aba', tabHint: 'Em branco ou "recusou a conexão"? Este app não permite janelas: abra em uma nova aba.'
     },
     'pt-pt': {
       newTab: 'Abrir num novo separador', alwaysTab: 'Abrir sempre num novo separador',
-      tabHint: 'Em branco ou "recusou a ligação"? Esta aplicação não permite janelas: abra-a num novo separador.',
-      mixedTitle: 'Esta aplicação não abre numa janela aqui',
-      mixedText: 'O CasaOS está aberto por HTTPS e esta aplicação só por HTTP, por isso o navegador bloqueia-a dentro da página. Abra-a num novo separador, abra o CasaOS pelo endereço http:// ou dê à aplicação uma porta HTTPS no servidor (com o Tailscale, este comando, com qualquer porta livre):'
+      tabHint: 'Em branco ou "recusou a ligação"? Esta aplicação não permite janelas: abra-a num novo separador.'
     },
     ro: {
       newTab: 'Deschide într-o filă nouă', minimize: 'Minimizează', maximize: 'Maximizează', restore: 'Restabilește', close: 'Închide',
-      more: 'Mai mult', reload: 'Reîncarcă', alwaysTab: 'Deschide mereu într-o filă nouă',
-      tabHint: 'Gol sau „conexiune refuzată”? Această aplicație nu permite ferestre: deschide-o într-o filă nouă.',
-      mixedTitle: 'Această aplicație nu se poate deschide aici într-o fereastră',
-      mixedText: 'CasaOS este deschis prin HTTPS, iar această aplicație doar prin HTTP, așa că browserul o blochează în pagină. Deschide-o într-o filă nouă, deschide CasaOS la adresa http:// sau dă aplicației un port HTTPS pe server (cu Tailscale, această comandă, cu orice port liber):',
-      httpsPort: 'Port HTTPS', useHttps: 'Folosește acest port', copy: 'Copiază', copied: 'Copiat'
+      more: 'Mai mult', alwaysTab: 'Deschide mereu într-o filă nouă',
+      tabHint: 'Gol sau „conexiune refuzată”? Această aplicație nu permite ferestre: deschide-o într-o filă nouă.'
     },
     ru: {
       newTab: 'Открыть в новой вкладке', minimize: 'Свернуть', maximize: 'Развернуть', restore: 'Восстановить', close: 'Закрыть', more: 'Ещё',
-      reload: 'Перезагрузить', alwaysTab: 'Всегда открывать в новой вкладке',
-      tabHint: 'Пусто или «отказано в подключении»? Это приложение не разрешает окна: откройте его в новой вкладке.',
-      mixedTitle: 'Это приложение нельзя открыть здесь в окне',
-      mixedText: 'CasaOS открыт по HTTPS, а это приложение только по HTTP, поэтому браузер блокирует его внутри страницы. Откройте его в новой вкладке, откройте CasaOS по адресу http:// или дайте приложению HTTPS-порт на сервере (с Tailscale — эта команда, с любым свободным портом):',
-      httpsPort: 'HTTPS-порт', useHttps: 'Использовать этот порт', copy: 'Копировать', copied: 'Скопировано'
+      alwaysTab: 'Всегда открывать в новой вкладке',
+      tabHint: 'Пусто или «отказано в подключении»? Это приложение не разрешает окна: откройте его в новой вкладке.'
     },
     sk: {
       newTab: 'Otvoriť na novej karte', minimize: 'Minimalizovať', maximize: 'Maximalizovať', restore: 'Obnoviť', close: 'Zavrieť', more: 'Viac',
-      reload: 'Znova načítať', alwaysTab: 'Vždy otvárať na novej karte',
-      tabHint: 'Prázdne alebo „pripojenie odmietnuté“? Táto aplikácia nepovoľuje okná: otvorte ju na novej karte.',
-      mixedTitle: 'Túto aplikáciu tu nemožno otvoriť v okne',
-      mixedText: 'CasaOS je otvorený cez HTTPS a táto aplikácia len cez HTTP, preto ju prehliadač na stránke blokuje. Otvorte ju na novej karte, otvorte CasaOS na adrese http:// alebo dajte aplikácii na serveri port HTTPS (s Tailscale tento príkaz, s ľubovoľným voľným portom):',
-      httpsPort: 'Port HTTPS', useHttps: 'Použiť tento port', copy: 'Kopírovať', copied: 'Skopírované'
+      alwaysTab: 'Vždy otvárať na novej karte',
+      tabHint: 'Prázdne alebo „pripojenie odmietnuté“? Táto aplikácia nepovoľuje okná: otvorte ju na novej karte.'
     },
     sl: {
       newTab: 'Odpri v novem zavihku', minimize: 'Pomanjšaj', maximize: 'Povečaj', restore: 'Obnovi', close: 'Zapri', more: 'Več',
-      reload: 'Znova naloži', alwaysTab: 'Vedno odpri v novem zavihku',
-      tabHint: 'Prazno ali »povezava zavrnjena«? Ta aplikacija ne dovoli oken: odprite jo v novem zavihku.',
-      mixedTitle: 'Te aplikacije tu ni mogoče odpreti v oknu',
-      mixedText: 'CasaOS je odprt prek HTTPS, ta aplikacija pa samo prek HTTP, zato jo brskalnik na strani blokira. Odprite jo v novem zavihku, odprite CasaOS na naslovu http:// ali aplikaciji dodelite vrata HTTPS na strežniku (s Tailscale ta ukaz, s poljubnimi prostimi vrati):',
-      httpsPort: 'Vrata HTTPS', useHttps: 'Uporabi ta vrata', copy: 'Kopiraj', copied: 'Kopirano'
+      alwaysTab: 'Vedno odpri v novem zavihku',
+      tabHint: 'Prazno ali »povezava zavrnjena«? Ta aplikacija ne dovoli oken: odprite jo v novem zavihku.'
     },
     sv: {
       newTab: 'Öppna i ny flik', minimize: 'Minimera', maximize: 'Maximera', restore: 'Återställ', close: 'Stäng', more: 'Mer',
-      reload: 'Läs in igen', alwaysTab: 'Öppna alltid i ny flik',
-      tabHint: 'Tomt eller ”anslutningen nekades”? Den här appen tillåter inte fönster: öppna den i en ny flik.',
-      mixedTitle: 'Den här appen kan inte öppnas i ett fönster här',
-      mixedText: 'CasaOS är öppnat över HTTPS och den här appen bara över HTTP, så webbläsaren blockerar den på sidan. Öppna den i en ny flik, öppna CasaOS på dess http://-adress eller ge appen en HTTPS-port på servern (med Tailscale, det här kommandot, med valfri ledig port):',
-      httpsPort: 'HTTPS-port', useHttps: 'Använd den här porten', copy: 'Kopiera', copied: 'Kopierat'
+      alwaysTab: 'Öppna alltid i ny flik',
+      tabHint: 'Tomt eller ”anslutningen nekades”? Den här appen tillåter inte fönster: öppna den i en ny flik.'
     },
     tr: {
       newTab: 'Yeni sekmede aç', minimize: 'Simge durumuna küçült', maximize: 'Ekranı kapla', restore: 'Geri yükle', close: 'Kapat',
-      more: 'Daha fazla', reload: 'Yeniden yükle', alwaysTab: 'Her zaman yeni sekmede aç',
-      tabHint: 'Boş mu, yoksa "bağlantı reddedildi" mi? Bu uygulama pencereye izin vermiyor: yeni sekmede açın.',
-      mixedTitle: 'Bu uygulama burada pencerede açılamaz',
-      mixedText: 'CasaOS HTTPS üzerinden, bu uygulama ise yalnızca HTTP üzerinden açık; bu yüzden tarayıcı onu sayfanın içinde engelliyor. Yeni sekmede açın, CasaOS\'u http:// adresinden açın ya da sunucuda uygulamaya bir HTTPS portu verin (Tailscale ile bu komut, herhangi bir boş portla):',
-      httpsPort: 'HTTPS portu', useHttps: 'Bu portu kullan', copy: 'Kopyala', copied: 'Kopyalandı'
+      more: 'Daha fazla', alwaysTab: 'Her zaman yeni sekmede aç',
+      tabHint: 'Boş mu, yoksa "bağlantı reddedildi" mi? Bu uygulama pencereye izin vermiyor: yeni sekmede açın.'
     },
     uk: {
       newTab: 'Відкрити в новій вкладці', minimize: 'Згорнути', maximize: 'Розгорнути', restore: 'Відновити', close: 'Закрити', more: 'Більше',
-      reload: 'Перезавантажити', alwaysTab: 'Завжди відкривати в новій вкладці',
-      tabHint: 'Порожньо або «відмовлено в з’єднанні»? Цей застосунок не дозволяє вікна: відкрийте його в новій вкладці.',
-      mixedTitle: 'Цей застосунок не можна відкрити тут у вікні',
-      mixedText: 'CasaOS відкрито через HTTPS, а цей застосунок лише через HTTP, тому браузер блокує його всередині сторінки. Відкрийте його в новій вкладці, відкрийте CasaOS за адресою http:// або дайте застосунку HTTPS-порт на сервері (з Tailscale — ця команда, з будь-яким вільним портом):',
-      httpsPort: 'HTTPS-порт', useHttps: 'Використати цей порт', copy: 'Копіювати', copied: 'Скопійовано'
+      alwaysTab: 'Завжди відкривати в новій вкладці',
+      tabHint: 'Порожньо або «відмовлено в з’єднанні»? Цей застосунок не дозволяє вікна: відкрийте його в новій вкладці.'
     },
     vi: {
-      newTab: 'Mở trong thẻ mới', minimize: 'Thu nhỏ', maximize: 'Phóng to', restore: 'Khôi phục', close: 'Đóng', more: 'Thêm', reload: 'Tải lại',
+      newTab: 'Mở trong thẻ mới', minimize: 'Thu nhỏ', maximize: 'Phóng to', restore: 'Khôi phục', close: 'Đóng', more: 'Thêm',
       alwaysTab: 'Luôn mở trong thẻ mới',
-      tabHint: 'Trống hoặc "từ chối kết nối"? Ứng dụng này không cho phép mở trong cửa sổ: hãy mở trong thẻ mới.',
-      mixedTitle: 'Ứng dụng này không thể mở trong cửa sổ ở đây',
-      mixedText: 'CasaOS đang mở qua HTTPS còn ứng dụng này chỉ qua HTTP, nên trình duyệt chặn nó trong trang. Hãy mở trong thẻ mới, mở CasaOS bằng địa chỉ http://, hoặc cấp cho ứng dụng một cổng HTTPS trên máy chủ (với Tailscale, dùng lệnh này với một cổng trống bất kỳ):',
-      httpsPort: 'Cổng HTTPS', useHttps: 'Dùng cổng này', copy: 'Sao chép', copied: 'Đã sao chép'
+      tabHint: 'Trống hoặc "từ chối kết nối"? Ứng dụng này không cho phép mở trong cửa sổ: hãy mở trong thẻ mới.'
     },
     'zh-cn': {
-      newTab: '在新标签页中打开', minimize: '最小化', maximize: '最大化', restore: '还原', close: '关闭', more: '更多', reload: '重新加载', alwaysTab: '总是在新标签页中打开',
-      tabHint: '空白，或显示“拒绝连接”？此应用不允许在窗口中打开：请在新标签页中打开。', mixedTitle: '此应用无法在这里以窗口打开',
-      mixedText: 'CasaOS 通过 HTTPS 打开，而此应用只能通过 HTTP 访问，因此浏览器在页面中拦截了它。请在新标签页中打开，或通过 http:// 地址打开 CasaOS，或在服务器上为应用分配一个 HTTPS 端口（使用 Tailscale 时运行此命令，端口任选空闲的）：',
-      httpsPort: 'HTTPS 端口', useHttps: '使用此端口', copy: '复制', copied: '已复制'
+      newTab: '在新标签页中打开', minimize: '最小化', maximize: '最大化', restore: '还原', close: '关闭', more: '更多', alwaysTab: '总是在新标签页中打开',
+      tabHint: '空白，或显示“拒绝连接”？此应用不允许在窗口中打开：请在新标签页中打开。'
     },
     'zh-tw': {
-      newTab: '在新分頁中開啟', minimize: '最小化', maximize: '最大化', restore: '還原', close: '關閉', more: '更多', reload: '重新載入', alwaysTab: '總是在新分頁中開啟',
-      tabHint: '空白，或顯示「拒絕連線」？此應用程式不允許在視窗中開啟：請在新分頁中開啟。', mixedTitle: '此應用程式無法在這裡以視窗開啟',
-      mixedText: 'CasaOS 透過 HTTPS 開啟，而此應用程式只能透過 HTTP 存取，因此瀏覽器在頁面中封鎖了它。請在新分頁中開啟，或透過 http:// 位址開啟 CasaOS，或在伺服器上為應用程式指定一個 HTTPS 連接埠（使用 Tailscale 時執行此指令，連接埠任選空閒的）：',
-      httpsPort: 'HTTPS 連接埠', useHttps: '使用此連接埠', copy: '複製', copied: '已複製'
+      newTab: '在新分頁中開啟', minimize: '最小化', maximize: '最大化', restore: '還原', close: '關閉', more: '更多', alwaysTab: '總是在新分頁中開啟',
+      tabHint: '空白，或顯示「拒絕連線」？此應用程式不允許在視窗中開啟：請在新分頁中開啟。'
     }
   };
 
@@ -348,11 +257,12 @@
     var top = topmost();
     wins.forEach(function (w, i) {
       var b = box(w);
-      b.style.zIndex = String(Math.min(ZMAX, Z + i));
+      b.style.setProperty('z-index', String(Math.min(ZMAX, Z + i)), 'important');
       b.classList.toggle('cw-top', w === top);
     });
     document.documentElement.classList.toggle('cw-active', !!top);   // for other mods (Idle Hide): a window is in use
     mark();
+    keepOpen();
   }
   function focus(w) {
     var i = wins.indexOf(w);
@@ -377,10 +287,7 @@
       r.y = a.y + (a.h - r.h) / 3 + n * 28;
     }
     if (!full) r = clamp(r, a);
-    b.style.left = Math.round(r.x) + 'px';
-    b.style.top = Math.round(r.y) + 'px';
-    b.style.width = Math.round(r.w) + 'px';
-    b.style.height = Math.round(r.h) + 'px';
+    put(b, r);
     b.classList.toggle('cw-max', full);
     b.classList.toggle('cw-narrow', narrow());
     var mx = b.querySelector('.cw-bar [data-cw="max"]');
@@ -389,6 +296,18 @@
       mx.title = w.max ? t('restore') : t('maximize');
       mx.hidden = narrow();
     }
+  }
+
+  // A window's place, over any stylesheet (CasaOS's panels are Bulma modals,
+  // whose fixed inset of 0 would win over a plain inline style)
+  function put(b, r) {
+    var st = b.style;
+    st.setProperty('left', Math.round(r.x) + 'px', 'important');
+    st.setProperty('top', Math.round(r.y) + 'px', 'important');
+    st.setProperty('width', Math.round(r.w) + 'px', 'important');
+    st.setProperty('height', Math.round(r.h) + 'px', 'important');
+    st.setProperty('right', 'auto', 'important');
+    st.setProperty('bottom', 'auto', 'important');
   }
 
   // The bar stays reachable: never above the top bar, never out of sight
@@ -504,11 +423,7 @@
           r.y = r0.top + r0.height - r.h;
         }
       }
-      r = clamp(r, a);
-      b.style.left = Math.round(r.x) + 'px';
-      b.style.top = Math.round(r.y) + 'px';
-      b.style.width = Math.round(r.w) + 'px';
-      b.style.height = Math.round(r.h) + 'px';
+      put(b, clamp(r, a));
     }
     function up() {
       window.removeEventListener('pointermove', move, true);
@@ -557,24 +472,78 @@
   // ---------------------------------------------------------------------------
   // Apps
   // ---------------------------------------------------------------------------
-  // The address a window loads. An http:// app inside CasaOS opened over
-  // https:// is blocked by the browser (mixed content): only with an HTTPS
-  // port for it, set in the window (null otherwise)
-  function target(w) {
-    var u = new URL(w.url, location.href), c = appCfg(w.name);
-    if (location.protocol === 'https:' && u.protocol === 'http:') {
-      if (!c.https) return null;
+  // An app's address, checked before it opens. Inside CasaOS opened over
+  // https:// an http:// app is blocked by the browser (mixed content): its
+  // https:// address on the same port is tried (with tailscale serve on that
+  // port, it answers). An https:// address must answer too (an app's own
+  // certificate, unknown to the browser, fails in a window). What doesn't
+  // answer opens in a new tab, where the browser shows why (and a
+  // certificate can be accepted, after which it opens in windows too).
+  var answers = {};   // the https:// origins that answered, this session
+  function route(app) {
+    var u = new URL(app.url), orig = u.href;
+    if (u.protocol === 'http:' && location.protocol === 'https:') {
       u.protocol = 'https:';
       u.hostname = location.hostname;
-      u.port = String(c.https);
     }
-    return u.href;
+    if (u.protocol !== 'https:' || answers[u.origin]) return openApp(withUrl(app, u.href, orig));
+    // just started by CasaOS and not reachable from here as it is: CasaOS's way
+    if (app.wait && u.href !== orig) return nativeOpen.call(window, orig, '_blank');
+    var w = openApp(withUrl(app, u.href, orig), true);
+    if (!w.pending) return;
+    knock(u.href, 2500).then(function () {
+      answers[u.origin] = true;
+      w.pending = false;
+      if (w.el.isConnected) fill(w);
+    }, function () {
+      if (!w.el.isConnected) return;
+      close(w);
+      nativeOpen.call(window, orig, '_blank');   // still within the click's few seconds: no popup blocker
+    });
+  }
+  function withUrl(app, url, orig) {
+    var a = {};
+    for (var k in app) a[k] = app[k];
+    a.url = url;
+    a.orig = orig;
+    return a;
   }
 
-  function openApp(app) {
+  // Does the address answer? (no-cors: only whether the server can be reached)
+  function knock(url, ms) {
+    return new Promise(function (ok, fail) {
+      var ctl = window.AbortController ? new AbortController() : null, done = false;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        if (ctl) ctl.abort();
+        fail();
+      }, ms);
+      fetch(url, { mode: 'no-cors', cache: 'no-store', credentials: 'omit', signal: ctl ? ctl.signal : undefined }).then(function () {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        ok();
+      }, function () {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        fail();
+      });
+    });
+  }
+
+  // pending: a spinner until its address answers (route)
+  function openApp(app, pending) {
     var w = find(app.name);
-    if (w && w.kind === 'app') return show(w);
-    w = { kind: 'app', name: app.name, title: app.title || app.name, icon: app.icon || '', url: app.url, min: false, max: !!appCfg(app.name).max, wait: !!app.wait };
+    if (w && w.kind === 'app') {
+      show(w);
+      return w;
+    }
+    w = {
+      kind: 'app', name: app.name, title: app.title || app.name, icon: app.icon || '', url: app.url, orig: app.orig || app.url,
+      min: false, max: !!appCfg(app.name).max, wait: !!app.wait, pending: !!pending
+    };
     var el = w.el = document.createElement('div');
     el.className = 'cw-win';
     el.innerHTML = barHtml(true) + '<div class="cw-menu" hidden></div><div class="cw-body"></div>' + edgesHtml();
@@ -585,25 +554,26 @@
     stack();
     fill(w);
     if (!app.icon || !app.title || app.title === app.name) describe(w);
+    return w;
   }
 
-  // The window's page: the app, or why it can't open here
+  // The window's page (again: a reload)
   function fill(w) {
-    var body = w.el.querySelector('.cw-body'), url = target(w);
+    var body = w.el.querySelector('.cw-body'), url = w.url;
     body.textContent = '';
     w.frame = null;
-    if (!url) return mixedNote(w, body);
+    if (w.pending || w.wait) body.innerHTML = '<div class="cw-wait"></div>';
+    if (w.pending) return;
     if (w.wait) {
       // an app CasaOS has just started: its page once it answers (40 s at most), as CasaOS's launch page does
       w.wait = false;
-      body.innerHTML = '<div class="cw-wait"></div>';
       var tries = 0;
-      (function knock() {
-        fetch(url, { mode: 'no-cors', cache: 'no-store' }).then(function () {
+      (function again() {
+        knock(url, 4000).then(function () {
           if (w.el.isConnected) fill(w);
         }, function () {
           if (!w.el.isConnected) return;
-          if (++tries < 27) setTimeout(knock, 1500);
+          if (++tries < 27) setTimeout(again, 1500);
           else fill(w);
         });
       })();
@@ -619,74 +589,20 @@
   }
 
   function portOf(u) { return Number(u.port) || (u.protocol === 'https:' ? 443 : 80); }
-  function suggest(w) {
-    var p = portOf(new URL(w.url, location.href));
-    return p + 10000 <= 65535 ? p + 10000 : p - 10000;
-  }
-
-  // CasaOS is https:// and the app http://: the ways out, in the window
-  function mixedNote(w, body) {
-    var c = appCfg(w.name), u = new URL(w.url, location.href), port = c.https || suggest(w);
-    var note = document.createElement('div');
-    note.className = 'cw-note';
-    note.innerHTML = '<h3></h3><p></p><div class="cw-cmd"><code></code><button type="button" class="cw-text-btn" data-n="copy"></button></div>' +
-      '<div class="cw-row"><label><span></span> <input type="number" min="1" max="65535"></label>' +
-      '<button type="button" class="cw-text-btn cw-primary" data-n="use"></button>' +
-      '<button type="button" class="cw-text-btn" data-n="tab"></button></div>';
-    var input = note.querySelector('input'), code = note.querySelector('code');
-    note.querySelector('h3').textContent = t('mixedTitle');
-    note.querySelector('p').textContent = t('mixedText');
-    note.querySelector('label span').textContent = t('httpsPort');
-    note.querySelector('[data-n="copy"]').textContent = t('copy');
-    note.querySelector('[data-n="use"]').textContent = t('useHttps');
-    note.querySelector('[data-n="tab"]').textContent = t('newTab');
-    input.value = port;
-    var cmd = function () {
-      code.textContent = 'sudo tailscale serve --bg --https=' + (Number(input.value) || port) + ' http://127.0.0.1:' + portOf(u);
-    };
-    cmd();
-    input.addEventListener('input', cmd);
-    note.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-n]');
-      if (!b) return;
-      var n = b.getAttribute('data-n');
-      if (n === 'copy') {
-        copy(code.textContent, function () {
-          b.textContent = t('copied');
-          setTimeout(function () { b.textContent = t('copy'); }, 1500);
-        });
-      } else if (n === 'use') {
-        var v = Math.round(Number(input.value));
-        if (!(v > 0 && v < 65536)) return input.focus();
-        c.https = v;
-        save();
-        fill(w);
-      } else if (n === 'tab') toTab(w);
-    });
-    body.appendChild(note);
-  }
-
-  function copy(text, done) {
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
-  }
 
   // To a new tab (CasaOS's own way); the window closes
   function toTab(w) {
-    nativeOpen.call(window, target(w) || w.url, '_blank');
+    nativeOpen.call(window, w.url, '_blank');
     close(w);
   }
 
-  // The app's menu: reload, always a new tab, the HTTPS port, and what to do
-  // when the app refuses to be in a window (browsers don't tell the page)
+  // The app's menu: always a new tab, and what to do when the app refuses to
+  // be in a window (browsers don't tell the page)
   function toggleMenu(w) {
     var m = w.el.querySelector('.cw-menu');
     if (!m.hidden) return closeMenu(w);
-    var c = appCfg(w.name), mixed = location.protocol === 'https:' && new URL(w.url, location.href).protocol === 'http:';
-    m.innerHTML = '<button type="button" class="cw-item" data-m="reload"></button>' +
-      '<label class="cw-item cw-check"><input type="checkbox" data-m="tab"> <span></span></label>' +
-      (mixed ? '<label class="cw-item cw-port"><span></span> <input type="number" min="1" max="65535" data-m="port"></label>' : '') +
-      '<p class="cw-hint"></p>';
-    m.querySelector('[data-m="reload"]').textContent = t('reload');
+    var c = appCfg(w.name);
+    m.innerHTML = '<label class="cw-item cw-check"><input type="checkbox" data-m="tab"> <span></span></label><p class="cw-hint"></p>';
     var tab = m.querySelector('[data-m="tab"]');
     tab.checked = !!c.tab;
     tab.nextElementSibling.textContent = t('alwaysTab');
@@ -695,23 +611,7 @@
       else delete c.tab;
       save();
     });
-    var port = m.querySelector('[data-m="port"]');
-    if (port) {
-      port.previousElementSibling.textContent = t('httpsPort');
-      port.value = c.https || '';
-      port.addEventListener('change', function () {
-        var v = Math.round(Number(port.value));
-        if (v > 0 && v < 65536) c.https = v;
-        else delete c.https;
-        save();
-        fill(w);
-      });
-    }
     m.querySelector('.cw-hint').textContent = t('tabHint');
-    m.querySelector('[data-m="reload"]').addEventListener('click', function () {
-      closeMenu(w);
-      fill(w);
-    });
     m.hidden = false;
     var moreBtn = w.el.querySelector('[data-cw="more"]');
     setTimeout(function () {
@@ -782,7 +682,7 @@
     var app = null;
     try { app = appFor(url); } catch (e) { app = null; }
     if (app) {
-      openApp(app);
+      route(app);
       return null;
     }
     return nativeOpen.apply(window, arguments);
@@ -852,6 +752,7 @@
       if (!a || a.tagName !== 'IFRAME') return;
       for (var i = 0; i < wins.length; i++) {
         if (wins[i].frame === a) {
+          touched = wins[i];
           if (wins[wins.length - 1] !== wins[i]) focus(wins[i]);
           return;
         }
@@ -920,7 +821,7 @@
     var m = w.root;
     m.classList.remove('cw-panel', 'cw-hidden', 'cw-top', 'cw-max', 'cw-narrow');
     [].forEach.call(m.querySelectorAll(':scope > .cw-bar, :scope > .cw-edge'), function (x) { x.remove(); });
-    ['left', 'top', 'width', 'height', 'zIndex'].forEach(function (k) { m.style[k] = ''; });
+    ['left', 'top', 'width', 'height', 'right', 'bottom', 'z-index'].forEach(function (k) { m.style.removeProperty(k); });
     stack();
   }
 
@@ -963,6 +864,52 @@
   }
 
   // ---------------------------------------------------------------------------
+  // F5 (Ctrl+R) reloads the app last used, not CasaOS (Shift: CasaOS, as
+  // always). Pressed inside an app's page, the browser reloads the whole tab
+  // and no page can stop it: then the apps' windows come back by themselves
+  // (this tab's open apps are kept in sessionStorage).
+  // ---------------------------------------------------------------------------
+  var touched = null;   // the window last pressed (null: the dashboard)
+  document.addEventListener('pointerdown', function (e) {
+    var b = e.target.closest && e.target.closest('.cw-win, .modal.cw-panel');
+    touched = null;
+    for (var i = 0; b && i < wins.length; i++) if (box(wins[i]) === b) touched = wins[i];
+  }, true);
+
+  window.addEventListener('keydown', function (e) {
+    var reload = e.key === 'F5' || ((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === 'r' || e.key === 'R'));
+    if (!reload || e.shiftKey) return;
+    var w = touched;
+    if (!w || w.kind !== 'app' || w.min || wins.indexOf(w) < 0) return;
+    e.preventDefault();
+    fill(w);
+  }, true);
+
+  var SESSION = STORE + '-open';
+  function keepOpen() {
+    try {
+      sessionStorage.setItem(SESSION, JSON.stringify(wins.filter(function (w) { return w.kind === 'app' && !w.pending; }).map(function (w) {
+        return { name: w.name, title: w.title, icon: w.icon, url: w.url, orig: w.orig, min: w.min };
+      })));
+    } catch (e) { /* storage blocked */ }
+  }
+
+  // After a reload, once the dashboard is there (not on the login page)
+  var restored = false;
+  function restore() {
+    if (restored || !document.querySelector('.top-bar')) return;
+    restored = true;
+    var list;
+    try { list = JSON.parse(sessionStorage.getItem(SESSION) || '[]'); } catch (e) { list = []; }
+    if (!Array.isArray(list)) return;
+    list.forEach(function (o) {
+      if (!o || typeof o.url !== 'string' || !o.name || find(o.name)) return;
+      var w = openApp(o);
+      if (o.min) minimize(w);
+    });
+  }
+
+  // ---------------------------------------------------------------------------
   // Keeping up with the page
   // ---------------------------------------------------------------------------
   var resizeTimer = 0;
@@ -979,6 +926,7 @@
     scheduled = true;
     setTimeout(function () {
       scheduled = false;
+      restore();
       scanPanels();
       mark();
     }, 120);
@@ -986,6 +934,7 @@
   var panelStyle = new MutationObserver(later);
   new MutationObserver(later).observe(document.body, { childList: true, subtree: true });
 
+  restore();
   scanPanels();
   console.info(TAG, 'loaded');
 
