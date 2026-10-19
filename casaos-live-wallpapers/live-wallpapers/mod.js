@@ -1286,6 +1286,7 @@
     loading = false;
     if (audioTimer) { clearInterval(audioTimer); audioTimer = null; }
     wantsAudio = false;
+    announce();
     wantsMedia = false;
     if (video) { video.pause(); video.removeAttribute('src'); video.load(); }
     if (blobUrl) { URL.revokeObjectURL(blobUrl); blobUrl = null; }
@@ -1928,6 +1929,26 @@
   // ---------------------------------------------------------------------------
   var BANDS = 64, bins = null, edges = null, frameData = new Array(BANDS * 2);
 
+  // Sound from elsewhere: other mods that analyse what this tab can't read
+  // (App Windows: an app playing in a window, which is another site) send
+  // 'casamods:audio' events, { source, bands: 64 values 0-255, the loudest
+  // bin of the same bands as here }, about 30 times a second; mixed in by the
+  // loudest. They are told when a wallpaper listens (window.casamodsAudioWanted
+  // and a 'casamods:audio-wanted' event, { on }), so they only work then.
+  var outside = {}, announced = false;
+  window.addEventListener('casamods:audio', function (e) {
+    var d = e.detail;
+    if (!d || typeof d.source !== 'string' || !d.bands || d.bands.length !== BANDS) return;
+    outside[d.source] = { bands: d.bands, at: Date.now() };
+  });
+  function announce() {
+    var on = !!(frame && visible && wantsAudio);
+    if (on === announced) return;
+    announced = on;
+    window.casamodsAudioWanted = on;
+    try { window.dispatchEvent(new CustomEvent('casamods:audio-wanted', { detail: { on: on } })); } catch (e) { /* old browser */ }
+  }
+
   function computeEdges(sampleRate, fftSize) {
     var binHz = sampleRate / fftSize, fMin = 30, fMax = 16000;
     var e = new Uint16Array(BANDS + 1);
@@ -1941,8 +1962,13 @@
   function startAudio() {
     if (audioTimer) return;
     audioTimer = setInterval(function () {
+      announce();
       if (!frame || !visible || !wantsAudio) return;
-      var a = audioTap.analyser;
+      var a = audioTap.analyser, now = Date.now(), more = [];
+      for (var s in outside) {
+        if (now - outside[s].at > 250) delete outside[s];   // stopped
+        else more.push(outside[s].bands);
+      }
       if (a) {
         if (!bins || bins.length !== a.frequencyBinCount) {
           bins = new Uint8Array(a.frequencyBinCount);
@@ -1953,7 +1979,8 @@
       for (var b = 0; b < BANDS; b++) {
         var m = 0;
         if (a) for (var k = edges[b]; k < edges[b + 1] && k < bins.length; k++) if (bins[k] > m) m = bins[k];
-        var v = m / 255;
+        for (var j = 0; j < more.length; j++) if (more[j][b] > m) m = more[j][b];
+        var v = Math.min(255, +m || 0) / 255;
         frameData[b] = frameData[b + BANDS] = v * v;
       }
       post('audio', frameData);

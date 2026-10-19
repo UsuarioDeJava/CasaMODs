@@ -93,7 +93,9 @@ cat > "$DIR/www/frame.js" <<'JS'
 // - F5 (Ctrl+R) inside the app reloads the app, not the whole CasaOS tab;
 // - what the app plays (the Media Session's title, artist, album and cover;
 //   the media element's state, position and duration) goes to the CasaOS
-//   tab, where App Windows passes it to other mods (Live Wallpapers).
+//   tab, where App Windows passes it to other mods (Live Wallpapers);
+// - its sound, analysed here (64 bands, the way Live Wallpapers does), goes
+//   there too, only while a wallpaper listens and the app plays.
 (function () {
   'use strict';
   var frame = document.getElementById('app');
@@ -134,7 +136,12 @@ cat > "$DIR/www/frame.js" <<'JS'
   window.addEventListener('keydown', onKey, true);
   window.addEventListener('message', function (e) {
     var d = e.data;
-    if (casa && e.source === parent && e.origin === casa && d && d.cw === 1 && d.type === 'reload') reload();
+    if (!casa || e.source !== parent || e.origin !== casa || !d || d.cw !== 1) return;
+    if (d.type === 'reload') reload();
+    else if (d.type === 'sound') {
+      wantSound = !!d.on;
+      sound();
+    }
   });
 
   // What plays: the media element that last started playing, in the page or not
@@ -149,7 +156,9 @@ cat > "$DIR/www/frame.js" <<'JS'
   function onMedia(e) {
     var m = e.currentTarget;
     if (e.type === 'play' || e.type === 'playing') el = m;
-    if (m === el) soon();
+    if (m !== el) return;
+    soon();
+    sound(e.type === 'playing');   // a new track: captured again
   }
   function soon() {
     clearTimeout(timer);
@@ -218,6 +227,65 @@ cat > "$DIR/www/frame.js" <<'JS'
     }
   }
 
+  // Its sound, for wallpapers that react to it: the media element's audio,
+  // copied (captureStream: the app's own sound and Web Audio stay untouched)
+  // into an analyser set like Live Wallpapers' own, 64 bands from 30 Hz to
+  // 16 kHz (the loudest bin of each, 0-255), about 30 times a second
+  var BANDS = 64, wantSound = false, ac = null, an = null, feed = null, fed = null, bins = null, edges = null;
+  var soundTimer = 0, loud = false;
+  function sound(again) {
+    var m = el;
+    if (!wantSound || !m || m.paused || m.ended) {
+      clearInterval(soundTimer);
+      soundTimer = 0;
+      return;
+    }
+    if (!ac) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      ac = new AC();
+      an = ac.createAnalyser();
+      an.fftSize = 4096;
+      an.smoothingTimeConstant = 0.55;
+      an.minDecibels = -85;
+      an.maxDecibels = -25;
+      bins = new Uint8Array(an.frequencyBinCount);
+      var hz = ac.sampleRate / an.fftSize;
+      edges = new Uint16Array(BANDS + 1);
+      for (var i = 0; i <= BANDS; i++) {
+        edges[i] = Math.max(1, Math.round(30 * Math.pow(16000 / 30, i / BANDS) / hz));
+        if (i > 0 && edges[i] <= edges[i - 1]) edges[i] = edges[i - 1] + 1;
+      }
+    }
+    if (ac.state === 'suspended') ac.resume().catch(function () { /* after the next click in the app */ });
+    if (again || fed !== m) {
+      if (feed) feed.disconnect();
+      feed = null;
+      fed = m;
+      try {
+        var st = m.captureStream();
+        if (st.getAudioTracks().length) {
+          feed = ac.createMediaStreamSource(st);
+          feed.connect(an);
+        }
+      } catch (e) { /* another site's media, or no captureStream: no sound to read */ }
+    }
+    if (!soundTimer) soundTimer = setInterval(listen, 33);
+  }
+  function listen() {
+    if (!el || el.paused || el.ended || !wantSound) return sound();
+    an.getByteFrequencyData(bins);
+    var out = new Array(BANDS), any = false;
+    for (var b = 0; b < BANDS; b++) {
+      var v = 0;
+      for (var k = edges[b]; k < edges[b + 1] && k < bins.length; k++) if (bins[k] > v) v = bins[k];
+      out[b] = v;
+      if (v) any = true;
+    }
+    if (any || loud) tell('sound', { bands: out });   // silence once, then nothing
+    loud = any;
+  }
+
   // Where the app is: for "open in a new tab", and after CasaOS reloads
   function where() {
     var w = page();
@@ -231,6 +299,9 @@ cat > "$DIR/www/frame.js" <<'JS'
     var d = w.document;
     d.__cw = true;
     d.addEventListener('keydown', onKey, true);
+    d.addEventListener('pointerdown', function () {
+      if (ac && ac.state === 'suspended') ac.resume().catch(function () { /* not yet */ });
+    }, true);
     d.addEventListener('play', function (e) {
       if (!isMedia(e.target)) return;
       watch(e.target);
@@ -267,6 +338,7 @@ cat > "$DIR/www/frame.js" <<'JS'
       el = null;
       clearInterval(poll);
       tell('media', { title: '', playing: false });
+      sound();
     });
     where();
     if (el) soon();

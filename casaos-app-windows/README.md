@@ -64,6 +64,7 @@ browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve
 - Each app's address also serves App Windows' **window page** (`/__casaos-windows/`, files the script writes to `/DATA/AppData/frame-proxy/www`). A window loads it, and it holds the app. Being on the app's own address, it can reach the app's page, which the CasaOS tab can't:
   - **F5** (Ctrl+R) pressed inside the app reloads the app, not the whole CasaOS tab;
   - **what the app plays** (title, artist, album, cover, playing or paused, position: what the browser's media controls show) reaches the CasaOS tab, for Live Wallpapers' media integration;
+  - **its sound**, analysed there, so wallpapers that react to sound react to the app's music too (only while a wallpaper listens and the app plays);
   - "open in a new tab" and a reload of CasaOS keep the app's current page.
 - The app's port is the same in both addresses: `http://<server>:8096` on your network (unchanged) and `https://<machine>.<tailnet>.ts.net:8096` in the tailnet.
 
@@ -154,7 +155,7 @@ Use the same `EXTRA` as when you ran it: `off` removes the Caddy container and t
 
 ## Notes
 
-- **Sound and wallpapers:** an app's sound plays in this tab, but Live Wallpapers can't analyse it. Browsers don't let a page listen to another site's audio, and each app is another site (another port). Wallpapers that react to sound stay still while a window plays. **What** plays does reach them, through the frame proxy: the mod passes it on as a `casamods:nowplaying` event (as Music Player + Spotify does), so a wallpaper with media integration shows the title, artist, cover and position of a song playing in Jellyfin's window. An app whose service worker covers its whole address may show its own page instead of the window page; it still works, without these two.
+- **Sound and wallpapers:** browsers don't let a page listen to another site's audio, and each app is another site (another port), so Live Wallpapers can't analyse an app's sound by itself. Through the frame proxy, the window page does it on the app's own address: it copies the playing element's audio (`captureStream`, the app's sound untouched) into an analyser set like Live Wallpapers' own and sends 64 bands about 30 times a second, only while a wallpaper listens (Live Wallpapers says so) and the app plays. The mod passes them on as `casamods:audio` events, and wallpapers react to Jellyfin's music as to the tab's own. **What** plays reaches them too, as a `casamods:nowplaying` event (as Music Player + Spotify does), so a wallpaper with media integration shows the title, artist, cover and position. Protected audio (DRM) can't be analysed anywhere. An app whose service worker covers its whole address may show its own page instead of the window page; it still works, without these two.
 - **Idle Hide:** what you do inside a window doesn't reach the CasaOS page, so the mod tells other mods that a window is in use (`html.cw-active`). Idle Hide doesn't hide the dashboard meanwhile.
 - **CasaOS's own panels:** Files and the App Store depend on CasaOS's page, and a CasaOS update may need an adjustment here (they were made for CasaOS 0.4.x).
 

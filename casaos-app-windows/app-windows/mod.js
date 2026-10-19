@@ -603,7 +603,18 @@
     img.src = u.origin + SHIM + 'ok.svg?' + Date.now();
   }
 
-  // From an app's window page: where the app is, and what it plays
+  // Whether a wallpaper listens to sound now (Live Wallpapers says so): the
+  // window pages analyse an app's sound only then
+  var soundOn = !!window.casamodsAudioWanted;
+  window.addEventListener('casamods:audio-wanted', function (e) {
+    soundOn = !!(e.detail && e.detail.on);
+    wins.forEach(tellSound);
+  });
+  function tellSound(w) {
+    if (w.shim && w.frame && w.frame.contentWindow) w.frame.contentWindow.postMessage({ cw: 1, type: 'sound', on: soundOn }, new URL(w.url).origin);
+  }
+
+  // From an app's window page: where the app is, what it plays, its sound
   window.addEventListener('message', function (e) {
     var d = e.data, w = null;
     if (!d || d.cw !== 1 || !d.data || typeof d.data !== 'object') return;
@@ -615,7 +626,12 @@
       } catch (x) { return; }
       w.cur = d.data.href;
       keepOpen();
+      tellSound(w);
     } else if (d.type === 'media') nowPlaying(w, d.data);
+    else if (d.type === 'sound' && Array.isArray(d.data.bands) && d.data.bands.length === 64) {
+      // for Live Wallpapers: 64 bands, 0-255, mixed with the tab's own sound
+      try { window.dispatchEvent(new CustomEvent('casamods:audio', { detail: { source: 'app-windows:' + w.name, bands: d.data.bands } })); } catch (x) { /* old browser */ }
+    }
   });
 
   // What an app plays, for other mods (Live Wallpapers' media integration): a

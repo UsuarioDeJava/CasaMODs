@@ -3,7 +3,7 @@
 A CasaMOD mod: an animated wallpaper engine for the CasaOS dashboard. It lists `/DATA/AppData/casamod/mod/wallpapers/` (Wallpaper Engine web/video wallpapers as published, HTML folders, loose videos), adds them to the CasaOS wallpaper menu, and runs the chosen one behind the UI — web wallpapers in a sandboxed `srcdoc` iframe fed the Wallpaper Engine web API (properties, general properties, tab audio as 128 bands, mouse, pause), with a settings panel built from `project.json`. See `README.md`.
 
 - `live-wallpapers/` is the mod as installed (`mod.js`, `mod.css`): no build step, copied as is to `/DATA/AppData/casamod/mod/live-wallpapers/`.
-- It is its own project: it doesn't know about any player or wallpaper in particular. Audio comes from any media element playing in the tab. Starry Orbit (`../../star-wallpaper`, outside this repository) and the music player (`../casaos-music-player`) are separate projects.
+- It is its own project: it doesn't know about any player or wallpaper in particular. Audio comes from any media element playing in the tab, and from other mods' `casamods:audio` events (App Windows: apps in windows, analysed on their own address; the same 64 bands), mixed in by the loudest; `casamods:audio-wanted` tells them when a wallpaper listens. Starry Orbit (`../../star-wallpaper`, outside this repository) and the music player (`../casaos-music-player`) are separate projects.
 
 ## Working here
 
