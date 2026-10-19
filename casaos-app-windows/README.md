@@ -21,7 +21,7 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 
 - **Click an app's icon:** it opens in a window. Click it again (or after minimizing): the same window comes back, not a new one.
 - **Ctrl+click** (Cmd+click on a Mac) an icon: a new tab, as before.
-- **F5** (Ctrl+R) reloads the app whose window you last pressed (its bar or edges), not CasaOS (**Shift+F5** reloads CasaOS). After a click inside an app's page, the keys belong to that page and the browser reloads the whole tab, which no page can prevent: click the window's bar first. After a whole reload, the apps' windows come back by themselves.
+- **F5** (Ctrl+R) reloads the app whose window you last pressed (its bar or edges), not CasaOS (**Shift+F5** reloads CasaOS). Inside an app's page too, through the [frame proxy](#every-app-in-a-window-the-frame-proxy). Without it, after a click inside an app's page the keys belong to that page and the browser reloads the whole tab, which no page can prevent: click the window's bar first. After a whole reload, the apps' windows come back by themselves.
 - **⋯ (more):** **Always open in a new tab** for that app. **Shift+click** its icon still opens it in a window (to switch it back).
 - Apps opened from elsewhere (an app's **Open** in the App Store, a widget) open in windows too.
 
@@ -61,6 +61,10 @@ browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve
   - with `X-Forwarded-Proto: https` (the app knows it's served over HTTPS), and without `X-Forwarded-For` (Home Assistant answers "400: Bad Request" to a proxy it wasn't told to trust).
   - over HTTPS to apps that serve HTTPS themselves (found by trying TLS on their port), without checking their certificate.
   - When an app doesn't answer, the window shows "Frame proxy: the app on port … did not answer (…)" instead of a blank page.
+- Each app's address also serves App Windows' **window page** (`/__casaos-windows/`, files the script writes to `/DATA/AppData/frame-proxy/www`). A window loads it, and it holds the app. Being on the app's own address, it can reach the app's page, which the CasaOS tab can't:
+  - **F5** (Ctrl+R) pressed inside the app reloads the app, not the whole CasaOS tab;
+  - **what the app plays** (title, artist, album, cover, playing or paused, position: what the browser's media controls show) reaches the CasaOS tab, for Live Wallpapers' media integration;
+  - "open in a new tab" and a reload of CasaOS keep the app's current page.
 - The app's port is the same in both addresses: `http://<server>:8096` on your network (unchanged) and `https://<machine>.<tailnet>.ts.net:8096` in the tailnet.
 
 ### Before you start
@@ -150,7 +154,7 @@ Use the same `EXTRA` as when you ran it: `off` removes the Caddy container and t
 
 ## Notes
 
-- **Sound and wallpapers:** an app's sound plays in this tab, but Live Wallpapers can't analyse it. Browsers don't let a page listen to another site's audio, and each app is another site (another port). Wallpapers that react to sound stay still while a window plays.
+- **Sound and wallpapers:** an app's sound plays in this tab, but Live Wallpapers can't analyse it. Browsers don't let a page listen to another site's audio, and each app is another site (another port). Wallpapers that react to sound stay still while a window plays. **What** plays does reach them, through the frame proxy: the mod passes it on as a `casamods:nowplaying` event (as Music Player + Spotify does), so a wallpaper with media integration shows the title, artist, cover and position of a song playing in Jellyfin's window. An app whose service worker covers its whole address may show its own page instead of the window page; it still works, without these two.
 - **Idle Hide:** what you do inside a window doesn't reach the CasaOS page, so the mod tells other mods that a window is in use (`html.cw-active`). Idle Hide doesn't hide the dashboard meanwhile.
 - **CasaOS's own panels:** Files and the App Store depend on CasaOS's page, and a CasaOS update may need an adjustment here (they were made for CasaOS 0.4.x).
 
@@ -163,6 +167,7 @@ Use the same `EXTRA` as when you ran it: `off` removes the Caddy container and t
 - Nothing is checked before a window opens: a page can't tell whether another site will show in a frame (Chrome hides the answer of a `no-cors` request for a web page: ORB). For an app CasaOS has just started, the window waits until the app's `/favicon.ico` loads (an image is the one answer a page can see from another site), 12 s at most.
 - Settings: `localStorage['casamod-app-windows']` (`apps[name]`: `rect` as fractions of the tab, `max`, `tab`). The open apps, for a reload: `sessionStorage['casamod-app-windows-open']`.
 - Files and the App Store get their place with `!important` inline styles: they are Bulma modals, whose stylesheet pins them to the whole screen.
+- The window page (from `frame-proxy.sh`): the mod loads it when its picture (`/__casaos-windows/ok.svg`) loads from the app's `https://` address. It gets the app's path and CasaOS's address in its `#`, loads the app from its own address only, and posts only to CasaOS's address (`{cw: 1, type: 'place' | 'media', data}`); the mod checks that a message comes from that window's frame and address. Covers become `data:` images (512 px at most), so another page can read them.
 - `window.CasaAppWindows`: `open(url, title, iconUrl)` and `windows` (the list), for other mods and debugging.
 
 ## Tests

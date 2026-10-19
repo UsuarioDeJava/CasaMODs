@@ -9,7 +9,10 @@
 # frame-ancestors directive), and without X-Forwarded-For (Home Assistant
 # refuses requests that carry it from a proxy it wasn't told to trust, and the
 # value would only be 127.0.0.1 anyway). Apps that serve HTTPS themselves
-# (Portainer, MineOS) are found by trying TLS on their port. Only inside your
+# (Portainer, MineOS) are found by trying TLS on their port. Each app's address
+# also serves App Windows' window page (/__casaos-windows/): on the app's own
+# origin it holds the app, so F5 inside the app reloads the app and what the
+# app plays reaches the CasaOS tab (Live Wallpapers). Only inside your
 # tailnet: nothing is exposed to the internet, and the http:// addresses on
 # your network don't change.
 #
@@ -63,7 +66,217 @@ if [ "${1:-}" = off ]; then
 fi
 
 docker rm -f "$NAME" >/dev/null 2>&1 || true   # the old one, if any (its ports free up)
-mkdir -p "$DIR"
+mkdir -p "$DIR/www"
+
+# App Windows' window page, served at /__casaos-windows/ on every app's address
+cat > "$DIR/www/frame.html" <<'HTML'
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>App Windows</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#fff}iframe{display:block;width:100%;height:100%;border:0}</style>
+</head>
+<body>
+<iframe id="app" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-read; clipboard-write; microphone; camera; display-capture; geolocation; screen-wake-lock; web-share" allowfullscreen></iframe>
+<script src="frame.js"></script>
+</body>
+</html>
+HTML
+
+cat > "$DIR/www/frame.js" <<'JS'
+// App Windows (CasaMODs): an app's window loads this page, which holds the
+// app, unchanged, in the frame below. It is on the app's own address (same
+// origin), so it reaches the app's page, which the CasaOS tab can't:
+// - F5 (Ctrl+R) inside the app reloads the app, not the whole CasaOS tab;
+// - what the app plays (the Media Session's title, artist, album and cover;
+//   the media element's state, position and duration) goes to the CasaOS
+//   tab, where App Windows passes it to other mods (Live Wallpapers).
+(function () {
+  'use strict';
+  var frame = document.getElementById('app');
+  var q = new URLSearchParams(location.hash.slice(1));
+  var path = q.get('u') || '/';
+  if (!/^\/(?![\/\\])/.test(path)) path = '/';   // this address only
+  var casa = '';   // the CasaOS page: the only one told anything
+  try {
+    var o = new URL(q.get('o'));
+    if (o.hostname === location.hostname) casa = o.origin;
+  } catch (e) { /* none */ }
+  frame.src = path;
+
+  function tell(type, data) {
+    if (casa) parent.postMessage({ cw: 1, type: type, data: data }, casa);
+  }
+
+  // The app's page, when it can be reached (not another site, after a redirect)
+  function page() {
+    try {
+      var w = frame.contentWindow;
+      return w && w.document && w.document.URL !== 'about:blank' ? w : null;
+    } catch (e) { return null; }
+  }
+
+  // F5 / Ctrl+R: the app (Shift: the whole tab, as always)
+  function reload() {
+    var w = page();
+    if (w) w.location.reload();
+    else frame.src = path;
+  }
+  function onKey(e) {
+    var r = e.key === 'F5' || ((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === 'r' || e.key === 'R'));
+    if (!r || e.shiftKey || e.defaultPrevented) return;
+    e.preventDefault();
+    reload();
+  }
+  window.addEventListener('keydown', onKey, true);
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (casa && e.source === parent && e.origin === casa && d && d.cw === 1 && d.type === 'reload') reload();
+  });
+
+  // What plays: the media element that last started playing, in the page or not
+  var EVENTS = ['play', 'playing', 'pause', 'ended', 'emptied', 'loadedmetadata', 'durationchange', 'seeked', 'ratechange'];
+  var seen = new WeakSet(), el = null, timer = 0, poll = 0, lastMeta = '';
+  function isMedia(t) { return !!t && (t.nodeName === 'AUDIO' || t.nodeName === 'VIDEO'); }
+  function watch(m) {
+    if (seen.has(m)) return;
+    seen.add(m);
+    EVENTS.forEach(function (t) { m.addEventListener(t, onMedia); });
+  }
+  function onMedia(e) {
+    var m = e.currentTarget;
+    if (e.type === 'play' || e.type === 'playing') el = m;
+    if (m === el) soon();
+  }
+  function soon() {
+    clearTimeout(timer);
+    timer = setTimeout(report, 150);
+  }
+
+  function meta(w) {
+    var md = null;
+    try { md = w.navigator.mediaSession && w.navigator.mediaSession.metadata; } catch (e) { /* none */ }
+    var art = '', size = -1;
+    if (md && md.artwork) {
+      for (var i = 0; i < md.artwork.length; i++) {
+        var a = md.artwork[i], n = parseInt(String(a.sizes || '').split('x')[0], 10) || 0;
+        if (n >= size) { size = n; art = a.src; }
+      }
+    }
+    return {
+      title: (md && md.title) || w.document.title || '', artist: (md && md.artist) || '', album: (md && md.album) || '', art: art
+    };
+  }
+
+  // The cover as an image the CasaOS tab can read (a picture from the app's
+  // own address; another site's stays an address)
+  var covers = {}, ncovers = 0;
+  function cover(src, done) {
+    if (!src) return done('');
+    if (src in covers) return done(covers[src] || src);
+    var img = new Image();
+    img.onload = function () {
+      var c = '';
+      try {
+        var k = Math.min(1, 512 / Math.max(img.naturalWidth, img.naturalHeight, 1)), cv = document.createElement('canvas');
+        cv.width = Math.max(1, Math.round(img.naturalWidth * k));
+        cv.height = Math.max(1, Math.round(img.naturalHeight * k));
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        c = cv.toDataURL('image/jpeg', 0.85);
+      } catch (e) { /* another site's picture */ }
+      if (++ncovers > 20) { covers = {}; ncovers = 1; }
+      covers[src] = c;
+      done(c || src);
+    };
+    img.onerror = function () { covers[src] = ''; done(src); };
+    img.src = src;
+  }
+
+  function report() {
+    var w = page(), m = el;
+    if (!w || !m) return;
+    var md = meta(w), playing = !m.paused && !m.ended;
+    lastMeta = md.title + '\n' + md.artist + '\n' + md.art;
+    var d = {
+      title: md.title, artist: md.artist, album: md.album, playing: playing,
+      position: m.currentTime || 0, duration: isFinite(m.duration) ? m.duration : 0, at: Date.now()
+    };
+    cover(md.art, function (c) {
+      d.cover = c;
+      tell('media', d);
+    });
+    // a new track's title can come a moment later, with no event: look again while it plays
+    clearInterval(poll);
+    if (playing) {
+      poll = setInterval(function () {
+        var x = page(), n = x && meta(x);
+        if (n && n.title + '\n' + n.artist + '\n' + n.art !== lastMeta) report();
+      }, 2000);
+    }
+  }
+
+  // Where the app is: for "open in a new tab", and after CasaOS reloads
+  function where() {
+    var w = page();
+    if (w) tell('place', { href: w.location.href });
+  }
+
+  // Each page the app loads (again on every navigation)
+  function hook() {
+    var w = page();
+    if (!w || w.document.__cw) return;
+    var d = w.document;
+    d.__cw = true;
+    d.addEventListener('keydown', onKey, true);
+    d.addEventListener('play', function (e) {
+      if (!isMedia(e.target)) return;
+      watch(e.target);
+      el = e.target;
+      soon();
+    }, true);
+    var proto = w.HTMLMediaElement && w.HTMLMediaElement.prototype;
+    if (proto && !proto.__cw) {
+      proto.__cw = true;
+      var play = proto.play;
+      proto.play = function () {
+        watch(this);
+        return play.apply(this, arguments);
+      };
+    }
+    var all = d.querySelectorAll('audio, video');
+    for (var i = 0; i < all.length; i++) {
+      watch(all[i]);
+      if (!all[i].paused) el = all[i];
+    }
+    ['pushState', 'replaceState'].forEach(function (k) {
+      var f = w.history[k];
+      w.history[k] = function () {
+        var r = f.apply(w.history, arguments);
+        where();
+        return r;
+      };
+    });
+    w.addEventListener('popstate', where);
+    w.addEventListener('hashchange', where);
+    w.addEventListener('pagehide', function () {
+      // its music stops with it
+      if (!el) return;
+      el = null;
+      clearInterval(poll);
+      tell('media', { title: '', playing: false });
+    });
+    where();
+    if (el) soon();
+  }
+  frame.addEventListener('load', hook);
+  setInterval(hook, 1000);   // a page that hasn't finished loading yet
+})();
+JS
+
+printf '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>\n' > "$DIR/www/ok.svg"
 
 served=""
 tls_ports=""
@@ -77,7 +290,7 @@ tls_ports=""
     fi
     if is_https_app "$p"; then
       up="https://127.0.0.1:$p"
-      tls=$'\t\ttransport http {\n\t\t\ttls_insecure_skip_verify\n\t\t}\n'
+      tls=$'\t\t\ttransport http {\n\t\t\t\ttls_insecure_skip_verify\n\t\t\t}\n'
       tls_ports="$tls_ports $p"
     else
       up="127.0.0.1:$p"
@@ -85,12 +298,15 @@ tls_ports=""
     fi
     # any Host (tailscale serve passes the browser's: <machine>.<tailnet>.ts.net:P),
     # on this machine only
-    printf 'http://:%s {\n\tbind 127.0.0.1\n\treverse_proxy %s {\n%s' "$q" "$up" "$tls"
-    printf '\t\theader_up X-Forwarded-Proto https\n'
-    printf '\t\theader_up -X-Forwarded-For\n'
-    printf '\t\theader_down -X-Frame-Options\n'
-    printf '\t\theader_down Content-Security-Policy "frame-ancestors[^;]*;?" ""\n'
-    printf '\t}\n'
+    printf 'http://:%s {\n\tbind 127.0.0.1\n' "$q"
+    printf '\thandle_path /__casaos-windows/* {\n\t\troot * /srv/casaos-windows\n'
+    printf '\t\theader Cache-Control no-cache\n\t\tfile_server\n\t}\n'
+    printf '\thandle {\n\t\treverse_proxy %s {\n%s' "$up" "$tls"
+    printf '\t\t\theader_up X-Forwarded-Proto https\n'
+    printf '\t\t\theader_up -X-Forwarded-For\n'
+    printf '\t\t\theader_down -X-Frame-Options\n'
+    printf '\t\t\theader_down Content-Security-Policy "frame-ancestors[^;]*;?" ""\n'
+    printf '\t\t}\n\t}\n'
     # not a blank page when the app doesn't answer
     printf '\thandle_errors {\n\t\trespond "Frame proxy: the app on port %s did not answer ({err.status_code} {err.message})." {err.status_code}\n\t}\n}\n' "$p"
     served="$served $p"
@@ -100,7 +316,7 @@ tls_ports=""
 [ -n "$served" ] || { echo "No app ports found." >&2; exit 1; }
 
 docker run -d --name "$NAME" --restart unless-stopped --network host \
-  -v "$DIR/Caddyfile:/etc/caddy/Caddyfile:ro" "$IMAGE" >/dev/null
+  -v "$DIR/Caddyfile:/etc/caddy/Caddyfile:ro" -v "$DIR/www:/srv/casaos-windows:ro" "$IMAGE" >/dev/null
 sleep 3
 if ! docker ps --filter "name=^${NAME}$" --format '{{.Status}}' | grep -q '^Up'; then
   echo "Caddy didn't start:" >&2

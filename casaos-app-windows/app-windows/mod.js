@@ -20,8 +20,7 @@
 
   var TAG = '[App Windows]';
   var STORE = 'casamod-app-windows';
-  // Above the dashboard, below CasaOS's top bar (30: its menus open over the
-  // windows) and its dialogs (40)
+  // Above the dashboard and CasaOS's top bar (20), below its dialogs (40)
   var Z = 21, ZMAX = 29;
   var BAR = 34, MINW = 260, MINH = 160;
 
@@ -489,6 +488,7 @@
   function close(w) {
     if (w.kind === 'panel') return closePanel(w);
     closeMenu(w);
+    if (w.np) nowPlaying(w, { title: '', playing: false });   // its music stops with it
     var i = wins.indexOf(w);
     if (i >= 0) wins.splice(i, 1);
     w.el.remove();
@@ -564,20 +564,80 @@
       })();
       return;
     }
-    var f = w.frame = document.createElement('iframe');
+    var f = w.frame = document.createElement('iframe'), n = w.fills = (w.fills || 0) + 1;
     f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-read; clipboard-write; ' +
       'microphone; camera; display-capture; geolocation; screen-wake-lock; web-share');
     f.setAttribute('allowfullscreen', '');
     f.setAttribute('referrerpolicy', 'no-referrer');
-    f.src = url;
     body.appendChild(f);
+    viaShim(url, function (ok) {
+      if (n !== w.fills || !w.el.isConnected) return;
+      w.shim = ok;
+      var u = new URL(url);
+      f.src = ok ? u.origin + SHIM + 'frame.html#u=' + encodeURIComponent(u.pathname + u.search + u.hash) +
+        '&o=' + encodeURIComponent(location.origin) : url;
+    });
+  }
+
+  // Through the frame proxy (frame-proxy.sh), each app's https:// address also
+  // serves this mod's window page (/__casaos-windows/frame.html), which holds
+  // the app on the app's own origin: F5 inside the app reloads the app, and
+  // what the app plays comes back here. It is there when its little picture
+  // loads (an image is the one answer a page can see from another site).
+  var SHIM = '/__casaos-windows/', shims = {};   // origin: the window page is there (true/false)
+  function viaShim(url, done) {
+    var u = new URL(url);
+    if (u.protocol !== 'https:' || location.protocol !== 'https:') return done(false);
+    if (u.origin in shims) return done(shims[u.origin]);
+    var img = new Image(), over = false;
+    var timer = setTimeout(function () { end(false, true); }, 2500);
+    function end(ok, late) {
+      if (over) return;
+      over = true;
+      clearTimeout(timer);
+      if (!late) shims[u.origin] = ok;   // no answer yet: asked again next time
+      done(ok);
+    }
+    img.onload = function () { end(true); };
+    img.onerror = function () { end(false); };
+    img.src = u.origin + SHIM + 'ok.svg?' + Date.now();
+  }
+
+  // From an app's window page: where the app is, and what it plays
+  window.addEventListener('message', function (e) {
+    var d = e.data, w = null;
+    if (!d || d.cw !== 1 || !d.data || typeof d.data !== 'object') return;
+    for (var i = 0; i < wins.length; i++) if (wins[i].frame && wins[i].frame.contentWindow === e.source) w = wins[i];
+    if (!w || !w.shim || e.origin !== new URL(w.url).origin) return;
+    if (d.type === 'place') {
+      try {
+        if (new URL(d.data.href).origin !== e.origin) return;
+      } catch (x) { return; }
+      w.cur = d.data.href;
+      keepOpen();
+    } else if (d.type === 'media') nowPlaying(w, d.data);
+  });
+
+  // What an app plays, for other mods (Live Wallpapers' media integration): a
+  // 'casamods:nowplaying' event, as Music Player + Spotify sends. Only from an
+  // app that has played (a paused page that never played says nothing)
+  function nowPlaying(w, m) {
+    var on = !!(m.playing && m.title);
+    if (!on && !w.np) return;
+    w.np = on || !!m.title;
+    var d = {
+      source: 'app-windows:' + w.name, title: String(m.title || ''), artist: String(m.artist || ''), album: String(m.album || ''),
+      cover: typeof m.cover === 'string' && /^(data:image\/|https?:)/.test(m.cover) ? m.cover : '',
+      playing: !!m.playing, position: +m.position || 0, duration: +m.duration || 0, at: +m.at || Date.now()
+    };
+    try { window.dispatchEvent(new CustomEvent('casamods:nowplaying', { detail: d })); } catch (x) { /* old browser */ }
   }
 
   function portOf(u) { return Number(u.port) || (u.protocol === 'https:' ? 443 : 80); }
 
   // To a new tab (CasaOS's own way); the window closes
   function toTab(w) {
-    nativeOpen.call(window, w.orig || w.url, '_blank');   // the app's own address, as CasaOS opens it
+    nativeOpen.call(window, w.cur || w.orig || w.url, '_blank');   // where the app is, else its address as CasaOS opens it
     close(w);
   }
 
@@ -850,9 +910,10 @@
 
   // ---------------------------------------------------------------------------
   // F5 (Ctrl+R) reloads the app last used, not CasaOS (Shift: CasaOS, as
-  // always). Pressed inside an app's page, the browser reloads the whole tab
-  // and no page can stop it: then the apps' windows come back by themselves
-  // (this tab's open apps are kept in sessionStorage).
+  // always). Pressed inside an app's page, only the window page of the frame
+  // proxy can catch it; otherwise the browser reloads the whole tab and no
+  // page can stop it: then the apps' windows come back by themselves (this
+  // tab's open apps are kept in sessionStorage).
   // ---------------------------------------------------------------------------
   var touched = null;   // the window last pressed (null: the dashboard)
   document.addEventListener('pointerdown', function (e) {
@@ -867,14 +928,15 @@
     var w = touched;
     if (!w || w.kind !== 'app' || w.min || wins.indexOf(w) < 0) return;
     e.preventDefault();
-    fill(w);
+    if (w.shim && w.frame && w.frame.contentWindow) w.frame.contentWindow.postMessage({ cw: 1, type: 'reload' }, new URL(w.url).origin);
+    else fill(w);
   }, true);
 
   var SESSION = STORE + '-open';
   function keepOpen() {
     try {
       sessionStorage.setItem(SESSION, JSON.stringify(wins.filter(function (w) { return w.kind === 'app'; }).map(function (w) {
-        return { name: w.name, title: w.title, icon: w.icon, url: w.url, orig: w.orig, min: w.min };
+        return { name: w.name, title: w.title, icon: w.icon, url: w.cur || w.url, orig: w.orig, min: w.min };
       })));
     } catch (e) { /* storage blocked */ }
   }
