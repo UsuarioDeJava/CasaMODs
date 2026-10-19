@@ -6,21 +6,26 @@
 # (Tailscale's certificate) and hands it to a small Caddy listening on
 # 127.0.0.1:P+30000, which passes it to the app without the headers that
 # forbid being shown inside another page (X-Frame-Options, the CSP
-# frame-ancestors directive). Only inside your tailnet: nothing is exposed to
-# the internet, and the http:// addresses on your network don't change.
+# frame-ancestors directive), and without X-Forwarded-For (Home Assistant
+# refuses requests that carry it from a proxy it wasn't told to trust, and the
+# value would only be 127.0.0.1 anyway). Apps that serve HTTPS themselves
+# (Portainer, MineOS) are found by trying TLS on their port. Only inside your
+# tailnet: nothing is exposed to the internet, and the http:// addresses on
+# your network don't change.
 #
 # On the CasaOS server (again after installing an app):
 #   sudo bash frame-proxy.sh
 # Undo:
 #   sudo bash frame-proxy.sh off
 # Options (environment):
-#   HTTPS_APPS="9443 8443"  apps that serve HTTPS themselves, with their own
-#                           certificate (Portainer, MineOS): Caddy talks HTTPS to them
-#   EXTRA="6080"            ports of apps outside Docker (noVNC, for example)
+#   EXTRA="6080"            ports of apps outside Docker or on the host network
+#                           (noVNC, for example)
+#   HTTPS_APPS="8444"       ports to treat as HTTPS even if the app wasn't
+#                           answering when the script ran
 set -euo pipefail
 
 DIR=/DATA/AppData/frame-proxy
-HTTPS_APPS=${HTTPS_APPS:-"9443 8443"}
+HTTPS_APPS=${HTTPS_APPS:-""}
 EXTRA=${EXTRA:-""}
 OFFSET=30000
 NAME=frame-proxy
@@ -29,6 +34,7 @@ IMAGE=caddy:2-alpine
 [ "$(id -u)" = 0 ] || { echo "Run it with sudo." >&2; exit 1; }
 command -v docker >/dev/null || { echo "Docker not found." >&2; exit 1; }
 command -v tailscale >/dev/null || { echo "Tailscale not found." >&2; exit 1; }
+command -v curl >/dev/null || { echo "curl not found." >&2; exit 1; }
 
 # The TCP ports Docker publishes on every address, plus EXTRA; not CasaOS's own (80, 443)
 app_ports() {
@@ -43,7 +49,11 @@ local_port() {
   if [ "$1" -lt 35536 ]; then echo $(($1 + OFFSET)); else echo $(($1 - OFFSET)); fi
 }
 
-is_https_app() { case " $HTTPS_APPS " in *" $1 "*) return 0 ;; *) return 1 ;; esac; }
+# An app that serves HTTPS itself: its port answers TLS (any certificate)
+is_https_app() {
+  case " $HTTPS_APPS " in *" $1 "*) return 0 ;; esac
+  curl -sk -o /dev/null -m 5 "https://127.0.0.1:$1/"
+}
 
 if [ "${1:-}" = off ]; then
   for p in $(app_ports); do tailscale serve --https="$p" off >/dev/null 2>&1 || true; done
@@ -56,6 +66,7 @@ docker rm -f "$NAME" >/dev/null 2>&1 || true   # the old one, if any (its ports 
 mkdir -p "$DIR"
 
 served=""
+tls_ports=""
 {
   printf '{\n\tauto_https off\n\tadmin off\n}\n'
   for p in $(app_ports); do
@@ -67,6 +78,7 @@ served=""
     if is_https_app "$p"; then
       up="https://127.0.0.1:$p"
       tls=$'\t\ttransport http {\n\t\t\ttls_insecure_skip_verify\n\t\t}\n'
+      tls_ports="$tls_ports $p"
     else
       up="127.0.0.1:$p"
       tls=""
@@ -75,9 +87,12 @@ served=""
     # on this machine only
     printf 'http://:%s {\n\tbind 127.0.0.1\n\treverse_proxy %s {\n%s' "$q" "$up" "$tls"
     printf '\t\theader_up X-Forwarded-Proto https\n'
+    printf '\t\theader_up -X-Forwarded-For\n'
     printf '\t\theader_down -X-Frame-Options\n'
     printf '\t\theader_down Content-Security-Policy "frame-ancestors[^;]*;?" ""\n'
-    printf '\t}\n}\n'
+    printf '\t}\n'
+    # not a blank page when the app doesn't answer
+    printf '\thandle_errors {\n\t\trespond "Frame proxy: the app on port %s did not answer ({err.status_code} {err.message})." {err.status_code}\n\t}\n}\n' "$p"
     served="$served $p"
   done
 } > "$DIR/Caddyfile"
@@ -95,7 +110,8 @@ fi
 
 for p in $served; do
   tailscale serve --bg --https="$p" "http://127.0.0.1:$(local_port "$p")" >/dev/null
-  echo "https port $p -> app $p$(is_https_app "$p" && echo ' (its own https)')"
+  case " $tls_ports " in *" $p "*) how=' (its own https)' ;; *) how='' ;; esac
+  echo "https port $p -> app $p$how"
 done
 echo
 echo "Done. Open CasaOS at its https:// Tailscale address: the apps open in windows."

@@ -44,7 +44,9 @@ sudo bash frame-proxy.sh                  # apps outside Docker too: sudo EXTRA=
 
 - For each port Docker publishes, `tailscale serve` answers `https://<machine>.<tailnet>.ts.net:<port>` with Tailscale's certificate, so there are no browser warnings, not even for apps with their own certificate.
 - It hands each request to a small Caddy container (`frame-proxy`, host network, listening only on `127.0.0.1:<port + 30000>`). Caddy passes it to the app without `X-Frame-Options` and without the CSP `frame-ancestors` directive; the rest of the app's policy stays.
-- Apps that serve HTTPS themselves (Portainer 9443, MineOS 8443 by default; `HTTPS_APPS="…"` to change) are reached over HTTPS without checking their certificate.
+- Apps that serve HTTPS themselves (Portainer, MineOS) are found by trying TLS on their port, and reached over HTTPS without checking their certificate (`HTTPS_APPS="8444"` forces a port, if the app was stopped when the script ran).
+- It doesn't pass `X-Forwarded-For` to the apps: Home Assistant answers "400: Bad Request" to a proxy it wasn't told to trust. Apps on the host network (Home Assistant from CasaOS's store) publish no port in Docker: add theirs to `EXTRA` (`sudo EXTRA="6080 8123" bash frame-proxy.sh`).
+- When an app doesn't answer, the window says so ("Frame proxy: the app on port … did not answer") instead of staying blank.
 - It only works inside your tailnet, and the `http://` addresses on your network don't change. Those apps lose their protection against being framed by other sites, but only on these addresses. `sudo bash frame-proxy.sh off` undoes it (CasaOS's own `https://`, port 443, stays).
 
 **CasaOS on https://:** the browser blocks `http://` apps inside an `https://` page (mixed content). So with CasaOS opened over HTTPS (for example `tailscale serve`), an app opens at its `https://` address on the same port. That works where the server serves HTTPS on that port, such as `tailscale serve --bg --https=8096 http://127.0.0.1:8096`. Otherwise the window shows the browser's error: use **open in a new tab**. At CasaOS's `http://` address, windows just work.
