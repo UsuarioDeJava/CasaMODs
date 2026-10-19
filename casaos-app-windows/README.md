@@ -35,9 +35,9 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 | qBittorrent | Web UI → uncheck "Enable clickjacking protection" |
 | Grafana | `allow_embedding = true` |
 
-**CasaOS on https://, or an app on https://:** an https:// address must answer before it opens in a window.
-- With CasaOS opened over HTTPS (for example `tailscale serve`), the browser blocks `http://` apps inside the page (mixed content). The mod tries the app's `https://` address on the same port first. That works where the server serves HTTPS on that port, such as `tailscale serve --bg --https=8096 http://127.0.0.1:8096`. Otherwise the app opens in a new tab, with no message. At CasaOS's `http://` address, windows just work.
-- An app with its own certificate, one the browser doesn't know (self-signed), can't show inside a window. It opens in a new tab, where you can accept the certificate; after that, it opens in windows too. Or give it Tailscale's certificate on the same port: `tailscale serve --bg --https=9443 https+insecure://127.0.0.1:9443` (`https+insecure`: Tailscale doesn't check the app's own certificate).
+**CasaOS on https://:** the browser blocks `http://` apps inside an `https://` page (mixed content). So with CasaOS opened over HTTPS (for example `tailscale serve`), an app opens at its `https://` address on the same port. That works where the server serves HTTPS on that port, such as `tailscale serve --bg --https=8096 http://127.0.0.1:8096`. Otherwise the window shows the browser's error: use **open in a new tab**. At CasaOS's `http://` address, windows just work.
+
+**An app with its own certificate** (self-signed, one the browser doesn't know) can't show inside a window, because a certificate can't be accepted there. Open it in a new tab and accept the certificate; after that, it opens in windows too. Or give it Tailscale's certificate on the same port: `tailscale serve --bg --https=9443 https+insecure://127.0.0.1:9443` (`https+insecure`: Tailscale doesn't check the app's own certificate).
 
 ## Notes
 
@@ -47,11 +47,11 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 
 ## How it works
 
-- CasaOS opens an app with `window.open(scheme://host:port/index)`, or with its launch page `#/launch?appDetailData=…` for an app it just started. The mod wraps `window.open`. An app's address becomes a window: another port of this server, or anything opened right after a click on an app icon. Any other address opens as before. For an app CasaOS has just started, the window waits (a spinner, up to 40 s) until the app answers, as CasaOS's launch page does.
+- CasaOS opens an app with `window.open(scheme://host:port/index)`, or with its launch page `#/launch?appDetailData=…` for an app it just started. The mod wraps `window.open`. An app's address becomes a window: another port of this server, or anything opened right after a click on an app icon. Any other address opens as before.
 - A window is an `<iframe>` in a `<div>` added once to `<body>`. An iframe moved in the page reloads, so windows never move in the page: which one is on top is only its `z-index` (21–29: above the dashboard, below CasaOS's top bar menus and dialogs). Clicking inside an app's page doesn't reach CasaOS. The tab then loses focus to the iframe, which is how its window comes to the front.
 - The icon and title come from the app icon that was clicked. For an app opened from elsewhere, they come from CasaOS's app list (`/v2/app_management/web/appgrid`), by port.
 - Files and the App Store are CasaOS's Buefy modals (`.modal.file-panel`, kept when closed, and `.modal.app-panel`, made at each opening). The mod gives them the bar and the place of a window, hides their backdrop, and closes them with their own close button. Minimizing only hides them, so they keep their state.
-- An `https://` address (the app's own, or an `http://` one moved to `https://` on the same port when CasaOS is on HTTPS) is checked first with a `no-cors` request (2.5 s at most: it only tells whether the server answers, with a certificate the browser trusts). The window shows a spinner meanwhile. Without an answer, the window closes and the address opens in a new tab, still within the click's few seconds, so popup blockers allow it.
+- Nothing is checked before a window opens: a page can't tell whether another site will show in a frame (Chrome hides the answer of a `no-cors` request for a web page: ORB). For an app CasaOS has just started, the window waits until the app's `/favicon.ico` loads (an image is the one answer a page can see from another site), 12 s at most.
 - Settings: `localStorage['casamod-app-windows']` (`apps[name]`: `rect` as fractions of the space below the top bar, `max`, `tab`). The open apps, for a reload: `sessionStorage['casamod-app-windows-open']`.
 - Files and the App Store get their place with `!important` inline styles: they are Bulma modals, whose stylesheet pins them to the whole screen.
 - `window.CasaAppWindows`: `open(url, title, iconUrl)` and `windows` (the list), for other mods and debugging.

@@ -496,69 +496,26 @@
   // ---------------------------------------------------------------------------
   // Apps
   // ---------------------------------------------------------------------------
-  // An app's address, checked before it opens. Inside CasaOS opened over
-  // https:// an http:// app is blocked by the browser (mixed content): its
-  // https:// address on the same port is tried (with tailscale serve on that
-  // port, it answers). An https:// address must answer too (an app's own
-  // certificate, unknown to the browser, fails in a window). What doesn't
-  // answer opens in a new tab, where the browser shows why (and a
-  // certificate can be accepted, after which it opens in windows too).
-  var answers = {};   // the https:// origins that answered, this session
+  // An app's address. Inside CasaOS opened over https:// the browser blocks
+  // an http:// app (mixed content): its https:// address on the same port is
+  // used instead (with tailscale serve on that port, it answers). Nothing is
+  // checked beforehand: a page can't tell (Chrome hides the answer of a
+  // no-cors request for a web page, ORB), so a window that can't show its
+  // app shows the browser's error, and "open in a new tab" is right there.
   function route(app) {
     var u = new URL(app.url), orig = u.href;
     if (u.protocol === 'http:' && location.protocol === 'https:') {
       u.protocol = 'https:';
       u.hostname = location.hostname;
     }
-    if (u.protocol !== 'https:' || answers[u.origin]) return openApp(withUrl(app, u.href, orig));
-    // just started by CasaOS and not reachable from here as it is: CasaOS's way
-    if (app.wait && u.href !== orig) return nativeOpen.call(window, orig, '_blank');
-    var w = openApp(withUrl(app, u.href, orig), true);
-    if (!w.pending) return;
-    knock(u.href, 2500).then(function () {
-      answers[u.origin] = true;
-      w.pending = false;
-      if (w.el.isConnected) fill(w);
-    }, function () {
-      if (!w.el.isConnected) return;
-      close(w);
-      nativeOpen.call(window, orig, '_blank');   // still within the click's few seconds: no popup blocker
-    });
-  }
-  function withUrl(app, url, orig) {
     var a = {};
     for (var k in app) a[k] = app[k];
-    a.url = url;
+    a.url = u.href;
     a.orig = orig;
-    return a;
+    return openApp(a);
   }
 
-  // Does the address answer? (no-cors: only whether the server can be reached)
-  function knock(url, ms) {
-    return new Promise(function (ok, fail) {
-      var ctl = window.AbortController ? new AbortController() : null, done = false;
-      var timer = setTimeout(function () {
-        if (done) return;
-        done = true;
-        if (ctl) ctl.abort();
-        fail();
-      }, ms);
-      fetch(url, { mode: 'no-cors', cache: 'no-store', credentials: 'omit', signal: ctl ? ctl.signal : undefined }).then(function () {
-        if (done) return;
-        done = true;
-        clearTimeout(timer);
-        ok();
-      }, function () {
-        if (done) return;
-        done = true;
-        clearTimeout(timer);
-        fail();
-      });
-    });
-  }
-
-  // pending: a spinner until its address answers (route)
-  function openApp(app, pending) {
+  function openApp(app) {
     var w = find(app.name);
     if (w && w.kind === 'app') {
       show(w);
@@ -566,7 +523,7 @@
     }
     w = {
       kind: 'app', name: app.name, title: app.title || app.name, icon: app.icon || '', url: app.url, orig: app.orig || app.url,
-      min: false, max: !!appCfg(app.name).max, wait: !!app.wait, pending: !!pending
+      min: false, max: !!appCfg(app.name).max, wait: !!app.wait
     };
     var el = w.el = document.createElement('div');
     el.className = 'cw-win';
@@ -586,20 +543,22 @@
     var body = w.el.querySelector('.cw-body'), url = w.url;
     body.textContent = '';
     w.frame = null;
-    if (w.pending || w.wait) body.innerHTML = '<div class="cw-wait"></div>';
-    if (w.pending) return;
     if (w.wait) {
-      // an app CasaOS has just started: its page once it answers (40 s at most), as CasaOS's launch page does
+      // an app CasaOS has just started: its page once it is up, as CasaOS's
+      // launch page does. Up: its icon (/favicon.ico) loads (an image is the
+      // one answer a page can see from another site); 12 s at most
       w.wait = false;
-      var tries = 0;
+      body.innerHTML = '<div class="cw-wait"></div>';
+      var tries = 0, ico = new URL('/favicon.ico', url).href;
       (function again() {
-        knock(url, 4000).then(function () {
-          if (w.el.isConnected) fill(w);
-        }, function () {
+        var img = new Image();
+        img.onload = function () { if (w.el.isConnected) fill(w); };
+        img.onerror = function () {
           if (!w.el.isConnected) return;
-          if (++tries < 27) setTimeout(again, 1500);
+          if (++tries < 8) setTimeout(again, 1500);
           else fill(w);
-        });
+        };
+        img.src = ico + '?' + Date.now();
       })();
       return;
     }
@@ -616,7 +575,7 @@
 
   // To a new tab (CasaOS's own way); the window closes
   function toTab(w) {
-    nativeOpen.call(window, w.url, '_blank');
+    nativeOpen.call(window, w.orig || w.url, '_blank');   // the app's own address, as CasaOS opens it
     close(w);
   }
 
@@ -912,7 +871,7 @@
   var SESSION = STORE + '-open';
   function keepOpen() {
     try {
-      sessionStorage.setItem(SESSION, JSON.stringify(wins.filter(function (w) { return w.kind === 'app' && !w.pending; }).map(function (w) {
+      sessionStorage.setItem(SESSION, JSON.stringify(wins.filter(function (w) { return w.kind === 'app'; }).map(function (w) {
         return { name: w.name, title: w.title, icon: w.icon, url: w.url, orig: w.orig, min: w.min };
       })));
     } catch (e) { /* storage blocked */ }
