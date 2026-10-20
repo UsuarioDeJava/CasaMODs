@@ -87,7 +87,13 @@ export async function start({ port = 8770, cdp = 9333, fixtures = false } = {}) 
     return ev(`(() => { const e = document.querySelector(${JSON.stringify(sel)}); if (!e) return null;
       e.scrollIntoView({ block: 'nearest' }); const b = e.getBoundingClientRect(); return [b.x + b.width / 2, b.y + b.height / 2]; })()`);
   }
+  // Clicks go where a person would click: on what has stopped moving (the
+  // widget's panels slide in and its height follows them)
+  const SETTLED = `(() => { const w = document.querySelector('.smp-widget .widget');
+    return !(w && w.style.height) && !document.getAnimations().some((a) => a.playState === 'running' && a.effect
+      && a.effect.getTiming().iterations !== Infinity && a.effect.target && a.effect.target.closest && a.effect.target.closest('.smp-widget')); })()`;
   async function clickSel(sel) {
+    await waitFor(SETTLED, 2000);
     const c = await center(sel);
     if (!c) throw new Error('not found: ' + sel);
     await click(c[0], c[1]);

@@ -1,9 +1,9 @@
 /*
- * Music Player + Spotify — styles. Matches the look of the CasaOS dashboard
- * widgets (white text over the frosted .blur-background); every class is
- * prefixed with "smp-" so it never collides with CasaOS. The Music Player's
- * styles, plus the source switch and the Spotify mode (Spotify's green as
- * the accent there).
+ * Music Player — styles. Matches the look of the CasaOS dashboard widgets
+ * (white text over the frosted .blur-background); every class is prefixed
+ * with "smp-" so it never collides with CasaOS. The local player, the source
+ * switch, the Spotify and Jellyfin modes (their colors as the accent there)
+ * and the motion.
  */
 .smp-widget {
   --smp-muted: hsl(208, 16%, 78%);
@@ -100,6 +100,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .smp-art.smp-playing i { animation: none; height: 60%; }
+  .smp-widget *,
+  .smp-widget *::after { animation: none !important; transition: none !important; }
 }
 
 .smp-meta { min-width: 0; }
@@ -330,6 +332,7 @@
 .smp-head-left { display: flex; align-items: center; gap: 0.4rem; min-width: 0; }
 .smp-head-btns { align-items: center; }
 .smp-source {
+  position: relative;
   display: inline-flex;
   margin-inline-end: 0.2rem;
   padding: 2px;
@@ -349,16 +352,42 @@
   color: #fff;
   opacity: 0.6;
   cursor: pointer;
-  transition: background 0.15s, opacity 0.15s;
+  transition: color 0.3s, opacity 0.3s;
 }
+.smp-src { position: relative; }   /* over the thumb */
 .smp-src svg { width: 15px; height: 15px; }
 .smp-src:hover { opacity: 1; }
 .smp-src:focus-visible { outline: 2px solid var(--smp-accent); outline-offset: 1px; }
-.smp-src.smp-on { background: rgba(255, 255, 255, 0.9); color: #111827; opacity: 1; }
-.smp-src[data-src="spotify"].smp-on { background: hsl(141, 73%, 42%); color: #fff; }
-.smp-src[data-src="jellyfin"].smp-on { background: linear-gradient(135deg, #aa5cc3, #00a4dc); color: #fff; }
+.smp-src.smp-on { color: #111827; opacity: 1; }
+.smp-src[data-src="spotify"].smp-on,
+.smp-src[data-src="jellyfin"].smp-on { color: #fff; }
+/* The thumb slides to the chosen source and takes its color (Jellyfin's
+   gradient fades in on its ::after) */
+.smp-src-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.55rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.9);
+  transition: transform 0.4s cubic-bezier(0.3, 1.3, 0.5, 1), background-color 0.4s;
+}
+.smp-src-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #aa5cc3, #00a4dc);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.smp-widget[data-source="spotify"] .smp-src-thumb { transform: translateX(100%); background-color: hsl(141, 73%, 42%); }
+.smp-widget[data-source="jellyfin"] .smp-src-thumb { transform: translateX(200%); background-color: #5582d0; }
+.smp-widget[data-source="jellyfin"] .smp-src-thumb::after { opacity: 1; }
 .smp-btn[hidden],
 .smp-like[hidden],
+.smp-dev-btn[hidden],
 .smp-device[hidden],
 .smp-info[hidden],
 .smp-pop[hidden],
@@ -421,6 +450,9 @@
   cursor: pointer;
 }
 .smp-device:hover { background: var(--smp-faint); color: #fff; }
+/* Spotify: the device button at the end of the volume row, in the accent
+   while the music plays on another device */
+.smp-dev-btn.smp-away:not(.smp-on) { color: var(--smp-accent); opacity: 1; }
 .smp-device svg { flex: none; width: 14px; height: 14px; }
 .smp-device span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .smp-seek:disabled,
@@ -541,3 +573,25 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
+
+/* ---------- Motion (the widget's height follows in mod.js) ---------- */
+/* Panels and notes fade in where they open */
+.smp-listbox,
+.smp-folder,
+.smp-upnext,
+.smp-devices,
+.smp-spset,
+.smp-jfset,
+.smp-pop,
+.smp-msg,
+.smp-device { animation: smp-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes smp-in { from { opacity: 0; transform: translateY(-0.4rem); } }
+/* Buttons that come and go with the mode or the track */
+.smp-head-btns .smp-btn,
+.smp-like,
+.smp-dev-btn { animation: smp-fade 0.3s ease; }
+@keyframes smp-fade { from { opacity: 0; transform: scale(0.8); } }
+/* A mode switch: what changes slides in from the side of its button */
+.smp-swap .smp-heading,
+.smp-swap .smp-content > :not(.smp-head) { animation: smp-swap 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes smp-swap { from { opacity: 0; transform: translateX(calc(var(--smp-from, 1) * 0.75rem)); } }

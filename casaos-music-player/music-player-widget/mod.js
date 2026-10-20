@@ -3318,7 +3318,7 @@
   var JF_AUTH = STORE + '-jellyfin';
   var JF_SHARED = SHARED_DIR + '/music-player-jellyfin.json';
   var JF_KEYS = ['server', 'token', 'user', 'device', 'at'];
-  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '2.0.1';
+  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '2.1.0';
   var JF_HELP = 'https://github.com/UsuarioDeJava/CasaMODs/tree/main/casaos-music-player#jellyfin';
   var JF_PAGE = 200, JF_ALL_PAGE = 500, JF_SHOWN = 300;
   // What this browser plays as it is (Jellyfin converts the rest to MP3)
@@ -3973,9 +3973,49 @@
     webSync();
     save();
     render();
+    swapIn(SOURCES.indexOf(src) > SOURCES.indexOf(was) ? 1 : -1);
     updateSession();
     updatePlaybackState();
     publish();
+  }
+
+  var SOURCES = ['local', 'spotify', 'jellyfin'], swapTimer = 0;
+  function swapIn(from) {
+    if (!root) return;
+    root.style.setProperty('--smp-from', String(from));
+    root.classList.remove('smp-swap');
+    void root.offsetWidth;   // restarts the animation
+    root.classList.add('smp-swap');
+    clearTimeout(swapTimer);
+    swapTimer = setTimeout(function () { root.classList.remove('smp-swap'); }, 400);
+  }
+
+  // The widget's height follows its content smoothly (a mode, a panel, a
+  // message): the content is watched, and the box goes from the height it
+  // showed to the new one. Nothing runs while nothing changes. offsetHeight,
+  // not getBoundingClientRect: layout pixels, whatever transforms other mods add.
+  function smoothHeight(box, content) {
+    if (!box || !content || !window.ResizeObserver) return;
+    var shown = 0, timer = 0, calm = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+    function settle() {
+      clearTimeout(timer);
+      box.style.height = box.style.overflow = box.style.transition = '';
+    }
+    new ResizeObserver(function () {
+      var from = box.style.height ? box.offsetHeight : shown;
+      box.style.transition = 'none';   // CasaOS's .widget has "transition: all"
+      box.style.height = '';
+      var to = box.offsetHeight;
+      shown = to;
+      if (!from || !to || Math.abs(from - to) < 2 || document.hidden || (calm && calm.matches)) return settle();
+      box.style.overflow = 'hidden';
+      box.style.height = from + 'px';
+      void box.offsetHeight;
+      box.style.transition = 'height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+      box.style.height = to + 'px';
+      clearTimeout(timer);
+      timer = setTimeout(settle, 360);
+    }).observe(content);
   }
 
   // ---------------------------------------------------------------------------
@@ -4004,6 +4044,7 @@
       '    </span>' +
       '    <span class="smp-head-btns">' +
       '      <span class="smp-source" dir="ltr">' +
+      '        <i class="smp-src-thumb" aria-hidden="true"></i>' +
       '        <button type="button" class="smp-src" data-act="source" data-src="local">' + icon('note') + '</button>' +
       '        <button type="button" class="smp-src" data-act="source" data-src="spotify">' + icon('spotify') + '</button>' +
       '        <button type="button" class="smp-src" data-act="source" data-src="jellyfin">' + icon('jellyfin') + '</button>' +
@@ -4037,6 +4078,7 @@
       '  <div class="smp-volume" dir="ltr">' +
       '    <button type="button" class="smp-btn smp-small" data-act="mute"></button>' +
       '    <input type="range" class="smp-vol" min="0" max="100" step="1">' +
+      '    <button type="button" class="smp-btn smp-small smp-dev-btn" data-act="devices" hidden>' + icon('device') + '</button>' +
       '  </div>' +
       '  <div class="smp-msg" hidden></div>' +
       '  <div class="smp-folder" hidden>' +
@@ -4110,6 +4152,7 @@
     el.upnext = root.querySelector('.smp-upnext');
     el.nlist = root.querySelector('.smp-nlist');
     el.settingsBtn = root.querySelector('[data-act="settings"]');
+    el.devBtn = root.querySelector('.smp-dev-btn');
     ['info', 'pop', 'like', 'device', 'devices', 'spset', 'https', 'cid', 'uri', 'account', 'help', 'controls', 'volume', 'web', 'web-row', 'web-note',
       'jfset', 'jf-server', 'jf-note', 'jf-wait', 'jf-how', 'jf-code', 'jf-account', 'jf-help']
       .forEach(function (k) { el[k.replace(/-(\w)/g, function (m, c) { return c.toUpperCase(); })] = root.querySelector('.smp-' + k); });
@@ -4117,6 +4160,7 @@
     el.spHead = root.querySelector('.smp-sp-head');
     el.spName = root.querySelector('.smp-sp-name');
     el.src = root.querySelectorAll('.smp-src');
+    smoothHeight(root.querySelector('.widget'), root.querySelector('.smp-content'));
 
     root.addEventListener('click', onClick);
     el.seek.addEventListener('input', function () {
@@ -4702,7 +4746,7 @@
       el.vol.disabled = el.mute.disabled = false;
       el.msg.hidden = !state.message;
       el.msg.textContent = state.message;
-      el.like.hidden = el.device.hidden = el.info.hidden = el.pop.hidden = true;
+      el.like.hidden = el.device.hidden = el.devBtn.hidden = el.info.hidden = el.pop.hidden = true;
       el.seek.disabled = false;
     }
     el.folder.hidden = !local || !state.showFolder;
@@ -4852,11 +4896,17 @@
     el.msg.hidden = !sp.message;
     el.msg.textContent = sp.message;
 
-    el.device.hidden = !on;
-    el.device.querySelector('span').textContent = p && p.device ? t('spOn').replace('{name}', p.device.name) : t('spDevices');
+    // The device: a button by the volume, whose panel says where it plays
+    // (a free account has no volume row: the line under the controls)
+    var free = auth.premium === false, where = p && p.device ? t('spOn').replace('{name}', p.device.name) : t('spDevices');
+    el.device.hidden = !on || !free;
+    el.device.querySelector('span').textContent = where;
     el.device.title = t('spDevices');
+    el.devBtn.hidden = !on || free;
+    el.devBtn.title = where;
+    el.devBtn.classList.toggle('smp-on', state.showDevices);
+    el.devBtn.classList.toggle('smp-away', !!(p && p.device && p.device.id !== web.id));   // playing on another device
 
-    var free = auth.premium === false;
     el.info.hidden = !(on && free);
     el.info.title = t('spFreeShort');
     el.info.setAttribute('aria-expanded', String(sp.info && free));
@@ -4864,7 +4914,7 @@
     if (!el.pop.hidden) el.pop.textContent = t('spFreeInfo');
 
     // Devices: this browser first (unless another CasaOS tab is it), then Spotify's list
-    el.devices.querySelector('.smp-dev-label').textContent = t('spDevices');
+    el.devices.querySelector('.smp-dev-label').textContent = where;
     var canWeb = on && webSupported() && auth.premium !== false;
     if (state.showDevices) {
       var here = canWeb && !(web.asked && !web.held), cur = p && p.device ? p.device.id : null, html = '';
@@ -4939,7 +4989,7 @@
     el.seek.disabled = !tr;
     el.msg.hidden = !jf.message;
     el.msg.textContent = jf.message;
-    el.device.hidden = el.info.hidden = el.pop.hidden = true;
+    el.device.hidden = el.devBtn.hidden = el.info.hidden = el.pop.hidden = true;
     el.like.hidden = !(on && tr);
     el.like.classList.toggle('smp-on', !!(tr && tr.fav));
     el.like.title = tr && tr.fav ? t('jfUnfavorite') : t('jfFavorite');

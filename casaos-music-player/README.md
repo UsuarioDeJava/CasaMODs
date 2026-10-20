@@ -14,7 +14,7 @@ To remove it, move the folder out of `/DATA/AppData/casamod/mod/` and restart Ca
 
 ## Choosing the source
 
-The three icons at the top of the widget switch what it plays: **Local** (the note), **Spotify** (the round icon) and **Jellyfin** (the triangle). One plays at a time: switching pauses the local or Jellyfin music (and stops Play in this browser), and each mode keeps where it was. The widget remembers the last mode. Spotify and Jellyfin connect once, in their settings (the gear); see their sections below.
+The three icons at the top of the widget switch what it plays: **Local** (the note), **Spotify** (the round icon) and **Jellyfin** (the triangle). One plays at a time: switching pauses the local or Jellyfin music (and stops Play in this browser), and each mode keeps where it was. The widget remembers the last mode. The highlight slides to the chosen icon, what changes slides in from its side, and the widget's height follows (panels opening and closing too), so the three modes have the same size. Spotify and Jellyfin connect once, in their settings (the gear); see their sections below.
 
 ## Local
 
@@ -63,7 +63,7 @@ Only devices in your tailnet can open it; nothing is exposed to the internet (no
 
 1. On the dashboard, switch the widget to **Spotify** (the round icon at its top) and open its settings (the gear).
 2. Paste the Client ID and click **Connect**. Spotify asks you to allow access, then sends you back to CasaOS, connected.
-3. Play something in Spotify on any device. The widget follows it; the "Playing on…" line moves the music to another device.
+3. Play something in Spotify on any device. The widget follows it; the device button (at the end of the volume row) says where it plays and moves the music to another device.
 
 **One login for every browser:** the login is saved on your CasaOS server, so any browser where you're logged in to CasaOS (another PC, the phone, the `http://` address) is connected too, with no Spotify login of its own. See "How it works" for where it is kept.
 
@@ -75,7 +75,7 @@ The CasaOS tab becomes a Spotify device, named after the browser ("CasaOS (Chrom
 
 1. Tick **Web Playback SDK** in your Spotify app (step 2.4).
 2. In the widget's Spotify settings, turn on **Play in this browser**. If the widget connected before Music Player + Spotify 1.2.0, it asks you to connect again once (the player needs three more permissions: `streaming`, `user-read-email`, `user-read-private`): click **Connect** and accept.
-3. "Ready: CasaOS (Chrome) is in your Spotify devices" means it worked. Choose **This browser** at the top of the devices (the "Playing on…" line), or pick it in any Spotify app. With nothing playing anywhere, play in the widget starts it here.
+3. "Ready: CasaOS (Chrome) is in your Spotify devices" means it worked. Choose **This browser** at the top of the devices (the device button by the volume), or pick it in any Spotify app. With nothing playing anywhere, play in the widget starts it here.
 
 - It is per browser: turn it on in each browser that should play. With several CasaOS tabs open, one of them is the device (the others take over when it closes).
 - The device exists only while CasaOS is open in Spotify mode: switching the widget to Local (or disconnecting) stops it, and the music playing here with it.
@@ -87,7 +87,7 @@ The CasaOS tab becomes a Spotify device, named after the browser ("CasaOS (Chrom
 - **Now playing:** the cover, title, artist and album, a ❤ to save it to (or remove it from) Liked Songs, the progress (drag it to seek), shuffle, previous, play/pause, next, repeat (all / one / off) and the volume (when the device lets it be set), and the device it plays on.
 - **Library** (the list button): Liked Songs and your playlists, with the same search box as the local playlist; typing also searches Spotify's catalog (its 10 best tracks, under "On Spotify"). Clicking a playlist opens its tracks (more load as you scroll; a search goes through all of them). Clicking a track plays it there, in the playlist; the button beside it adds it to the Spotify queue (✓ once added: only Spotify itself can take it out of the queue, the API has no way to).
 - **Up next** (the button beside the list button, in every mode): what plays now and what comes after it. In Spotify mode, Spotify's queue and then the rest of the playlist or album (up to 20); clicking one skips ahead to it. In local mode, the tracks you queued (✕ takes one out), then the next 20 in play order; clicking one plays it.
-- **Devices** (the "Playing on…" line): **This browser** first (with Play in this browser), then the devices where Spotify is open; one click moves the music there. With nothing playing, a command opens this list (or, with this browser ready, play starts here).
+- **Devices** (the button at the end of the volume row, in Spotify's green while the music plays on another device; a free account, which has no volume row, gets a "Playing on…" line instead): its panel says where the music plays, then lists **This browser** first (with Play in this browser), then the devices where Spotify is open; one click moves the music there. With nothing playing, a command opens this list (or, with this browser ready, play starts here).
 - **Free account**: what plays, the library and the ❤; no controls, and an (i) beside the title that says why. The widget finds out by itself (Spotify no longer says it to apps like this one): a command that changes nothing is sent when a device is playing, and a free account's answer is `PREMIUM_REQUIRED`. It asks again after 6 hours and on another device, so an upgrade shows up by itself.
 - Media keys that reach the CasaOS tab, and the browser's and the system's media controls (Chrome's media button, Windows' volume overlay), control Spotify in Spotify mode: what plays, the cover, where the song is, play/pause, previous/next, ±10 s and seeking.
 
@@ -146,6 +146,7 @@ The Jellyfin mode plays the music library of your [Jellyfin](https://jellyfin.or
 - Folders are listed with the CasaOS API, `GET /v1/folder?path=…` (with the session's token), breadth-first up to 3 levels, 3000 files and 400 folders; hidden files are skipped. Audio types: mp3, flac, ogg/oga, opus, wav, m4a, aac, webm/weba.
 - Tracks stream from `GET /v1/file?path=…&token=…`, which supports seeking. Your files never leave the server.
 - Tags are read from the same URL with HTTP ranges: the first 64 KB, then exactly the tag's size when it is bigger (up to 4 MB, for big covers); for MP4 the top-level atoms are walked with small reads to the `moov` one, wherever it is. The last 30 tracks' tags are kept in memory.
+- **Motion:** CSS transitions and one-shot animations (the source switch's sliding highlight, panels fading in, a mode sliding in) plus the widget's height, animated from the height it showed to the new one when a `ResizeObserver` on its content reports a change. Nothing runs while nothing changes; with "reduce motion" set in the system, none of it plays.
 - The widget is mounted in the CasaOS sidebar (`.ps-container`) and a cheap observer mounts it again when CasaOS re-renders. Playback lives outside the widget, so it survives that. widget-sortable sorts the sidebar only once, before this widget is added, so the widget places itself by the order that mod keeps (`localStorage['widget-sortable']`); first when there is none.
 - **Spotify login:** Authorization Code with PKCE, right from the CasaOS page (`crypto.subtle` for the challenge): no server and no secret, only your app's Client ID. The redirect is the page's own address (`location.origin + '/'`); back from Spotify, the mod exchanges the code and cleans the address. The access token is renewed a minute before it ends, with the refresh token Spotify replaces each time (shared between tabs through `localStorage`). Scopes: `user-read-playback-state user-modify-playback-state user-read-currently-playing playlist-read-private playlist-read-collaborative user-library-read user-library-modify streaming user-read-email user-read-private` (the last three for the Web Playback SDK).
 - **Storage** (the names come from Music Player + Spotify, so its settings and logins carry over): the local player's settings (and the Jellyfin mode's list, track and queue, as Jellyfin ids) in `localStorage['casamod-music-player-spotify']`; the Spotify login, the account and what Spotify refused in `localStorage['casamod-music-player-spotify-auth']`; the Jellyfin login in `localStorage['casamod-music-player-spotify-jellyfin']`.
