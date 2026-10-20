@@ -45,7 +45,7 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 
 ## Every app in a window: the frame proxy
 
-[`frame-proxy.sh`](frame-proxy.sh) is a script you run once on the CasaOS server (it's not part of the mod). With CasaOS opened at its Tailscale HTTPS address, it makes **every app open in a window**, with a valid certificate and no warnings. It only works inside your tailnet, and nothing is exposed to the internet.
+[`frame-proxy.sh`](app-windows/frame-proxy.sh) comes in the mod's folder, and you run it once on the CasaOS server. With CasaOS opened at its Tailscale HTTPS address, it makes **every app open in a window**, with a valid certificate and no warnings. After that, new apps join by themselves, and its page adds or removes ports. It only works inside your tailnet, and nothing is exposed to the internet.
 
 ### How it works
 
@@ -77,24 +77,21 @@ browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve
    sudo tailscale serve --bg 80
    ```
    It prints CasaOS's address, `https://<machine>.<tailnet>.ts.net/`. Open CasaOS there from now on. Already done if you use the Music Player's Spotify mode.
-4. **Docker** and **curl** on the server (CasaOS has both).
+4. **Docker**, **curl** and **systemd** on the server (CasaOS has them).
 
 ### Step by step
 
-1. **Download the script** on the CasaOS server:
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/UsuarioDeJava/CasaMODs/main/casaos-app-windows/frame-proxy.sh -o frame-proxy.sh
-   ```
-2. **List the ports Docker doesn't show.** The script finds every port Docker publishes. It can't see two kinds of apps, so you list their ports in `EXTRA`:
+1. **Install the mod** ([Install](#install)): the script comes in its folder, at `/DATA/AppData/casamod/mod/app-windows/frame-proxy.sh`.
+2. **List the ports Docker doesn't show** (or add them later on its page). The script finds every port Docker publishes. It can't see two kinds of apps, so you list their ports in `EXTRA`:
    - apps **outside Docker** (noVNC on 6080, for example);
    - apps on the **host network** (Home Assistant from CasaOS's store, on 8123). This lists them:
      ```bash
      sudo docker ps --filter network=host --format '{{.Names}}'
      ```
      Their port is the one in the app's address when CasaOS opens it.
-3. **Run it** (with your ports in `EXTRA`, or just `sudo bash frame-proxy.sh` if there are none):
+3. **Run it** on the server (with your ports in `EXTRA`, or without `EXTRA="…"` if there are none):
    ```bash
-   sudo EXTRA="6080 8123" bash frame-proxy.sh
+   sudo EXTRA="6080 8123" bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh
    ```
    It prints one line per app port, with `(its own https)` for the apps that have their own certificate, and the port of its own page:
    ```
@@ -104,16 +101,17 @@ browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve
    https port 8444 -> app 8444 (its own https)
    ```
 4. **Reload CasaOS** at its `https://` address (Ctrl+F5) and open an app: it opens in a window.
-5. **Run the same command again** after installing an app or changing an app's port. Each run rebuilds everything, so it's always safe to run it again.
+5. **That's it.** When you install or remove an app, a timer on the server notices its port within a minute and runs the script again by itself. Anything else (an app outside Docker, a port to leave out) goes on the [Frame Proxy page](#the-frame-proxy-app). Running the script again by hand is always safe: each run rebuilds everything.
 
 ### Options
 
-Set them before the command, as in step 3.
+Set them before the command, as in step 3. They're kept in `/DATA/AppData/frame-proxy/config` for the next runs (the timer's, the page's), and the page changes `EXTRA`, `HTTPS_APPS` and `SKIP`.
 
 | Option | What it does |
 | --- | --- |
 | `EXTRA="6080 8123"` | Ports of apps the script can't find in Docker: outside Docker or on the host network. |
 | `HTTPS_APPS="8444"` | Ports to treat as HTTPS even if the app wasn't running when the script ran (the script tries TLS on each port; a stopped app can't answer). |
+| `SKIP="9000"` | Ports Docker publishes that stay out of the proxy (on the page: **Remove** on a Docker app). |
 | `PAGE_PORT="8390"` | The port of the Frame Proxy page (8390 unless set; `PAGE_PORT=""` for no page). |
 
 ### Check that it's working
@@ -125,15 +123,24 @@ tailscale serve status                     # each app port -> http://127.0.0.1:<
 sudo docker ps --filter name=frame-proxy   # the Caddy container, "Up"
 curl -sI http://127.0.0.1:38096/           # an app through Caddy (port + 30000): its answer, without X-Frame-Options
 sudo docker logs frame-proxy               # Caddy's messages
+systemctl status frame-proxy-api.socket frame-proxy-scan.timer   # the page's requests, the timer
 ```
 
 Caddy's configuration is in `/DATA/AppData/frame-proxy/Caddyfile`, written again at each run.
 
 ### The Frame Proxy app
 
-Caddy shows on the CasaOS dashboard as the app **Frame Proxy**, with its own icon. The script writes it as a Docker Compose app (`/DATA/AppData/frame-proxy/docker-compose.yml`, with CasaOS's `x-casaos` details) and starts it with `docker compose`; CasaOS lists every Compose app on the server, so nothing needs importing. Its card opens its page, which lists the ports it serves (port 8390, or `PAGE_PORT`).
+Caddy shows on the CasaOS dashboard as the app **Frame Proxy**, with its own icon. The script writes it as a Docker Compose app (`/DATA/AppData/frame-proxy/docker-compose.yml`, with CasaOS's `x-casaos` details) and starts it with `docker compose`; CasaOS lists every Compose app on the server, so nothing needs importing.
 
-- **Manage it with the script, not in CasaOS:** run the script again after installing an app (it rewrites the app and restarts it), and `off` to remove it. Stopping or uninstalling it in CasaOS leaves each app's `https://` address pointing at a Caddy that isn't there (those addresses stop answering until the script runs again or `off` clears them), and changing its settings in CasaOS is undone by the next run.
+Its card opens its page (port 8390, or `PAGE_PORT`):
+
+- the ports it serves, each one a link: **Docker app**, or **added** by you; **its own https** for apps with their own certificate;
+- **Remove** takes a port out (a Docker app's port is then kept out, **left out**, until **Add back**); the box below adds a port (tick **the app serves https itself** for one with its own certificate); **Scan again** looks for apps right away;
+- each change runs the script again on the server (Caddy restarts, a few seconds), and the page says **Done.** when it's over.
+
+Changes work only with the page opened from CasaOS at its `https://` address (through Tailscale). At `http://` on your network, the page only shows the ports. Behind it: the page's requests go to a systemd socket on the server (`frame-proxy-api.socket`), which Caddy reaches only for requests coming through `tailscale serve`; it saves the ports and runs the script again. `frame-proxy-scan.timer` checks Docker's ports every minute and runs the script when they change.
+
+- **Manage it with its page and the script, not in CasaOS:** `off` removes it. Stopping or uninstalling it in CasaOS leaves each app's `https://` address pointing at a Caddy that isn't there (those addresses stop answering until the script runs again or `off` clears them), and changing its settings in CasaOS is undone by the next run.
 - An older version of the script made it a plain container, which CasaOS shows under **Legacy app (To be rebuilt)**. Running the new script replaces it with the app (don't use **Import to CasaOS** on the old one).
 - Without Docker Compose on the server (`docker compose version` fails), the script falls back to a plain container, which CasaOS shows under Legacy app.
 
@@ -142,19 +149,19 @@ Caddy shows on the CasaOS dashboard as the app **Frame Proxy**, with its own ico
 | What you see | Why | What to do |
 | --- | --- | --- |
 | **"Frame proxy: the app on port … did not answer (502 …)"** | The app is stopped, or its port changed. | Start the app. If its port changed, run the script again. |
-| **"Refused to connect"** at `https://…ts.net:<port>` | Nothing answers HTTPS on that port: an app outside Docker or on the host network, or one installed after the script ran. | Add its port to `EXTRA` and run the script again. |
+| **"Refused to connect"** at `https://…ts.net:<port>` | Nothing answers HTTPS on that port: an app outside Docker or on the host network. | Add its port on the Frame Proxy page (or in `EXTRA`). |
 | **A blank window**, and the console says `X-Frame-Options` or `frame-ancestors` | That app isn't going through the proxy (CasaOS opened at `http://`, or its port isn't served). | Open CasaOS at its `https://` address; run the script again with the port in `EXTRA` if needed. |
-| **"400: Bad Request"** (Home Assistant) | An older version of the script, or the port is served straight to the app by an older `tailscale serve` line. | Download the script again and run it with the port in `EXTRA`. |
-| **A certificate error** for an app with its own HTTPS | The app wasn't running when the script ran, so it was taken for plain HTTP. | Start the app and run the script again, or use `HTTPS_APPS="<port>"`. |
+| **"400: Bad Request"** (Home Assistant) | An older version of the script, or the port is served straight to the app by an older `tailscale serve` line. | Copy the mod again (it brings the newer script) and run the script. |
+| **A certificate error** for an app with its own HTTPS | The app wasn't running when the script ran, so it was taken for plain HTTP. | Start the app and press **Scan again** on the page, or remove the port and add it back with **the app serves https itself**. |
 | **"Port … is in use: app port … skipped."** | Something else already uses that app's port + 30000. | That app stays out of the proxy. Free that port and run the script again. |
 
 ### Undo
 
 ```bash
-sudo EXTRA="6080 8123" bash frame-proxy.sh off
+sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh off
 ```
 
-Use the same `EXTRA` as when you ran it: `off` removes the Frame Proxy app (Caddy's container) and the `tailscale serve` line of each port it finds. CasaOS's own `https://` (port 443) stays. `sudo tailscale serve reset` clears every `tailscale serve` line, CasaOS's too (then run `sudo tailscale serve --bg 80` again).
+`off` removes the Frame Proxy app (Caddy's container), its systemd socket and timer, and the `tailscale serve` line of each port it served. CasaOS's own `https://` (port 443) stays. `sudo tailscale serve reset` clears every `tailscale serve` line, CasaOS's too (then run `sudo tailscale serve --bg 80` again).
 
 ### What it changes, security-wise
 

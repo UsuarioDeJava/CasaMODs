@@ -17,29 +17,93 @@
 # your network don't change.
 #
 # Caddy runs as a CasaOS app, "Frame Proxy" (a Docker Compose project whose
-# file the script writes; CasaOS lists every Compose project), and its card
-# opens a page with the ports it serves.
+# file the script writes; CasaOS lists every Compose project). Its card opens
+# a page that lists the ports and adds or removes them: the page's requests
+# reach a systemd socket on this machine (frame-proxy-api.socket), which saves
+# the ports and runs this script again. A timer (frame-proxy-scan.timer) runs
+# it again by itself when Docker's ports change (an app installed or removed).
+# It ships in App Windows' folder: run it once on the server; after that the
+# page and the timer keep it up to date.
 #
-# On the CasaOS server (again after installing an app):
-#   sudo bash frame-proxy.sh
+# On the CasaOS server:
+#   sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh
 # Undo:
-#   sudo bash frame-proxy.sh off
-# Options (environment):
+#   sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh off
+# Options (environment; kept in /DATA/AppData/frame-proxy/config for the next
+# runs, and changed by the page):
 #   EXTRA="6080"            ports of apps outside Docker or on the host network
 #                           (noVNC, for example)
 #   HTTPS_APPS="8444"       ports to treat as HTTPS even if the app wasn't
 #                           answering when the script ran
+#   SKIP="9000"             ports Docker publishes that stay out of the proxy
 #   PAGE_PORT="8390"        the port of the Frame Proxy page (empty: no page)
 set -euo pipefail
 
 DIR=/DATA/AppData/frame-proxy
-HTTPS_APPS=${HTTPS_APPS:-""}
-EXTRA=${EXTRA:-""}
 OFFSET=30000
 NAME=frame-proxy
 IMAGE=caddy:2-alpine
-PAGE_PORT=${PAGE_PORT-8390}
 ICON=https://cdn.jsdelivr.net/gh/UsuarioDeJava/CasaMODs@main/casaos-app-windows/frame-proxy-icon.png
+UNITS=/etc/systemd/system
+
+# A list of ports: the numbers 1-65535 in it, sorted, once each
+ports() { tr -cs '0-9' '\n' <<<"${1:-}" | awk '$1 > 0 && $1 < 65536 { print $1 + 0 }' | sort -un | head -n 64 | paste -sd' ' - || true; }
+
+# The settings: from the environment when given, else from the last run
+conf() { sed -n "s/^$1=\"\\(.*\\)\"\$/\\1/p" "$DIR/config" 2>/dev/null | head -n1 || true; }
+EXTRA=$(ports "${EXTRA-$(conf EXTRA)}")
+HTTPS_APPS=$(ports "${HTTPS_APPS-$(conf HTTPS_APPS)}")
+SKIP=$(ports "${SKIP-$(conf SKIP)}")
+if [ -z "${PAGE_PORT+x}" ]; then
+  if grep -q '^PAGE_PORT=' "$DIR/config" 2>/dev/null; then PAGE_PORT=$(conf PAGE_PORT); else PAGE_PORT=8390; fi
+fi
+PAGE_PORT=$(ports "$PAGE_PORT" | cut -d' ' -f1)
+save_config() {
+  mkdir -p "$DIR"
+  printf 'EXTRA="%s"\nHTTPS_APPS="%s"\nSKIP="%s"\nPAGE_PORT="%s"\n' "$EXTRA" "$HTTPS_APPS" "$SKIP" "$PAGE_PORT" > "$DIR/config"
+}
+
+# One request from the Frame Proxy page. systemd hands the connection over as
+# stdin/stdout (frame-proxy-api.socket: a Unix socket in $DIR/api that only the
+# Caddy app reaches, and Caddy passes on only POSTs from this machine, which is
+# how tailscale serve's requests arrive). It answers first: the run it starts
+# (its own unit, frame-proxy-apply-…; runs wait for each other) restarts
+# Caddy, the answer's way back.
+if [ "${1:-}" = api ]; then
+  answer() {
+    printf 'HTTP/1.1 %s\r\nContent-Type: application/json\r\nCache-Control: no-store\r\nConnection: close\r\nContent-Length: %s\r\n\r\n%s' "$1" "${#2}" "$2"
+    exit 0
+  }
+  IFS= read -r -t 5 req || exit 0
+  read -r method target _ <<<"${req%$'\r'}"
+  marked=""
+  while IFS= read -r -t 5 h; do
+    h=${h%$'\r'}
+    [ -n "$h" ] || break
+    case "${h,,}" in 'x-frame-proxy: 1') marked=1 ;; esac
+  done
+  [ "$method" = POST ] && [ -n "$marked" ] || answer '403 Forbidden' '{"ok":false}'
+  case "$target" in
+    /api/ping) answer '200 OK' '{"ok":true}' ;;
+    /api/scan) ;;
+    /api/ports\?*)
+      IFS='&' read -ra pairs <<<"${target#*\?}"
+      for kv in ${pairs[@]+"${pairs[@]}"}; do
+        v=${kv#*=}
+        [[ $v =~ ^[0-9.]*$ ]] || answer '400 Bad Request' '{"ok":false}'
+        case "${kv%%=*}" in
+          extra) EXTRA=$(ports "$v") ;;
+          https) HTTPS_APPS=$(ports "$v") ;;
+          skip) SKIP=$(ports "$v") ;;
+        esac
+      done
+      save_config ;;
+    *) answer '404 Not Found' '{"ok":false}' ;;
+  esac
+  systemd-run --no-block --collect --quiet --unit "frame-proxy-apply-$(date +%s%N)" -p After=docker.service \
+    /bin/bash "$DIR/frame-proxy.sh" >/dev/null 2>&1 || answer '500 Internal Server Error' '{"ok":false}'
+  answer '202 Accepted' '{"ok":true}'
+fi
 
 [ "$(id -u)" = 0 ] || { echo "Run it with sudo." >&2; exit 1; }
 command -v docker >/dev/null || { echo "Docker not found." >&2; exit 1; }
@@ -47,14 +111,29 @@ command -v tailscale >/dev/null || { echo "Tailscale not found." >&2; exit 1; }
 command -v curl >/dev/null || { echo "curl not found." >&2; exit 1; }
 COMPOSE=""
 docker compose version >/dev/null 2>&1 && COMPOSE=1
+SYSTEMD=""
+[ -d /run/systemd/system ] && command -v systemctl >/dev/null && SYSTEMD=1
 
-# The TCP ports Docker publishes on every address, plus EXTRA; not CasaOS's own (80, 443)
-app_ports() {
-  {
-    docker ps --format '{{.Ports}}' | grep -oE '0\.0\.0\.0:[0-9]+->[0-9]+/tcp' | sed -E 's/^0\.0\.0\.0:([0-9]+)->.*/\1/' || true
-    for p in $EXTRA $PAGE_PORT; do echo "$p"; done
-  } | sort -un | grep -vxE '80|443' || true
+# The TCP ports Docker publishes on every address; not CasaOS's own (80, 443)
+docker_ports() {
+  docker ps --format '{{.Ports}}' | grep -oE '0\.0\.0\.0:[0-9]+->[0-9]+/tcp' | sed -E 's/^0\.0\.0\.0:([0-9]+)->.*/\1/' |
+    grep -vxE '80|443' | sort -un || true
 }
+
+# What the proxy serves: Docker's ports and EXTRA, without SKIP; the page's port
+app_ports() {
+  local out="" p
+  for p in $(ports "$(docker_ports) $EXTRA"); do
+    case " $SKIP $PAGE_PORT " in *" $p "*) ;; *) out="$out $p" ;; esac
+  done
+  ports "$out $PAGE_PORT"
+}
+
+# Run again when Docker's ports change (the scan timer)
+if [ "${1:-}" = scan ]; then
+  [ "$(app_ports)" = "$(cat "$DIR/scanned" 2>/dev/null || true)" ] && exit 0
+  exec bash "$0"
+fi
 
 # Where Caddy listens for port P (only on this machine)
 local_port() {
@@ -68,15 +147,29 @@ is_https_app() {
 }
 
 if [ "${1:-}" = off ]; then
-  for p in $(app_ports); do tailscale serve --https="$p" off >/dev/null 2>&1 || true; done
+  for p in $(app_ports) $(cat "$DIR/served" 2>/dev/null || true); do tailscale serve --https="$p" off >/dev/null 2>&1 || true; done
+  if [ -n "$SYSTEMD" ]; then
+    systemctl disable --now frame-proxy-api.socket frame-proxy-scan.timer >/dev/null 2>&1 || true
+    rm -f "$UNITS/frame-proxy-api.socket" "$UNITS/frame-proxy-api@.service" \
+      "$UNITS/frame-proxy-scan.service" "$UNITS/frame-proxy-scan.timer"
+    systemctl daemon-reload || true
+  fi
   [ -z "$COMPOSE" ] || docker compose -p "$NAME" down >/dev/null 2>&1 || true
   docker rm -f "$NAME" >/dev/null 2>&1 || true
+  rm -f "$DIR/served" "$DIR/scanned"
   echo "Frame proxy removed. CasaOS's own https:// (port 443) is untouched."
   exit 0
 fi
 
+mkdir -p "$DIR"
+exec 9>"$DIR/lock"
+flock 9   # one run at a time (the page, the timer, by hand)
+save_config
+app_ports > "$DIR/scanned"   # what the timer compares (a failed run isn't retried until they change)
 docker rm -f "$NAME" >/dev/null 2>&1 || true   # the old one, if any (its ports free up)
-mkdir -p "$DIR/www" "$DIR/page"
+mkdir -p "$DIR/www" "$DIR/page" "$DIR/api"
+# The copy the page's requests and the timer run
+if [ -f "$0" ] && [ "$(readlink -f "$0")" != "$DIR/frame-proxy.sh" ]; then cp -f "$0" "$DIR/frame-proxy.sh"; fi
 if [ -n "$PAGE_PORT" ] && ss -ltnH "sport = :$PAGE_PORT" 2>/dev/null | grep -q .; then
   echo "Port $PAGE_PORT is in use: no Frame Proxy page (choose another with PAGE_PORT=...)." >&2
   PAGE_PORT=""
@@ -366,14 +459,25 @@ printf '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>\n' > "$DI
 
 served=""
 tls_ports=""
+busy=""
 {
   printf '{\n\tauto_https off\n\tadmin off\n}\n'
-  # the Frame Proxy page (what its card in CasaOS opens), on every address
-  [ -z "$PAGE_PORT" ] || printf 'http://:%s {\n\troot * /srv/page\n\theader Cache-Control no-cache\n\tfile_server\n}\n' "$PAGE_PORT"
+  # The Frame Proxy page (what its card in CasaOS opens), on every address.
+  # Its requests (/api/) go on only when they come from this machine (through
+  # tailscale serve) and are marked, which another site can't do.
+  if [ -n "$PAGE_PORT" ]; then
+    printf 'http://:%s {\n' "$PAGE_PORT"
+    printf '\t@api path /api/*\n\thandle @api {\n'
+    printf '\t\t@mine {\n\t\t\tmethod POST\n\t\t\tremote_ip 127.0.0.1 ::1\n\t\t\theader X-Frame-Proxy 1\n\t\t}\n'
+    printf '\t\thandle @mine {\n\t\t\treverse_proxy unix//srv/api/sock\n\t\t}\n'
+    printf '\t\thandle {\n\t\t\trespond "{\\"ok\\":false}" 403\n\t\t}\n\t}\n'
+    printf '\thandle {\n\t\troot * /srv/page\n\t\theader Cache-Control no-cache\n\t\tfile_server\n\t}\n}\n'
+  fi
   for p in $(app_ports); do
     q=$(local_port "$p")
     if ss -ltnH "sport = :$q" 2>/dev/null | grep -q .; then
       echo "Port $q is in use: app port $p skipped." >&2
+      busy="$busy $p"
       continue
     fi
     if is_https_app "$p"; then
@@ -403,9 +507,9 @@ tls_ports=""
 
 [ -n "$served" ] || { echo "No app ports found." >&2; exit 1; }
 
-# The Frame Proxy page: the ports served, each linked on the address the page is opened at
-{
-  cat <<'PAGE'
+# The Frame Proxy page: it reads state.json (written at the end of each run)
+# and sends its changes to /api/ (the systemd socket above)
+cat > "$DIR/page/index.html" <<'PAGE'
 <!doctype html>
 <html>
 <head>
@@ -414,48 +518,160 @@ tls_ports=""
 <title>Frame Proxy</title>
 <style>
 body{margin:0;min-height:100vh;background:#1e2533;color:#e8edf3;font:15px/1.5 system-ui,sans-serif}
-main{max-width:34rem;margin:0 auto;padding:2rem 1.25rem}
+main{max-width:36rem;margin:0 auto;padding:2rem 1.25rem}
 h1{margin:0 0 .25rem;font-size:1.4rem;font-weight:600}
 p{margin:.5rem 0;color:#aab6c5}
 ul{list-style:none;margin:1.25rem 0;padding:0}
-li{display:flex;justify-content:space-between;gap:1rem;padding:.6rem .8rem;border-radius:.6rem;background:rgba(255,255,255,.06);margin:.35rem 0}
+li{display:flex;align-items:center;gap:.75rem;padding:.55rem .8rem;border-radius:.6rem;background:rgba(255,255,255,.06);margin:.35rem 0;transition:opacity .2s}
+li.off{opacity:.55}
+li .what{flex:1;color:#aab6c5;font-size:13px}
 a{color:#8ab8ff;text-decoration:none}
+button{font:inherit;font-size:13px;color:#e8edf3;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:.25rem .8rem;cursor:pointer;transition:background .15s}
+button:hover{background:rgba(255,255,255,.18)}
+button:disabled{opacity:.45;cursor:default}
+button.main{background:#3388ff;border-color:#3388ff}
+form{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:1rem 0}
+input[type=number]{width:7rem;font:inherit;color:#fff;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.15);border-radius:.5rem;padding:.3rem .55rem}
+label{color:#aab6c5;font-size:13px}
+#msg{min-height:1.5em;color:#ffd27a}
 small{color:#aab6c5}
 code{background:rgba(255,255,255,.08);padding:.1rem .35rem;border-radius:.3rem}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
 <main>
 <h1>Frame Proxy</h1>
-<p>With CasaOS opened at its <code>https://</code> Tailscale address, the apps on these ports open in App Windows' windows.</p>
+<p>With CasaOS opened at its <code>https://</code> Tailscale address, the apps on these ports open in App Windows' windows. New apps join by themselves within a minute.</p>
 <ul id="ports"></ul>
-<p>After installing an app, run <code>sudo bash frame-proxy.sh</code> again on the server. To remove it, <code>sudo bash frame-proxy.sh off</code> (stopping or uninstalling it here leaves the apps' https:// addresses without it).</p>
+<form id="add" hidden>
+  <input type="number" id="port" min="1" max="65535" placeholder="Port" required>
+  <label><input type="checkbox" id="https"> the app serves https itself</label>
+  <button class="main">Add</button>
+  <button type="button" id="scan">Scan again</button>
+</form>
+<p id="msg"></p>
+<p id="note" hidden></p>
 <p><small id="when"></small></p>
 </main>
 <script>
-PAGE
-  apps=""
-  for p in $served; do [ "$p" = "$PAGE_PORT" ] || apps="$apps $p"; done
-  printf 'var PORTS = "%s".trim().split(/\\s+/), TLS = " %s ", WHEN = "%s";\n' "$apps" "$tls_ports" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  cat <<'PAGE'
-var list = document.getElementById('ports');
-PORTS.forEach(function (p) {
-  var li = document.createElement('li'), a = document.createElement('a'), s = document.createElement('small');
-  a.href = location.protocol + '//' + location.hostname + ':' + p + '/';
-  a.target = '_blank';
-  a.rel = 'noopener';
-  a.textContent = 'Port ' + p;
-  s.textContent = TLS.indexOf(' ' + p + ' ') >= 0 ? 'the app serves https itself' : 'http app';
-  li.appendChild(a);
-  li.appendChild(s);
-  list.appendChild(li);
-});
-document.getElementById('when').textContent = 'Written ' + new Date(WHEN).toLocaleString() + '.';
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var state = null, can = false, working = false;
+  var nums = function (a) { return (a || []).map(Number); };
+  var has = function (a, p) { return a.indexOf(p) >= 0; };
+  var without = function (a, p) { return a.filter(function (x) { return x !== p; }); };
+  function load() { return fetch('state.json?' + Date.now(), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+  function say(text) { $('msg').textContent = text || ''; }
+  function render() {
+    var s = state, list = $('ports');
+    var docker = nums(s.docker), extra = nums(s.extra), skip = nums(s.skip), served = nums(s.served), tls = nums(s.https), busy = nums(s.busy);
+    var all = docker.concat(extra).filter(function (p, i, a) { return a.indexOf(p) === i && p !== s.page; }).sort(function (a, b) { return a - b; });
+    list.textContent = '';
+    all.forEach(function (p) {
+      var out = has(skip, p) && !has(extra, p), li = document.createElement('li'), name, what = [];
+      if (has(served, p)) {
+        name = document.createElement('a');
+        name.href = location.protocol + '//' + location.hostname + ':' + p + '/';
+        name.target = '_blank';
+        name.rel = 'noopener';
+      } else name = document.createElement('span');
+      name.textContent = 'Port ' + p;
+      what.push(has(docker, p) ? 'Docker app' : 'added');
+      if (has(tls, p)) what.push('its own https');
+      if (out) what.push('left out');
+      if (has(busy, p)) what.push('skipped: port ' + (p < 35536 ? p + 30000 : p - 30000) + ' is in use');
+      var w = document.createElement('span');
+      w.className = 'what';
+      w.textContent = what.join(' · ');
+      li.className = out ? 'off' : '';
+      li.appendChild(name);
+      li.appendChild(w);
+      if (can) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = out ? 'Add back' : 'Remove';
+        b.disabled = working;
+        b.onclick = function () { out ? change({ skip: without(skip, p) }) : remove(p); };
+        li.appendChild(b);
+      }
+      list.appendChild(li);
+    });
+    if (!all.length) list.innerHTML = '<li><span class="what">No app ports yet.</span></li>';
+    $('add').hidden = !can;
+    [].forEach.call($('add').querySelectorAll('button, input'), function (e) { e.disabled = working; });
+    $('when').textContent = 'Updated ' + new Date(s.at).toLocaleString() + '.';
+  }
+  function remove(p) {
+    var s = state;
+    change({ extra: without(nums(s.extra), p), https: without(nums(s.httpsApps), p), skip: has(nums(s.docker), p) ? nums(s.skip).concat(p) : nums(s.skip) });
+  }
+  function change(c) {
+    var s = state;
+    var q = ['extra', 'https', 'skip'].map(function (k) {
+      var v = c[k] || nums(k === 'https' ? s.httpsApps : s[k]);
+      return k + '=' + v.join('.');
+    }).join('&');
+    send('api/ports?' + q);
+  }
+  function send(path) {
+    var before = state.at, t0 = Date.now();
+    working = true;
+    say('Applying… Caddy restarts, a few seconds.');
+    render();
+    fetch(path, { method: 'POST', headers: { 'X-Frame-Proxy': '1' } }).then(function (r) {
+      if (!r.ok) throw new Error('the server answered ' + r.status);
+      (function poll() {
+        if (Date.now() - t0 > 90000) return fail(new Error('no news after 90 s (on the server: sudo journalctl -u "frame-proxy-apply-*")'));
+        setTimeout(function () {
+          load().then(function (s) {
+            if (s.at === before) return poll();
+            state = s;
+            working = false;
+            say('Done.');
+            render();
+          }, poll);
+        }, 1500);
+      })();
+    }).catch(fail);
+  }
+  function fail(e) {
+    working = false;
+    say('Not applied: ' + e.message + '.');
+    render();
+  }
+  $('add').onsubmit = function (e) {
+    e.preventDefault();
+    var p = Number($('port').value), s = state;
+    if (!(p > 0 && p < 65536) || p === 80 || p === 443 || p === s.page) return say('Choose another port.');
+    var c = { skip: without(nums(s.skip), p), extra: nums(s.extra), https: nums(s.httpsApps) };
+    if (!has(nums(s.docker), p) && !has(c.extra, p)) c.extra.push(p);
+    if ($('https').checked && !has(c.https, p)) c.https.push(p);
+    $('port').value = '';
+    $('https').checked = false;
+    change(c);
+  };
+  $('scan').onclick = function () { send('api/scan'); };
+  load().then(function (s) {
+    state = s;
+    render();
+    // Changes only reach the server through CasaOS's https:// address (tailscale serve)
+    return fetch('api/ping', { method: 'POST', headers: { 'X-Frame-Proxy': '1' } }).then(function (r) {
+      can = r.ok;
+      if (!can) {
+        $('note').hidden = false;
+        $('note').textContent = r.status === 403
+          ? 'To add or remove ports, open this page from CasaOS at its https:// address.'
+          : 'Adding or removing ports here needs systemd on the server; run frame-proxy.sh there with EXTRA or SKIP.';
+      }
+      render();
+    });
+  }).catch(function (e) { say('Could not read the state: ' + e.message + '.'); });
+})();
 </script>
 </body>
 </html>
 PAGE
-} > "$DIR/page/index.html"
 
 # Caddy as the CasaOS app "Frame Proxy": a Compose project (CasaOS lists every
 # one; a plain container would show under Legacy app). Without Docker Compose,
@@ -481,6 +697,9 @@ services:
         source: $DIR/page
         target: /srv/page
         read_only: true
+      - type: bind
+        source: $DIR/api
+        target: /srv/api
 x-casaos:
   main: $NAME
   author: UsuarioDeJava
@@ -496,11 +715,63 @@ x-casaos:
   tagline:
     en_us: Every app in a window (App Windows)
   description:
-    en_us: Written by frame-proxy.sh (CasaMODs, App Windows). Run the script again after installing an app; "sudo bash frame-proxy.sh off" removes it.
+    en_us: Written by frame-proxy.sh (CasaMODs, App Windows). Its page adds and removes ports; "sudo bash frame-proxy.sh off" removes it.
   scheme: http
   port_map: "${PAGE_PORT}"
   index: /
 YAML
+
+# The page's requests (a socket that runs this script once per connection)
+# and the timer that runs it again when Docker's ports change
+if [ -n "$SYSTEMD" ]; then
+  cat > "$UNITS/frame-proxy-api.socket" <<UNIT
+[Unit]
+Description=Frame Proxy page requests (CasaMODs App Windows)
+
+[Socket]
+ListenStream=$DIR/api/sock
+SocketMode=0600
+Accept=yes
+MaxConnections=4
+
+[Install]
+WantedBy=sockets.target
+UNIT
+  cat > "$UNITS/frame-proxy-api@.service" <<UNIT
+[Unit]
+Description=Frame Proxy page request
+
+[Service]
+ExecStart=/bin/bash $DIR/frame-proxy.sh api
+StandardInput=socket
+StandardOutput=socket
+StandardError=journal
+UNIT
+  cat > "$UNITS/frame-proxy-scan.service" <<UNIT
+[Unit]
+Description=Frame Proxy: look for new app ports
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash $DIR/frame-proxy.sh scan
+UNIT
+  cat > "$UNITS/frame-proxy-scan.timer" <<UNIT
+[Unit]
+Description=Frame Proxy: look for new app ports every minute
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+
+[Install]
+WantedBy=timers.target
+UNIT
+  systemctl daemon-reload
+  systemctl enable frame-proxy-api.socket frame-proxy-scan.timer >/dev/null 2>&1
+  systemctl restart frame-proxy-api.socket
+  systemctl start frame-proxy-scan.timer
+fi
 
 if [ -n "$COMPOSE" ]; then
   docker compose -p "$NAME" -f "$DIR/docker-compose.yml" up -d >/dev/null 2>&1 || {
@@ -511,7 +782,8 @@ if [ -n "$COMPOSE" ]; then
 else
   echo "Docker Compose not found: Caddy runs as a plain container (CasaOS lists it under Legacy app)." >&2
   docker run -d --name "$NAME" --restart unless-stopped --network host \
-    -v "$DIR/Caddyfile:/etc/caddy/Caddyfile:ro" -v "$DIR/www:/srv/casaos-windows:ro" -v "$DIR/page:/srv/page:ro" "$IMAGE" >/dev/null
+    -v "$DIR/Caddyfile:/etc/caddy/Caddyfile:ro" -v "$DIR/www:/srv/casaos-windows:ro" -v "$DIR/page:/srv/page:ro" \
+    -v "$DIR/api:/srv/api" "$IMAGE" >/dev/null
 fi
 sleep 3
 if ! docker ps --filter "name=^${NAME}$" --format '{{.Status}}' | grep -q '^Up'; then
@@ -525,6 +797,20 @@ for p in $served; do
   case " $tls_ports " in *" $p "*) how=' (its own https)' ;; *) how='' ;; esac
   if [ "$p" = "$PAGE_PORT" ]; then echo "https port $p -> the Frame Proxy page"; else echo "https port $p -> app $p$how"; fi
 done
+# The ports served last time and not now (removed on the page, or their app is gone)
+for p in $(cat "$DIR/served" 2>/dev/null || true); do
+  case " $served " in *" $p "*) ;; *) tailscale serve --https="$p" off >/dev/null 2>&1 || true ;; esac
+done
+printf '%s\n' $served > "$DIR/served"
+
+# What the page shows; written last, so the page knows the run is over
+list() { local out="" p; for p in $1; do out="$out${out:+,}$p"; done; printf '[%s]' "$out"; }
+api=false
+[ -z "$SYSTEMD" ] || api=true
+printf '{"at":"%s","api":%s,"page":%s,"served":%s,"docker":%s,"extra":%s,"httpsApps":%s,"https":%s,"skip":%s,"busy":%s}\n' \
+  "$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" "$api" "${PAGE_PORT:-null}" "$(list "$served")" "$(list "$(docker_ports)")" "$(list "$EXTRA")" \
+  "$(list "$HTTPS_APPS")" "$(list "$tls_ports")" "$(list "$SKIP")" "$(list "$busy")" > "$DIR/page/state.json"
+
 echo
 echo "Done. Open CasaOS at its https:// Tailscale address: the apps open in windows."
-[ -z "$COMPOSE" ] || echo "Caddy is the app \"Frame Proxy\" on the CasaOS dashboard${PAGE_PORT:+ (its page: port $PAGE_PORT)}."
+[ -z "$COMPOSE" ] || echo "Caddy is the app \"Frame Proxy\" on the CasaOS dashboard${PAGE_PORT:+ (its page, port $PAGE_PORT, adds and removes ports)}."
