@@ -127,6 +127,8 @@ sudo docker logs frame-proxy               # Caddy's messages
 
 Caddy's configuration is in `/DATA/AppData/frame-proxy/Caddyfile`, written again at each run.
 
+CasaOS shows the `frame-proxy` container on the dashboard under **Legacy app (To be rebuilt)**, as it does with any container it didn't install itself. Leave it there: it has no web page to open, and **Import to CasaOS** would make CasaOS recreate it as one of its apps, which the script's next run would remove and create again (and stopping or uninstalling it turns the frame proxy off; `off` above is the way to remove it).
+
 ### When something goes wrong
 
 | What you see | Why | What to do |
