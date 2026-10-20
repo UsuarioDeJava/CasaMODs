@@ -23,7 +23,8 @@ To update a mod, copy its folder again (replacing the old one) and do step 3.
 - **CasaOS over HTTPS with Tailscale** (for Spotify, and for the frame proxy): [Music Player → Spotify, step 1](casaos-music-player/README.md#1-casaos-over-https-with-tailscale).
 - **Spotify in the Music Player:** [create your Spotify app and connect](casaos-music-player/README.md#spotify).
 - **Jellyfin in the Music Player:** [connect with Quick Connect](casaos-music-player/README.md#jellyfin).
-- **Every app in a window (the frame proxy):** [App Windows → the frame proxy](casaos-app-windows/README.md#every-app-in-a-window-the-frame-proxy).
+- **Every app in a window, CasaOS on Tailscale (the frame proxy):** [App Windows → the frame proxy](casaos-app-windows/README.md#every-app-in-a-window-the-frame-proxy).
+- **Every app in a window, CasaOS on your own domain and certificate:** [App Windows → CasaOS on your own domain](casaos-app-windows/README.md#casaos-on-your-own-domain-your-own-certificate).
 - **Wallpapers:** [where to put them and what runs](casaos-live-wallpapers/README.md#the-wallpapers-folder).
 
 ## Tests

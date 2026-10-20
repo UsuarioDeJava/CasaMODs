@@ -30,6 +30,9 @@
 #   sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh
 # Undo:
 #   sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh off
+# Only App Windows' window page, into a folder (CasaOS on your own domain,
+# without Tailscale; see App Windows' README):
+#   sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh window-page /DATA/AppData/casaos-windows
 # Options (environment; kept in /DATA/AppData/frame-proxy/config for the next
 # runs, and changed by the page):
 #   EXTRA="6080"            ports of apps outside Docker or on the host network
@@ -106,78 +109,12 @@ if [ "${1:-}" = api ]; then
   answer '202 Accepted' '{"ok":true}'
 fi
 
-[ "$(id -u)" = 0 ] || { echo "Run it with sudo." >&2; exit 1; }
-command -v docker >/dev/null || { echo "Docker not found." >&2; exit 1; }
-command -v tailscale >/dev/null || { echo "Tailscale not found." >&2; exit 1; }
-command -v curl >/dev/null || { echo "curl not found." >&2; exit 1; }
-COMPOSE=""
-docker compose version >/dev/null 2>&1 && COMPOSE=1
-SYSTEMD=""
-[ -d /run/systemd/system ] && command -v systemctl >/dev/null && SYSTEMD=1
-
-# The TCP ports Docker publishes on every address; not CasaOS's own (80, 443)
-docker_ports() {
-  docker ps --format '{{.Ports}}' | grep -oE '0\.0\.0\.0:[0-9]+->[0-9]+/tcp' | sed -E 's/^0\.0\.0\.0:([0-9]+)->.*/\1/' |
-    grep -vxE '80|443' | sort -un || true
-}
-
-# What the proxy serves: Docker's ports and EXTRA, without SKIP; the page's port
-app_ports() {
-  local out="" p
-  for p in $(ports "$(docker_ports) $EXTRA"); do
-    case " $SKIP $PAGE_PORT " in *" $p "*) ;; *) out="$out $p" ;; esac
-  done
-  ports "$out $PAGE_PORT"
-}
-
-# Run again when Docker's ports change (the scan timer)
-if [ "${1:-}" = scan ]; then
-  [ "$(app_ports)" = "$(cat "$DIR/scanned" 2>/dev/null || true)" ] && exit 0
-  exec bash "$0"
-fi
-
-# Where Caddy listens for port P (only on this machine)
-local_port() {
-  if [ "$1" -lt 35536 ]; then echo $(($1 + OFFSET)); else echo $(($1 - OFFSET)); fi
-}
-
-# An app that serves HTTPS itself: its port answers TLS (any certificate)
-is_https_app() {
-  case " $HTTPS_APPS " in *" $1 "*) return 0 ;; esac
-  curl -sk -o /dev/null -m 5 "https://127.0.0.1:$1/"
-}
-
-if [ "${1:-}" = off ]; then
-  for p in $(app_ports) $(cat "$DIR/served" 2>/dev/null || true); do tailscale serve --https="$p" off >/dev/null 2>&1 || true; done
-  if [ -n "$SYSTEMD" ]; then
-    systemctl disable --now frame-proxy-api.socket frame-proxy-scan.timer >/dev/null 2>&1 || true
-    rm -f "$UNITS/frame-proxy-api.socket" "$UNITS/frame-proxy-api@.service" \
-      "$UNITS/frame-proxy-scan.service" "$UNITS/frame-proxy-scan.timer"
-    systemctl daemon-reload || true
-  fi
-  [ -z "$COMPOSE" ] || docker compose -p "$NAME" down >/dev/null 2>&1 || true
-  docker rm -f "$NAME" >/dev/null 2>&1 || true
-  rm -f "$DIR/served" "$DIR/scanned"
-  echo "Frame proxy removed. CasaOS's own https:// (port 443) is untouched."
-  exit 0
-fi
-
-mkdir -p "$DIR"
-exec 9>"$DIR/lock"
-flock 9   # one run at a time (the page, the timer, by hand)
-save_config
-app_ports > "$DIR/scanned"   # what the timer compares (a failed run isn't retried until they change)
-docker rm -f "$NAME" >/dev/null 2>&1 || true   # the old one, if any (its ports free up)
-mkdir -p "$DIR/www" "$DIR/page" "$DIR/api"
-# The copy the page's requests and the timer run
-if [ -f "$0" ] && [ "$(readlink -f "$0")" != "$DIR/frame-proxy.sh" ]; then cp -f "$0" "$DIR/frame-proxy.sh"; fi
-if [ -n "$PAGE_PORT" ] && ss -ltnH "sport = :$PAGE_PORT" 2>/dev/null | grep -q .; then
-  echo "Port $PAGE_PORT is in use: no Frame Proxy page (choose another with PAGE_PORT=...)." >&2
-  PAGE_PORT=""
-fi
-
-# App Windows' window page, served at /__casaos-windows/ on every app's address
-cat > "$DIR/www/frame.html" <<'HTML'
+# App Windows' window page (frame.html, frame.js, ok.svg), written into the
+# folder $1. The frame proxy serves it at /__casaos-windows/ on every app's
+# address; with your own domain and proxy, "window-page <folder>" writes it
+# for your proxy to serve there.
+window_page() {
+cat > "$1/frame.html" <<'HTML'
 <!doctype html>
 <html>
 <head>
@@ -194,7 +131,7 @@ cat > "$DIR/www/frame.html" <<'HTML'
 </html>
 HTML
 
-cat > "$DIR/www/frame.js" <<'JS'
+cat > "$1/frame.js" <<'JS'
 // App Windows (CasaMODs): an app's window loads this page, which holds the
 // app, unchanged, in the frame below. It is on the app's own address (same
 // origin), so it reaches the app's page, which the CasaOS tab can't:
@@ -456,7 +393,88 @@ cat > "$DIR/www/frame.js" <<'JS'
 })();
 JS
 
-printf '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>\n' > "$DIR/www/ok.svg"
+printf '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>\n' > "$1/ok.svg"
+}
+
+if [ "${1:-}" = window-page ]; then
+  [ -n "${2:-}" ] || { echo "Usage: bash frame-proxy.sh window-page <folder>" >&2; exit 1; }
+  mkdir -p "$2"
+  window_page "$2"
+  echo "App Windows' window page is in $2: serve this folder at /__casaos-windows/ on each app's own address."
+  exit 0
+fi
+
+[ "$(id -u)" = 0 ] || { echo "Run it with sudo." >&2; exit 1; }
+command -v docker >/dev/null || { echo "Docker not found." >&2; exit 1; }
+command -v tailscale >/dev/null || { echo "Tailscale not found." >&2; exit 1; }
+command -v curl >/dev/null || { echo "curl not found." >&2; exit 1; }
+COMPOSE=""
+docker compose version >/dev/null 2>&1 && COMPOSE=1
+SYSTEMD=""
+[ -d /run/systemd/system ] && command -v systemctl >/dev/null && SYSTEMD=1
+
+# The TCP ports Docker publishes on every address; not CasaOS's own (80, 443)
+docker_ports() {
+  docker ps --format '{{.Ports}}' | grep -oE '0\.0\.0\.0:[0-9]+->[0-9]+/tcp' | sed -E 's/^0\.0\.0\.0:([0-9]+)->.*/\1/' |
+    grep -vxE '80|443' | sort -un || true
+}
+
+# What the proxy serves: Docker's ports and EXTRA, without SKIP; the page's port
+app_ports() {
+  local out="" p
+  for p in $(ports "$(docker_ports) $EXTRA"); do
+    case " $SKIP $PAGE_PORT " in *" $p "*) ;; *) out="$out $p" ;; esac
+  done
+  ports "$out $PAGE_PORT"
+}
+
+# Run again when Docker's ports change (the scan timer)
+if [ "${1:-}" = scan ]; then
+  [ "$(app_ports)" = "$(cat "$DIR/scanned" 2>/dev/null || true)" ] && exit 0
+  exec bash "$0"
+fi
+
+# Where Caddy listens for port P (only on this machine)
+local_port() {
+  if [ "$1" -lt 35536 ]; then echo $(($1 + OFFSET)); else echo $(($1 - OFFSET)); fi
+}
+
+# An app that serves HTTPS itself: its port answers TLS (any certificate)
+is_https_app() {
+  case " $HTTPS_APPS " in *" $1 "*) return 0 ;; esac
+  curl -sk -o /dev/null -m 5 "https://127.0.0.1:$1/"
+}
+
+if [ "${1:-}" = off ]; then
+  for p in $(app_ports) $(cat "$DIR/served" 2>/dev/null || true); do tailscale serve --https="$p" off >/dev/null 2>&1 || true; done
+  if [ -n "$SYSTEMD" ]; then
+    systemctl disable --now frame-proxy-api.socket frame-proxy-scan.timer >/dev/null 2>&1 || true
+    rm -f "$UNITS/frame-proxy-api.socket" "$UNITS/frame-proxy-api@.service" \
+      "$UNITS/frame-proxy-scan.service" "$UNITS/frame-proxy-scan.timer"
+    systemctl daemon-reload || true
+  fi
+  [ -z "$COMPOSE" ] || docker compose -p "$NAME" down >/dev/null 2>&1 || true
+  docker rm -f "$NAME" >/dev/null 2>&1 || true
+  rm -f "$DIR/served" "$DIR/scanned"
+  echo "Frame proxy removed. CasaOS's own https:// (port 443) is untouched."
+  exit 0
+fi
+
+mkdir -p "$DIR"
+exec 9>"$DIR/lock"
+flock 9   # one run at a time (the page, the timer, by hand)
+save_config
+app_ports > "$DIR/scanned"   # what the timer compares (a failed run isn't retried until they change)
+docker rm -f "$NAME" >/dev/null 2>&1 || true   # the old one, if any (its ports free up)
+mkdir -p "$DIR/www" "$DIR/page" "$DIR/api"
+# The copy the page's requests and the timer run
+if [ -f "$0" ] && [ "$(readlink -f "$0")" != "$DIR/frame-proxy.sh" ]; then cp -f "$0" "$DIR/frame-proxy.sh"; fi
+if [ -n "$PAGE_PORT" ] && ss -ltnH "sport = :$PAGE_PORT" 2>/dev/null | grep -q .; then
+  echo "Port $PAGE_PORT is in use: no Frame Proxy page (choose another with PAGE_PORT=...)." >&2
+  PAGE_PORT=""
+fi
+
+window_page "$DIR/www"
 
 served=""
 tls_ports=""

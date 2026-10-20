@@ -14,7 +14,11 @@ A [CasaMOD](https://github.com/Cp0204/CasaMOD) mod: the apps open in **windows i
 1. Install **CasaMOD** from the CasaOS app store (or from its repository).
 2. Install **App Windows** from the CasaMOD Store, or copy the `app-windows` folder into `/DATA/AppData/casamod/mod/` on the CasaOS machine.
 3. Restart CasaMOD and reload the CasaOS page (Ctrl+F5).
-4. **If you open CasaOS at its Tailscale `https://` address**, set up the [frame proxy](#every-app-in-a-window-the-frame-proxy) once: one command on the server, and every app opens in a window (without it, the browser blocks the `http://` apps inside the `https://` page). At CasaOS's `http://` address on your network, windows work without it, except for the few apps that refuse to be shown in a window, which it fixes too.
+4. **If you open CasaOS at an `https://` address**, the apps need `https://` too (the browser blocks `http://` pages inside an `https://` one):
+   - at its **Tailscale** address (`https://<machine>.<tailnet>.ts.net`): set up the [frame proxy](#every-app-in-a-window-the-frame-proxy) once, one command on the server;
+   - on **your own domain** with your own certificate (`https://casa.example.com`): no Tailscale and no frame proxy, a few settings in your proxy and in CasaOS: [CasaOS on your own domain](#casaos-on-your-own-domain-your-own-certificate).
+
+   At CasaOS's `http://` address on your network, windows work without either, except for the few apps that refuse to be shown in a window (both fix those too).
 
 To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart CasaMOD.
 
@@ -40,11 +44,13 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 | qBittorrent | Web UI → uncheck "Enable clickjacking protection" |
 | Grafana | `allow_embedding = true` |
 
-**CasaOS on https://:** the browser blocks `http://` apps inside an `https://` page (mixed content). So with CasaOS opened over HTTPS, an app opens at its `https://` address on the same port, which needs the server to answer HTTPS there: the frame proxy does that for every app. Without it the window shows the browser's error: use **open in a new tab**. At CasaOS's `http://` address, windows work without the proxy (except for apps that refuse frames).
+**CasaOS on https://:** the browser blocks `http://` apps inside an `https://` page (mixed content). So with CasaOS opened over HTTPS, an app opens at its `https://` address on the same port, which needs the server to answer HTTPS there: the frame proxy does that for every app. Without it the window shows the browser's error: use **open in a new tab**. On your own domain, each app gets its own `https://` address instead: [CasaOS on your own domain](#casaos-on-your-own-domain-your-own-certificate). At CasaOS's `http://` address, windows work without either (except for apps that refuse frames).
 
 **An app with its own certificate** (self-signed: Portainer, MineOS) can't show inside a window by itself, because a certificate warning can't be accepted inside a frame. The frame proxy gives it Tailscale's certificate. Without it: open the app in a new tab and accept the certificate, and after that it opens in windows too.
 
 ## Every app in a window: the frame proxy
+
+This is for CasaOS opened at its **Tailscale** address. On your own domain, with your own certificate, see [CasaOS on your own domain](#casaos-on-your-own-domain-your-own-certificate) instead.
 
 [`frame-proxy.sh`](app-windows/frame-proxy.sh) comes in the mod's folder, and you run it once on the CasaOS server. With CasaOS opened at its Tailscale HTTPS address, it makes **every app open in a window**, with a valid certificate and no warnings. After that, new apps join by themselves, and its page adds or removes ports. It only works inside your tailnet, and nothing is exposed to the internet.
 
@@ -182,6 +188,165 @@ sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh off
 - On these addresses, the apps lose their protection against being shown inside other sites' pages (clickjacking). Only pages in your tailnet could try that.
 - The `http://` addresses on your network don't change at all.
 - The apps see every request as coming from the server itself (`127.0.0.1`, or Docker's gateway), not from your device. Logs and IP-based rules in the apps (Home Assistant's login notices and bans, for example) show that address.
+
+## CasaOS on your own domain (your own certificate)
+
+This part is for you if you open CasaOS at an address like `https://casa.example.com`: **your own domain, with a valid certificate**, through your own reverse proxy (Nginx Proxy Manager, Caddy, Traefik, plain Nginx, a Cloudflare Tunnel…).
+
+**You don't need Tailscale, and you don't need the frame proxy script.** App Windows works on your domain: your proxy does, for each app, what the frame proxy does on Tailscale. That's three steps, plus a fourth one if you want the extras.
+
+### Which case are you?
+
+| How you open CasaOS | What you need for every app in a window |
+| --- | --- |
+| `http://192.168.1.10` (its address on your network) | Nothing. A few apps refuse windows: see [When an app doesn't show](#when-an-app-doesnt-show). |
+| `https://<machine>.<tailnet>.ts.net` (Tailscale) | The [frame proxy](#every-app-in-a-window-the-frame-proxy): one command, once. |
+| `https://casa.example.com` (your own domain and certificate) | The steps below. No Tailscale, no frame proxy. |
+
+### Why, in plain words
+
+A window is a page shown inside the CasaOS page. The browser has three rules about that:
+
+1. **A secure page only shows secure pages inside it.** CasaOS is at `https://`, so each app has to be at `https://` too. An app at `http://192.168.1.10:8096` can't show inside it. App Windows then tries the app at `https://` on CasaOS's own address and the app's port (`https://casa.example.com:8096`): on Tailscale, that's where the frame proxy answers. On your domain, nothing answers there, so each app needs its own `https://` address in your proxy (step 1), and CasaOS has to open the app there (step 2).
+2. **An app can say "never show me inside another page".** Some apps do (Home Assistant, Portainer, qBittorrent, Grafana…), with a header called `X-Frame-Options`, or `frame-ancestors` in its `Content-Security-Policy`. Their window stays blank, or says "refused to connect". Your proxy can remove that header (step 3).
+3. **Logins inside a window work best with the app on the same domain as CasaOS.** `jellyfin.example.com` next to `casa.example.com`: fine. A different domain (`my-jellyfin.net`): the browser may treat the app's login as a "third-party cookie" and block it (Safari and Firefox do so by default), and the app keeps asking you to log in inside the window. So use subdomains of CasaOS's domain.
+
+### Step 1: give each app its own https:// address
+
+In your proxy, add one address per app: a **subdomain of CasaOS's domain**, sent to the app's port on the server. For example, with the server at `192.168.1.10`:
+
+| App | Its address in your proxy | Sent to |
+| --- | --- | --- |
+| Jellyfin | `https://jellyfin.example.com` | `http://192.168.1.10:8096` |
+| Home Assistant | `https://homeassistant.example.com` | `http://192.168.1.10:8123` |
+
+It's the same thing you do to reach an app from outside your home, so some may be ready already. Each address needs its name in your DNS (or a wildcard `*.example.com`) and a certificate (your proxy gets it, as it did for CasaOS). Apps that use websockets (Home Assistant, Jellyfin and many more) need websockets on in the proxy (in Nginx Proxy Manager: **Websockets Support**).
+
+**Check:** open `https://jellyfin.example.com` in a normal tab, on the device you use CasaOS from. If the app shows, with the padlock, step 1 is done for it. If it doesn't open in a tab, it won't open in a window either.
+
+### Step 2: tell CasaOS that address
+
+CasaOS opens each app at the address in the app's **Web UI** setting, which is `http://<CasaOS's address>:<the app's port>` at first. Change it to the address of step 1:
+
+1. On the CasaOS dashboard, open the app's menu (the **⋯** on its icon) → **Settings**.
+2. At the top, the **Web UI** line has boxes for the address. Set them like this:
+   - the first one, `http`: change it to **`https`**;
+   - the address: the app's address **without** `https://`, for example **`jellyfin.example.com`**;
+   - the port: **`443`** (the https port);
+   - the path after it (often `/`): leave it as it is.
+3. **Save.** CasaOS saves it and restarts the app (a few seconds).
+4. Click the app's icon: it opens in a window, at `https://jellyfin.example.com`.
+
+Do it for each app. App Windows leaves an `https://` address as it is: it only changes `http://` ones (rule 1).
+
+### Step 3: if a window stays blank, let the app be shown in a window
+
+Open the browser's console (F12) on the CasaOS tab and open the app again. If the console says `Refused to display … in a frame because it set 'X-Frame-Options'`, or mentions `frame-ancestors`, the app forbids windows (rule 2). Remove those headers in your proxy, only for that app's address. In your proxy:
+
+**Nginx Proxy Manager:** edit the app's Proxy Host → the **Advanced** tab → in **Custom Nginx Configuration**, paste:
+
+```nginx
+proxy_hide_header X-Frame-Options;
+```
+
+and, only if the console mentioned `frame-ancestors`, this line too:
+
+```nginx
+proxy_hide_header Content-Security-Policy;
+```
+
+Then **Save**.
+
+**Nginx:** the same lines, inside the app's `server { … }`.
+
+**Caddy** (Caddyfile): in the app's `reverse_proxy`, the two `header_down` lines below. The second one removes only the `frame-ancestors` part of the app's security policy and keeps the rest:
+
+```caddyfile
+jellyfin.example.com {
+	reverse_proxy 192.168.1.10:8096 {
+		header_down -X-Frame-Options
+		header_down Content-Security-Policy "frame-ancestors[^;]*;?" ""
+	}
+}
+```
+
+**Traefik:** a middleware that empties the headers (an empty value removes a header), added to the app's router. Keep the `Content-Security-Policy` line only if the console mentioned `frame-ancestors`:
+
+```yaml
+http:
+  middlewares:
+    in-a-window:
+      headers:
+        customResponseHeaders:
+          X-Frame-Options: ""
+          Content-Security-Policy: ""
+```
+
+**Cloudflare** (its proxy, or a Cloudflare Tunnel): in Cloudflare's dashboard, **Rules → Transform Rules → Modify Response Header**, a rule for the app's hostname that **removes** `X-Frame-Options` (and `Content-Security-Policy`, only if the console mentioned `frame-ancestors`).
+
+What this changes: other websites could also show that app inside their pages (the protection the header gave, against "clickjacking"); the app still asks for its own login. Removing the whole `Content-Security-Policy` (everything above except Caddy) also removes the app's other protections from it, which is why it's only for the apps that need it. You can also allow windows in the app itself, where it has a setting: see the table in [When an app doesn't show](#when-an-app-doesnt-show).
+
+### Step 4 (optional): the extras
+
+Windows work after steps 1 to 3. Three extras also need App Windows' **window page** on each app's own address (on Tailscale, the frame proxy serves it):
+
+- **F5 pressed inside the app** reloads the app. Without it, after a click inside the app, F5 reloads the whole CasaOS tab (click the window's bar first, then F5);
+- **what the app plays** (title, artist, cover) reaches [Live Wallpapers](../casaos-live-wallpapers);
+- **its sound** reaches the wallpapers that react to sound.
+
+To have them:
+
+1. **Write the window page** into a folder your proxy can read. It's three small files (`frame.html`, `frame.js`, `ok.svg`), written by the frame proxy script's `window-page` command, which needs nothing else (no Tailscale, no Docker):
+   ```bash
+   sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh window-page /DATA/AppData/casaos-windows
+   ```
+   If your proxy runs in Docker, choose a folder its container sees. Nginx Proxy Manager, for example, sees its own data folder (in CasaOS, the app's Settings shows which server folder is its `/data`): write it there, as `…/data/casaos-windows`, and that is `/data/casaos-windows` for it.
+2. **Serve that folder at `/__casaos-windows/`** on each app's address:
+   - **Nginx Proxy Manager / Nginx**, next to the lines of step 3 (with the folder as the proxy sees it, and the `/` at the end):
+     ```nginx
+     location /__casaos-windows/ {
+         alias /data/casaos-windows/;
+     }
+     ```
+   - **Caddy:**
+     ```caddyfile
+     jellyfin.example.com {
+     	handle_path /__casaos-windows/* {
+     		root * /DATA/AppData/casaos-windows
+     		file_server
+     	}
+     	handle {
+     		reverse_proxy 192.168.1.10:8096 {
+     			header_down -X-Frame-Options
+     			header_down Content-Security-Policy "frame-ancestors[^;]*;?" ""
+     		}
+     	}
+     }
+     ```
+   - **Traefik or a Cloudflare Tunnel** don't serve files by themselves: they need a small web server for that folder (a Caddy or Nginx), sent `/__casaos-windows/` of each app's address. If that's too much, skip the extras: the windows don't need them.
+3. **Check:** `https://jellyfin.example.com/__casaos-windows/ok.svg` opens as a blank page, without an error. Then reload CasaOS (Ctrl+F5): the app's windows use it from now on.
+4. **After updating App Windows**, run the command of item 1 again (the update can bring a newer window page).
+
+### What works, at a glance
+
+| | Tailscale with the frame proxy | Own domain, steps 1–3 | Own domain, steps 1–4 |
+| --- | --- | --- | --- |
+| Every app in a window | yes | yes | yes |
+| Apps that refuse windows | fixed by the proxy | fixed by step 3 | fixed by step 3 |
+| F5 inside the app reloads the app | yes | no (click the window's bar first) | yes |
+| What the app plays and its sound reach Live Wallpapers | yes | no | yes |
+| New apps | join by themselves | step 1 and 2 for each new app | steps 1, 2 and the `/__casaos-windows/` of step 4 for each new app |
+
+### When something goes wrong (own domain)
+
+| What you see | Why | What to do |
+| --- | --- | --- |
+| The window shows an error page (can't be reached, `ERR_SSL_PROTOCOL_ERROR`, a certificate error) at `https://casa.example.com:<port>` | The app's Web UI is still `http`, so App Windows tried CasaOS's domain with the app's port. | Step 2. |
+| The window shows an error page at the app's own address (`https://jellyfin.example.com`) | The address doesn't open from your device. | Step 1: open it in a normal tab and fix it there first. |
+| Blank window, or "refused to connect"; the console says `X-Frame-Options` or `frame-ancestors` | The app forbids windows. | Step 3. |
+| The app keeps asking for its login inside the window, but works in a tab | It's on a different domain from CasaOS (rule 3). | Give it a subdomain of CasaOS's domain, or use **⋯ → Always open in a new tab** for it. |
+| F5 inside the app reloads the whole CasaOS | No window page on that app's address. | Step 4, or click the window's bar before F5. |
+| A new app opens at `https://casa.example.com:<port>` and fails | Each new app needs its own address. | Steps 1 and 2 for it. |
 
 ## Notes
 
