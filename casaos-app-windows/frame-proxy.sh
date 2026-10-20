@@ -16,6 +16,10 @@
 # tailnet: nothing is exposed to the internet, and the http:// addresses on
 # your network don't change.
 #
+# Caddy runs as a CasaOS app, "Frame Proxy" (a Docker Compose project whose
+# file the script writes; CasaOS lists every Compose project), and its card
+# opens a page with the ports it serves.
+#
 # On the CasaOS server (again after installing an app):
 #   sudo bash frame-proxy.sh
 # Undo:
@@ -25,6 +29,7 @@
 #                           (noVNC, for example)
 #   HTTPS_APPS="8444"       ports to treat as HTTPS even if the app wasn't
 #                           answering when the script ran
+#   PAGE_PORT="8390"        the port of the Frame Proxy page (empty: no page)
 set -euo pipefail
 
 DIR=/DATA/AppData/frame-proxy
@@ -33,17 +38,21 @@ EXTRA=${EXTRA:-""}
 OFFSET=30000
 NAME=frame-proxy
 IMAGE=caddy:2-alpine
+PAGE_PORT=${PAGE_PORT-8390}
+ICON=https://cdn.jsdelivr.net/gh/UsuarioDeJava/CasaMODs@main/casaos-app-windows/frame-proxy-icon.png
 
 [ "$(id -u)" = 0 ] || { echo "Run it with sudo." >&2; exit 1; }
 command -v docker >/dev/null || { echo "Docker not found." >&2; exit 1; }
 command -v tailscale >/dev/null || { echo "Tailscale not found." >&2; exit 1; }
 command -v curl >/dev/null || { echo "curl not found." >&2; exit 1; }
+COMPOSE=""
+docker compose version >/dev/null 2>&1 && COMPOSE=1
 
 # The TCP ports Docker publishes on every address, plus EXTRA; not CasaOS's own (80, 443)
 app_ports() {
   {
     docker ps --format '{{.Ports}}' | grep -oE '0\.0\.0\.0:[0-9]+->[0-9]+/tcp' | sed -E 's/^0\.0\.0\.0:([0-9]+)->.*/\1/' || true
-    for p in $EXTRA; do echo "$p"; done
+    for p in $EXTRA $PAGE_PORT; do echo "$p"; done
   } | sort -un | grep -vxE '80|443' || true
 }
 
@@ -60,13 +69,18 @@ is_https_app() {
 
 if [ "${1:-}" = off ]; then
   for p in $(app_ports); do tailscale serve --https="$p" off >/dev/null 2>&1 || true; done
+  [ -z "$COMPOSE" ] || docker compose -p "$NAME" down >/dev/null 2>&1 || true
   docker rm -f "$NAME" >/dev/null 2>&1 || true
   echo "Frame proxy removed. CasaOS's own https:// (port 443) is untouched."
   exit 0
 fi
 
 docker rm -f "$NAME" >/dev/null 2>&1 || true   # the old one, if any (its ports free up)
-mkdir -p "$DIR/www"
+mkdir -p "$DIR/www" "$DIR/page"
+if [ -n "$PAGE_PORT" ] && ss -ltnH "sport = :$PAGE_PORT" 2>/dev/null | grep -q .; then
+  echo "Port $PAGE_PORT is in use: no Frame Proxy page (choose another with PAGE_PORT=...)." >&2
+  PAGE_PORT=""
+fi
 
 # App Windows' window page, served at /__casaos-windows/ on every app's address
 cat > "$DIR/www/frame.html" <<'HTML'
@@ -354,6 +368,8 @@ served=""
 tls_ports=""
 {
   printf '{\n\tauto_https off\n\tadmin off\n}\n'
+  # the Frame Proxy page (what its card in CasaOS opens), on every address
+  [ -z "$PAGE_PORT" ] || printf 'http://:%s {\n\troot * /srv/page\n\theader Cache-Control no-cache\n\tfile_server\n}\n' "$PAGE_PORT"
   for p in $(app_ports); do
     q=$(local_port "$p")
     if ss -ltnH "sport = :$q" 2>/dev/null | grep -q .; then
@@ -387,8 +403,116 @@ tls_ports=""
 
 [ -n "$served" ] || { echo "No app ports found." >&2; exit 1; }
 
-docker run -d --name "$NAME" --restart unless-stopped --network host \
-  -v "$DIR/Caddyfile:/etc/caddy/Caddyfile:ro" -v "$DIR/www:/srv/casaos-windows:ro" "$IMAGE" >/dev/null
+# The Frame Proxy page: the ports served, each linked on the address the page is opened at
+{
+  cat <<'PAGE'
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frame Proxy</title>
+<style>
+body{margin:0;min-height:100vh;background:#1e2533;color:#e8edf3;font:15px/1.5 system-ui,sans-serif}
+main{max-width:34rem;margin:0 auto;padding:2rem 1.25rem}
+h1{margin:0 0 .25rem;font-size:1.4rem;font-weight:600}
+p{margin:.5rem 0;color:#aab6c5}
+ul{list-style:none;margin:1.25rem 0;padding:0}
+li{display:flex;justify-content:space-between;gap:1rem;padding:.6rem .8rem;border-radius:.6rem;background:rgba(255,255,255,.06);margin:.35rem 0}
+a{color:#8ab8ff;text-decoration:none}
+small{color:#aab6c5}
+code{background:rgba(255,255,255,.08);padding:.1rem .35rem;border-radius:.3rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Frame Proxy</h1>
+<p>With CasaOS opened at its <code>https://</code> Tailscale address, the apps on these ports open in App Windows' windows.</p>
+<ul id="ports"></ul>
+<p>After installing an app, run <code>sudo bash frame-proxy.sh</code> again on the server. To remove it, <code>sudo bash frame-proxy.sh off</code> (stopping or uninstalling it here leaves the apps' https:// addresses without it).</p>
+<p><small id="when"></small></p>
+</main>
+<script>
+PAGE
+  apps=""
+  for p in $served; do [ "$p" = "$PAGE_PORT" ] || apps="$apps $p"; done
+  printf 'var PORTS = "%s".trim().split(/\\s+/), TLS = " %s ", WHEN = "%s";\n' "$apps" "$tls_ports" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  cat <<'PAGE'
+var list = document.getElementById('ports');
+PORTS.forEach(function (p) {
+  var li = document.createElement('li'), a = document.createElement('a'), s = document.createElement('small');
+  a.href = location.protocol + '//' + location.hostname + ':' + p + '/';
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.textContent = 'Port ' + p;
+  s.textContent = TLS.indexOf(' ' + p + ' ') >= 0 ? 'the app serves https itself' : 'http app';
+  li.appendChild(a);
+  li.appendChild(s);
+  list.appendChild(li);
+});
+document.getElementById('when').textContent = 'Written ' + new Date(WHEN).toLocaleString() + '.';
+</script>
+</body>
+</html>
+PAGE
+} > "$DIR/page/index.html"
+
+# Caddy as the CasaOS app "Frame Proxy": a Compose project (CasaOS lists every
+# one; a plain container would show under Legacy app). Without Docker Compose,
+# a plain container.
+cat > "$DIR/docker-compose.yml" <<YAML
+name: $NAME
+services:
+  $NAME:
+    image: $IMAGE
+    container_name: $NAME
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - type: bind
+        source: $DIR/Caddyfile
+        target: /etc/caddy/Caddyfile
+        read_only: true
+      - type: bind
+        source: $DIR/www
+        target: /srv/casaos-windows
+        read_only: true
+      - type: bind
+        source: $DIR/page
+        target: /srv/page
+        read_only: true
+x-casaos:
+  main: $NAME
+  author: UsuarioDeJava
+  developer: CasaMODs
+  category: Utilities
+  architectures:
+    - amd64
+    - arm64
+    - arm
+  icon: $ICON
+  title:
+    en_us: Frame Proxy
+  tagline:
+    en_us: Every app in a window (App Windows)
+  description:
+    en_us: Written by frame-proxy.sh (CasaMODs, App Windows). Run the script again after installing an app; "sudo bash frame-proxy.sh off" removes it.
+  scheme: http
+  port_map: "${PAGE_PORT}"
+  index: /
+YAML
+
+if [ -n "$COMPOSE" ]; then
+  docker compose -p "$NAME" -f "$DIR/docker-compose.yml" up -d >/dev/null 2>&1 || {
+    echo "Docker Compose couldn't start Caddy:" >&2
+    docker compose -p "$NAME" -f "$DIR/docker-compose.yml" up -d >&2 || true
+    exit 1
+  }
+else
+  echo "Docker Compose not found: Caddy runs as a plain container (CasaOS lists it under Legacy app)." >&2
+  docker run -d --name "$NAME" --restart unless-stopped --network host \
+    -v "$DIR/Caddyfile:/etc/caddy/Caddyfile:ro" -v "$DIR/www:/srv/casaos-windows:ro" -v "$DIR/page:/srv/page:ro" "$IMAGE" >/dev/null
+fi
 sleep 3
 if ! docker ps --filter "name=^${NAME}$" --format '{{.Status}}' | grep -q '^Up'; then
   echo "Caddy didn't start:" >&2
@@ -399,7 +523,8 @@ fi
 for p in $served; do
   tailscale serve --bg --https="$p" "http://127.0.0.1:$(local_port "$p")" >/dev/null
   case " $tls_ports " in *" $p "*) how=' (its own https)' ;; *) how='' ;; esac
-  echo "https port $p -> app $p$how"
+  if [ "$p" = "$PAGE_PORT" ]; then echo "https port $p -> the Frame Proxy page"; else echo "https port $p -> app $p$how"; fi
 done
 echo
 echo "Done. Open CasaOS at its https:// Tailscale address: the apps open in windows."
+[ -z "$COMPOSE" ] || echo "Caddy is the app \"Frame Proxy\" on the CasaOS dashboard${PAGE_PORT:+ (its page: port $PAGE_PORT)}."
