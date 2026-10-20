@@ -12,8 +12,9 @@ A [CasaMOD](https://github.com/Cp0204/CasaMOD) mod: the apps open in **windows i
 ## Install
 
 1. Install **CasaMOD** from the CasaOS app store (or from its repository).
-2. Copy the `app-windows` folder into `/DATA/AppData/casamod/mod/` on the CasaOS machine.
+2. Install **App Windows** from the CasaMOD Store, or copy the `app-windows` folder into `/DATA/AppData/casamod/mod/` on the CasaOS machine.
 3. Restart CasaMOD and reload the CasaOS page (Ctrl+F5).
+4. **If you open CasaOS at its Tailscale `https://` address**, set up the [frame proxy](#every-app-in-a-window-the-frame-proxy) once: one command on the server, and every app opens in a window (without it, the browser blocks the `http://` apps inside the `https://` page). At CasaOS's `http://` address on your network, windows work without it, except for the few apps that refuse to be shown in a window, which it fixes too.
 
 To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart CasaMOD.
 
@@ -79,10 +80,10 @@ browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve
    It prints CasaOS's address, `https://<machine>.<tailnet>.ts.net/`. Open CasaOS there from now on. Already done if you use the Music Player's Spotify mode.
 4. **Docker**, **curl** and **systemd** on the server (CasaOS has them).
 
-### Step by step
+### Set it up (once)
 
 1. **Install the mod** ([Install](#install)): the script comes in its folder, at `/DATA/AppData/casamod/mod/app-windows/frame-proxy.sh`.
-2. **List the ports Docker doesn't show** (or add them later on its page). The script finds every port Docker publishes. It can't see two kinds of apps, so you list their ports in `EXTRA`:
+2. **List the ports Docker doesn't show** (optional: you can also add them later on its page). The script finds every port Docker publishes. It can't see two kinds of apps, so you list their ports in `EXTRA`:
    - apps **outside Docker** (noVNC on 6080, for example);
    - apps on the **host network** (Home Assistant from CasaOS's store, on 8123). This lists them:
      ```bash
@@ -100,8 +101,18 @@ browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve
    https port 8390 -> the Frame Proxy page
    https port 8444 -> app 8444 (its own https)
    ```
-4. **Reload CasaOS** at its `https://` address (Ctrl+F5) and open an app: it opens in a window.
-5. **That's it.** When you install or remove an app, a timer on the server notices its port within a minute and runs the script again by itself. Anything else (an app outside Docker, a port to leave out) goes on the [Frame Proxy page](#the-frame-proxy-app). Running the script again by hand is always safe: each run rebuilds everything.
+4. **Reload CasaOS** at its `https://` address (Ctrl+F5) and open an app: it opens in a window. The dashboard now has the **Frame Proxy** app.
+
+### From then on
+
+- **New apps join by themselves.** When you install or remove an app, a timer on the server notices its port within a minute and runs the script again. Nothing to do.
+- **Other changes go on the [Frame Proxy page](#the-frame-proxy-app)** (its card on the dashboard): add a port Docker doesn't show, remove one, scan again.
+- **After updating App Windows** (from the Store or by copying the folder), run the command once more. The ports you chose are kept, so no `EXTRA` is needed:
+  ```bash
+  sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh
+  ```
+  The update brings a newer script, but the server never runs a new script by itself: you decide when.
+- Running it again is always safe: each run rebuilds everything.
 
 ### Options
 
@@ -165,7 +176,9 @@ sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh off
 
 ### What it changes, security-wise
 
-- Only devices in your tailnet reach these addresses (`tailscale serve`, not Funnel). Caddy listens only on the server itself (`127.0.0.1`).
+- Only devices in your tailnet reach these addresses (`tailscale serve`, not Funnel). Caddy listens only on the server itself (`127.0.0.1`), except the Frame Proxy page (port 8390), which your network can open but only to read.
+- Changing ports on the page needs the tailnet too: the server takes the page's requests only through `tailscale serve`, marked so that another site can't send them, and they carry only port numbers. They run the script as root on the server (through `frame-proxy-api.socket`), the same script you ran.
+- The server never runs a newer script by itself: after an update of App Windows, you run it again.
 - On these addresses, the apps lose their protection against being shown inside other sites' pages (clickjacking). Only pages in your tailnet could try that.
 - The `http://` addresses on your network don't change at all.
 - The apps see every request as coming from the server itself (`127.0.0.1`, or Docker's gateway), not from your device. Logs and IP-based rules in the apps (Home Assistant's login notices and bans, for example) show that address.

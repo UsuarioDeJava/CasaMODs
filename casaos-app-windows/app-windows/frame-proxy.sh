@@ -23,7 +23,8 @@
 # the ports and runs this script again. A timer (frame-proxy-scan.timer) runs
 # it again by itself when Docker's ports change (an app installed or removed).
 # It ships in App Windows' folder: run it once on the server; after that the
-# page and the timer keep it up to date.
+# page and the timer keep its ports up to date. After App Windows is updated,
+# run it again (the newer copy in the mod's folder is never run by itself).
 #
 # On the CasaOS server:
 #   sudo bash /DATA/AppData/casamod/mod/app-windows/frame-proxy.sh
