@@ -1329,7 +1329,7 @@
     disc: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2"/>',
     person: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1-3.6 3.8-5.5 7-5.5s6 1.9 7 5.5"/>',
     device: '<rect x="3.5" y="5" width="17" height="11" rx="1.5"/><path d="M9 20h6M12 16v4"/>',
-    gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/>',
+    gear: '<path d="M9.75 5.48L10.21 2.77L13.79 2.77L14.25 5.48A6.9 6.9 0 0 1 16.53 6.79L19.09 5.83L20.89 8.94L18.77 10.68A6.9 6.9 0 0 1 18.77 13.32L20.89 15.06L19.09 18.17L16.53 17.21A6.9 6.9 0 0 1 14.25 18.52L13.79 21.23L10.21 21.23L9.75 18.52A6.9 6.9 0 0 1 7.47 17.21L4.91 18.17L3.11 15.06L5.23 13.32A6.9 6.9 0 0 1 5.23 10.68L3.11 8.94L4.91 5.83L7.47 6.79A6.9 6.9 0 0 1 9.75 5.48z"/><circle cx="12" cy="12" r="3"/>',
     heart: '<path d="M12 19.5s-7-4.3-7-9.6A4 4 0 0112 7.3a4 4 0 017 2.6c0 5.3-7 9.6-7 9.6z"/>',
     back: '<path d="M14.5 18l-6-6 6-6"/>',
     check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
@@ -3318,7 +3318,7 @@
   var JF_AUTH = STORE + '-jellyfin';
   var JF_SHARED = SHARED_DIR + '/music-player-jellyfin.json';
   var JF_KEYS = ['server', 'token', 'user', 'device', 'at'];
-  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '2.0.0';
+  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '2.0.1';
   var JF_HELP = 'https://github.com/UsuarioDeJava/CasaMODs/tree/main/casaos-music-player#jellyfin';
   var JF_PAGE = 200, JF_ALL_PAGE = 500, JF_SHOWN = 300;
   // What this browser plays as it is (Jellyfin converts the rest to MP3)
