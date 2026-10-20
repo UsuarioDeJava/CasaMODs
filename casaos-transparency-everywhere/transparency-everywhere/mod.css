@@ -51,6 +51,23 @@ html body .modal .modal-card:not(.file-panel .modal-card) input,
 html body .modal .modal-card:not(.file-panel .modal-card) textarea {
   background: rgba(0, 0, 0, .25) !important; border-color: rgba(255, 255, 255, .15) !important;
 }
+/* Tag fields (App Store > custom app > Container Capabilities): the box is
+   the field, its own input stays clear */
+html body .modal .modal-card:not(.file-panel .modal-card) .taginput .taginput-container {
+  background: rgba(0, 0, 0, .25) !important; border-color: rgba(255, 255, 255, .15) !important;
+}
+html body .modal .modal-card:not(.file-panel .modal-card) .taginput .taginput-container input { background: transparent !important; }
+/* Light gray Bulma boxes: tags ("CasaOS" on a disk, the chosen capabilities),
+   plain notes (New folder) and the red notes of the storage manager */
+html body .modal .modal-card:not(.file-panel .modal-card) .tag:not(.is-primary, .is-link, .is-info, .is-success, .is-warning, .is-danger, .is-dark, .is-black) {
+  background: rgba(255, 255, 255, .15) !important;
+}
+html body .modal .modal-card:not(.file-panel .modal-card) .notification:not(.is-primary, .is-link, .is-info, .is-success, .is-warning, .is-danger, .is-dark, .non-backgroud) {
+  background: rgba(0, 0, 0, .2) !important;
+}
+html body .modal .modal-card:not(.file-panel .modal-card) .message.is-danger .message-body {
+  background: rgba(255, 60, 90, .15) !important; border-color: rgba(255, 60, 90, .5) !important;
+}
 html body .top-bar .dropdown-content input::placeholder,
 html body .top-bar .dropdown-content textarea::placeholder { color: rgba(255, 255, 255, .4) !important; }
 html body .top-bar .dropdown-content option,
