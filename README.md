@@ -12,6 +12,8 @@ Mods for the [CasaOS](https://casaos.io) dashboard, installed with [CasaMOD](htt
 - [`casaos-hide-widget-settings`](casaos-hide-widget-settings) — **Hide Widget Settings**: hides the "Widget settings" card of the widget column. With Hide Footer, they also fix CasaOS's widget column so it ends on the apps' line at any window size.
 - [`casaos-transparency-everywhere`](casaos-transparency-everywhere) — **Transparency Everywhere**: the widgets' frosted glass on the top bar, its menus and the CasaOS dialogs. CSS only.
 
+Mods with settings keep them in a `config.json` in their folder, in one format for all ([CONFIG.md](CONFIG.md)): each setting says its type, its choices or limits, its default and its name in every CasaOS language, so the CasaMOD Store can show and change them.
+
 ## Install
 
 1. Install **CasaMOD** from the CasaOS app store (or from its repository).
@@ -48,6 +50,7 @@ The widget column of Hide Footer and Hide Widget Settings: `node casaos-hide-wid
 App Usage and App Updates check their mod on cards shaped like CasaOS's, with CasaOS's answers faked (they need [Playwright](https://playwright.dev), `npm i playwright`):
 
 ```bash
+node casaos-app-usage/tests/config-check.js
 node casaos-app-usage/tests/card-check.mjs
 node casaos-app-updates/tests/text-check.js
 node casaos-app-updates/tests/card-check.mjs

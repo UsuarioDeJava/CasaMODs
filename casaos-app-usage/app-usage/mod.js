@@ -7,10 +7,11 @@
  * CasaOS's own (GET /v1/container/usage, what that widget lists under CPU and
  * RAM), summed over the app's containers. A stopped app shows none.
  *
- * config.json, next to this file (the CasaMOD Store can change it):
- *   "show": "hover"   the gauges while the pointer is on the card (default),
- *                     and CasaOS is asked only then; "always": all the time
- *   "interval": 3     seconds between readings (1 to 60)
+ * Settings: config.json, next to this file, in the format of CONFIG.md at the
+ * repository's root (the CasaMOD Store shows and changes it):
+ *   show       "hover" (default): the gauges while the pointer is on the card,
+ *              and CasaOS is asked only then; "always": all the time
+ *   interval   seconds between readings, 1 to 60 (default 3)
  */
 (function () {
   'use strict';
@@ -21,21 +22,31 @@
   var TAG = '[App Usage]';
   var NS = 'http://www.w3.org/2000/svg';
   var SELF = document.currentScript && document.currentScript.src;   // CasaMOD: <script src="mod/<folder>/mod.js">
-  var config = { show: 'hover', interval: 3 };
+  // The settings: the defaults, and what config.json may set them to
+  var DEFAULTS = { show: 'hover', interval: 3 };
+  var VALID = {
+    show: function (v) { return v === 'hover' || v === 'always'; },
+    interval: function (v) { return typeof v === 'number' && v >= 1 && v <= 60 && v % 1 === 0; }
+  };
+  var config = { show: DEFAULTS.show, interval: DEFAULTS.interval };
   var last = {};      // card name: { cpu (%), ram (bytes), limit (bytes) }
   var hovered = null; // the card under the pointer
 
-  // config.json, read at load and whenever the tab comes back in sight (so a
-  // change made in the CasaMOD Store applies without reloading)
+  // config.json, read at load and whenever the tab comes back in sight (its
+  // settings say "applies": "visible"), so a change made in the CasaMOD Store
+  // applies without reloading. Each value by its key; a missing or invalid one
+  // is the default
   function loadConfig() {
     if (!SELF) return Promise.resolve();
     return fetch(new URL('config.json', SELF).href, { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (c) {
         if (!c || typeof c !== 'object') return;
-        if (c.show === 'hover' || c.show === 'always') config.show = c.show;
-        var n = Number(c.interval);
-        if (n >= 1 && n <= 60) config.interval = n;
+        var values = {};
+        if (Array.isArray(c.settings)) {
+          c.settings.forEach(function (s) { if (s && typeof s.key === 'string') values[s.key] = s.value; });
+        } else values = c;   // the plain { "show", "interval" } of version 1.1.0
+        Object.keys(DEFAULTS).forEach(function (k) { config[k] = VALID[k](values[k]) ? values[k] : DEFAULTS[k]; });
       })
       .catch(function () { /* no config.json, or not JSON: the defaults */ })
       .then(function () { document.documentElement.classList.toggle('aus-hover', config.show === 'hover'); });

@@ -5,6 +5,7 @@ Independent CasaMOD mods for CasaOS, one folder each: `casaos-live-wallpapers` (
 - The user is Brazilian: reply in Portuguese (pt-BR). Code, comments and READMEs stay in English. The user tests on their own CasaOS and decides; keep replies short and say what changed.
 - GitHub: `UsuarioDeJava/CasaMODs` (public; formerly NescauQuente). Commits are authored as UsuarioDeJava (set in this repository's git config).
 - Each mod folder has a `preview.png` (540×260, an app-icon style tile on a gradient, no text) and a `mod.json` (name, version, description, author, preview; CasaMOD's manifest format): the CasaMOD Store reads both from GitHub for its cards. A new mod gets both, in the same style; bump `version` when a mod changes.
+- A mod with settings ships a `config.json` in the format of [`CONFIG.md`](CONFIG.md) (self-describing, for the user's CasaMOD Store to show and edit; all 31 languages; a test checks it). Follow it for any new setting or mod.
 - Starry Orbit, the Wallpaper Engine wallpaper the user runs through Live Wallpapers, is a separate project outside this repository (`../star-wallpaper` on the user's PC), worked on in another chat: don't change it from here.
 
 ## Where you run

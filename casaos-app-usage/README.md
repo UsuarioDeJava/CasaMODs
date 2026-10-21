@@ -21,21 +21,16 @@ To remove it, move `app-usage` out of `/DATA/AppData/casamod/mod/` and restart C
 
 ## Settings: `config.json`
 
-The mod's folder has a `config.json` (the CasaMOD Store can change it):
+The mod's folder has a `config.json` with its settings, in the format every mod of this repository uses ([CONFIG.md](../CONFIG.md)): each setting describes itself (its type, its choices or limits, its default, its name and description in all 31 CasaOS languages), so the CasaMOD Store shows and changes them for you. By hand, change only the `"value"` of a setting.
 
-```json
-{
-  "show": "hover",
-  "interval": 3
-}
-```
+| Setting (`key`) | Type | Values | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `show` | `select` | `"hover"` (On hover) or `"always"` (Always) | `"hover"` | `"hover"`: the gauges show while the pointer is on the card, and CasaOS is asked for the numbers only then. `"always"`: on every card all the time. |
+| `interval` | `number` | `1` to `60`, step `1` (seconds) | `3` | Seconds between two readings. |
 
-| Setting | Values | What it does |
-| --- | --- | --- |
-| `show` | `"hover"` (default) or `"always"` | `"hover"`: the gauges show while the pointer is on the card, and CasaOS is only asked for the numbers then. `"always"`: on every card all the time. |
-| `interval` | `1` to `60` (default `3`) | Seconds between readings. |
+Both apply when the CasaOS tab comes back in sight (`"applies": "visible"`: switch to another tab and back), without reloading. A value outside its rules counts as the default.
 
-A change applies when the CasaOS tab comes back in sight (switch tabs and back), or after a reload. A value that isn't one of these keeps its default. Copying a newer `app-usage` folder over the old one replaces `config.json` with the default one: keep yours aside if you changed it.
+Copying a newer `app-usage` folder over the old one brings the new `config.json` with the default values: the CasaMOD Store keeps your values (CONFIG.md says how); by hand, note yours and set them again.
 
 ## How it works
 
@@ -43,11 +38,12 @@ A change applies when the CasaOS tab comes back in sight (switch tabs and back),
 - The numbers are worked out as that widget does (`widgets/Cpu.vue` in CasaOS-UI): CPU = the container's CPU time between the two readings ÷ the whole machine's, in %; RAM = the memory used minus the page cache (`inactive_file`, or `cache`), against the container's memory limit (the machine's memory when it has none).
 - Each container goes to the card of its app: the app whose name is the container's name or begins it (`librechat` for `librechat-api`, `mineos` for `mineos_server`; the longest name wins), else the app with the container's icon (CasaOS labels an app's containers with the app's icon). An app's containers are added up.
 - The gauges are small copies of CasaOS's `RadialBar`: a 270° arc, a white track at 40%, the green-to-yellow gradient (`#33FFAA` → `#FFD580`), round ends. They sit in the card's holder (`#app-<name>`, outside CasaOS's own card component), so CasaOS's card keeps working as before; when CasaOS draws its cards again (an app installed, started or stopped), the gauges come back at once from the last reading. They sit under the app's name, which keeps its whole width.
-- `config.json` is read from the mod's own folder (CasaMOD loads the mod as `<script src="mod/<folder>/mod.js">`), at load and each time the tab comes back in sight.
+- `config.json` is read from the mod's own folder (CasaMOD loads the mod as `<script src="mod/<folder>/mod.js">`), at load and each time the tab comes back in sight. The mod keeps the defaults and limits in its own code and takes each `value` by its `key` only if it's valid (it also reads the plain `{ "show", "interval" }` file of version 1.1.0).
 - With "reduce motion" set in the system, the gauges don't animate.
 
 It relies on CasaOS-UI's markup: the `#app-<name>` card holders, `.app-card`, `.cards-content` (its `img` and `p.one-line`). A CasaOS update that renames them needs the mod adjusted.
 
 ## Tests
 
-`node tests/card-check.mjs` loads the mod on cards shaped like CasaOS's, with CasaOS's answer faked (an app with two containers, one found by its icon, a stopped one), and checks both `show` settings (in `"hover"`, nothing asked before the pointer is on a card, the gauges fading in on that card only and CasaOS no longer asked once the pointer leaves), the numbers, the tooltips, the name's width and the gauges coming back after CasaOS draws a card again. It needs Playwright and Chrome or Chromium (found in the usual places, or set `CHROME`).
+- `node tests/config-check.js`: `config.json` against the format of [CONFIG.md](../CONFIG.md) (structure, every text in all 31 languages, values within their rules) and its defaults against the mod's own.
+- `node tests/card-check.mjs` loads the mod on cards shaped like CasaOS's, with CasaOS's answer faked (an app with two containers, one found by its icon, a stopped one), and checks both `show` settings (in `"hover"`, nothing asked before the pointer is on a card, the gauges fading in on that card only and CasaOS no longer asked once the pointer leaves), the numbers, the tooltips, the name's width and the gauges coming back after CasaOS draws a card again, with `config.json` served next to the mod as CasaMOD does. It needs Playwright and Chrome or Chromium (found in the usual places, or set `CHROME`).

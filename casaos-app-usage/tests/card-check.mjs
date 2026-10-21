@@ -91,7 +91,12 @@ await p.evaluate(() => { const el = document.getElementById('app-jellyfin'); con
 await p.waitForTimeout(800);
 s = await g();
 check('after CasaOS draws a card again: its gauges are back', s.jellyfin.cpu === '3.0%CPU', s.jellyfin);
-CONFIG = JSON.stringify({ show: 'always', interval: 2 });
+CONFIG = JSON.stringify((() => {   // the shipped file, with the values a CasaMOD Store would write
+  const c = JSON.parse(read('casaos-app-usage/app-usage/config.json'));
+  c.settings.find((x) => x.key === 'show').value = 'always';
+  c.settings.find((x) => x.key === 'interval').value = 2;
+  return c;
+})());
 asked = 0;
 await p.mouse.move(990, 410);
 await open();
