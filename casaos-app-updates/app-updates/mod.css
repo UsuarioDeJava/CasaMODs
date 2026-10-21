@@ -1,0 +1,31 @@
+/*
+ * App Updates — the badge on the icon of an app with an update. Every class
+ * is prefixed with "aup-".
+ */
+.aup-badge {
+  position: absolute;
+  top: -0.45rem;
+  left: -0.45rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  background: #3388ff;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  animation: aup-in 0.5s cubic-bezier(0.3, 1.4, 0.5, 1);
+  transition: transform 0.15s, background 0.15s;
+}
+.aup-badge:hover { transform: scale(1.12); background: #4a97ff; }
+.aup-badge:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.aup-badge svg { display: block; width: 0.75rem; height: 0.75rem; }
+@keyframes aup-in { from { opacity: 0; transform: scale(0.4); } }
+@media (prefers-reduced-motion: reduce) {
+  .aup-badge { animation: none; transition: none; }
+}

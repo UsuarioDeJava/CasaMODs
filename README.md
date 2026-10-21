@@ -6,6 +6,8 @@ Mods for the [CasaOS](https://casaos.io) dashboard, installed with [CasaMOD](htt
 - [`casaos-music-player`](casaos-music-player) — **Music Player**: a dashboard music widget with a switch between a folder of the CasaOS storage (played in the CasaOS tab), your Spotify account (what plays on any of your devices, its controls, your playlists, the queue, search and devices; or the CasaOS tab plays it, as a Spotify device) and your Jellyfin music library (played in the tab). The Spotify mode needs CasaOS over HTTPS (its README shows how, with Tailscale).
 - [`casaos-idle-hide`](casaos-idle-hide) — **Idle Hide**: after a while without activity (or with a switch at the far right of the top bar), everything but the wallpaper fades away, one piece after the other; a click or a key brings it back. The idle time is set in the CasaOS settings.
 - [`casaos-app-windows`](casaos-app-windows) — **App Windows**: apps open in windows inside the CasaOS tab instead of new tabs (drag, resize, maximize, minimize while the app keeps running, open in a new tab); Files and the App Store become windows too. Its frame proxy (a script run once on the server) lets every app open in a window over HTTPS, F5 reload the app inside it, and wallpapers hear and show what the app plays.
+- [`casaos-app-usage`](casaos-app-usage) — **App Usage**: each app's card shows the CPU and RAM it uses right now, in two small gauges like CasaOS's own system widget. The numbers come from CasaOS itself.
+- [`casaos-app-updates`](casaos-app-updates) — **App Updates**: a badge on the icon of each app that has an update in its app store, as CasaOS knows it; the badge opens the app's menu, where "Check then update" is.
 - [`casaos-hide-footer`](casaos-hide-footer) — **Hide Footer**: hides the dashboard footer (CasaOS logo, text and social buttons) and gives the space to apps and widgets.
 - [`casaos-hide-widget-settings`](casaos-hide-widget-settings) — **Hide Widget Settings**: hides the "Widget settings" card of the widget column. With Hide Footer, they also fix CasaOS's widget column so it ends on the apps' line at any window size.
 - [`casaos-transparency-everywhere`](casaos-transparency-everywhere) — **Transparency Everywhere**: the widgets' frosted glass on the top bar, its menus and the CasaOS dialogs. CSS only.
@@ -42,3 +44,11 @@ node casaos-app-windows/tests/text-check.js
 ```
 
 The widget column of Hide Footer and Hide Widget Settings: `node casaos-hide-widget-settings/tests/layout-check.mjs`.
+
+App Usage and App Updates check their mod on cards shaped like CasaOS's, with CasaOS's answers faked (they need [Playwright](https://playwright.dev), `npm i playwright`):
+
+```bash
+node casaos-app-usage/tests/card-check.mjs
+node casaos-app-updates/tests/text-check.js
+node casaos-app-updates/tests/card-check.mjs
+```
