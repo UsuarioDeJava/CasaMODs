@@ -2,8 +2,9 @@
 
 A CasaMOD mod: an animated wallpaper engine for the CasaOS dashboard. It lists `/DATA/AppData/casamod/mod/wallpapers/` (Wallpaper Engine web/video wallpapers as published, HTML folders, loose videos), adds them to the CasaOS wallpaper menu, and runs the chosen one behind the UI — web wallpapers in a sandboxed `srcdoc` iframe fed the Wallpaper Engine web API (properties, general properties, tab audio as 128 bands, mouse, pause), with a settings panel built from `project.json`. See `README.md`.
 
-- `live-wallpapers/` is the mod as installed (`mod.js`, `mod.css`): no build step, copied as is to `/DATA/AppData/casamod/mod/live-wallpapers/`.
+- `live-wallpapers/` is the mod as installed (`mod.js`, `mod.css`, `config.json`): no build step, copied as is to `/DATA/AppData/casamod/mod/live-wallpapers/`.
 - It is its own project: it doesn't know about any player or wallpaper in particular. Audio comes from any media element playing in the tab, and from other mods' `casamods:audio` events (App Windows: apps in windows, analysed on their own address; the same 64 bands), mixed in by the loudest; `casamods:audio-wanted` tells them when a wallpaper listens. Starry Orbit (`../../star-wallpaper`, outside this repository) and the music player (`../casaos-music-player`) are separate projects.
+- Settings: `live-wallpapers/config.json` in the repository's format ([`../CONFIG.md`](../CONFIG.md)): `audio` and `media` (true: a wallpaper's audio or media request is honoured), `memory` (MB of video kept in memory, 0–1000 by 10; 100); "applies": "reload" (`configured` is the promise the requests and the video wait on). Per-wallpaper settings stay in its Customize panel. `mod.js` keeps `DEFAULTS` and `VALID` and reads each `value` by key (`loadConfig`); a new or changed setting needs `config.json` (all 31 languages), `DEFAULTS`/`VALID` and the README's table, and `node tests/config-check.js` checks them.
 
 ## Working here
 

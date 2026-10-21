@@ -1,6 +1,6 @@
 {
   "name": "App Updates",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A badge on the icon of each app that has an update in its app store, as CasaOS knows it. The badge opens the app's menu, where \"Check then update\" is.",
   "author": "UsuarioDeJava",
   "casaos_min_version": "0.4.0",

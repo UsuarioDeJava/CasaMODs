@@ -27,7 +27,7 @@ Put wallpapers in **`/DATA/AppData/casamod/mod/wallpapers/`**, one folder each (
 | What | Runs? | How |
 |---|---|---|
 | Wallpaper Engine **web** wallpaper | ✅ | Its page runs with the Wallpaper Engine web API: its properties (with the settings panel built from `project.json`, translated by its own localization; files and folders picked from the CasaOS storage), general properties (language, frame rate), the tab's audio (128 bands), media integration, the mouse, pause. |
-| Wallpaper Engine **video** wallpaper, or a loose `.mp4`/`.webm` | ✅ | Looped, muted by default. Up to 100 MB it is downloaded once and played from memory; bigger files stream. |
+| Wallpaper Engine **video** wallpaper, or a loose `.mp4`/`.webm` | ✅ | Looped, muted by default. Up to 100 MB (the `memory` setting) it is downloaded once and played from memory; bigger files stream. |
 | Folder with an `index.html` (no `project.json`) | ✅ | As a web wallpaper. |
 | Wallpaper Engine **scene** | ❌ | Wallpaper Engine's own compiled format; listed greyed out with the reason. |
 | Wallpaper Engine **application** | ❌ | A Windows program; listed greyed out. |
@@ -36,6 +36,21 @@ A Wallpaper Engine wallpaper is copied as is: a folder of `Steam\steamapps\works
 
 **Isolation.** A web wallpaper is someone else's code. It runs in a sandboxed iframe with no access to CasaOS, your account, its storage or your session. Some wallpapers need more (loading files with `fetch`, ES modules, WebGL textures from images, `localStorage`) and look broken that way: **Customize → Trust this wallpaper** reloads it with full compatibility, which also gives it full access to the CasaOS page — only for wallpapers you trust.
 
+## Settings: `config.json`
+
+The mod's folder has a `config.json` with its settings, in the format every mod of this repository uses ([CONFIG.md](../CONFIG.md)): each setting describes itself (type, choices or limits, default, name in all 31 CasaOS languages), so the CasaMOD Store shows and changes them. By hand, change only a setting's `"value"`. A value outside its rules counts as the default.
+
+| Setting (`key`) | Type | Values | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `audio` | `boolean` | `true` or `false` | `true` | Wallpapers may react to the sound playing in the tab. `false`: a wallpaper that asks for it gets none (and nothing analyses the sound). |
+| `media` | `boolean` | `true` or `false` | `true` | Wallpapers may know what plays (title, artist, cover, position). `false`: a wallpaper that asks gets nothing. |
+| `memory` | `number` | `0` to `1000`, step `10` (MB) | `100` | Video wallpapers up to this size are downloaded once and looped from memory; bigger ones are streamed. `0`: always streamed. |
+
+They apply when CasaOS is reloaded (`"applies": "reload"`: Ctrl+F5).
+
+Copying a newer folder over the old one brings the new `config.json` with the default values: the CasaMOD Store keeps your values (CONFIG.md says how); by hand, note yours and set them again.
+
+These are for every wallpaper; each wallpaper's own settings (frame rate limit, volume, its properties) stay in its **Customize** panel.
 ## How it fits into CasaOS
 
 - CasaMOD injects the mod's `mod.js` and `mod.css` into the CasaOS page and serves the `mod` folder at `/mod/`.

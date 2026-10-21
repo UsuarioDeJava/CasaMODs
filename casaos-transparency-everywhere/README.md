@@ -1,6 +1,6 @@
 # Transparency Everywhere for CasaOS
 
-A [CasaMOD](https://github.com/Cp0204/CasaMOD) mod, CSS only. Gives the rest of CasaOS the frosted glass of the dashboard widgets: the top bar, its Account and Settings menus and the dialogs (App Store, Terminal, Logs, app settings…) become translucent and blurred, with light text. Goes well with an animated wallpaper.
+A [CasaMOD](https://github.com/Cp0204/CasaMOD) mod, CSS plus a small script for its settings. Gives the rest of CasaOS the frosted glass of the dashboard widgets: the top bar, its Account and Settings menus and the dialogs (App Store, Terminal, Logs, app settings…) become translucent and blurred, with light text. Goes well with an animated wallpaper.
 
 ## How it works
 
@@ -13,6 +13,21 @@ A [CasaMOD](https://github.com/Cp0204/CasaMOD) mod, CSS only. Gives the rest of 
 
 CasaOS updates that rename these classes may need the selectors adjusted.
 
+## Settings: `config.json`
+
+The mod's folder has a `config.json` with its settings, in the format every mod of this repository uses ([CONFIG.md](../CONFIG.md)): each setting describes itself (type, choices or limits, default, name in all 31 CasaOS languages), so the CasaMOD Store shows and changes them. By hand, change only a setting's `"value"`. A value outside its rules counts as the default.
+
+| Setting (`key`) | Type | Values | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `blur` | `number` | `0` to `40`, step `1` (px) | `20` | How much the menus and dialogs blur what's behind them. |
+| `tint` | `number` | `0` to `90`, step `5` (%) | `40` | How dark the glass is (the top bar's too). |
+| `topBar` | `boolean` | `true` or `false` | `true` | The top bar in glass. `false`: CasaOS's own top bar (its menus stay in glass). |
+
+They apply when the CasaOS tab comes back in sight (`"applies": "visible"`: switch to another tab and back), without reloading.
+
+Copying a newer folder over the old one brings the new `config.json` with the default values: the CasaMOD Store keeps your values (CONFIG.md says how); by hand, note yours and set them again.
+
+A small script (`mod.js`) hands the settings to the CSS as variables (`--te-blur`, `--te-tint`, `html.te-no-bar`); without it, the CSS keeps these defaults.
 ## Install
 
 1. Install **CasaMOD** from the CasaOS app store (or from its repository).

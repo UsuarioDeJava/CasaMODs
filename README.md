@@ -10,7 +10,7 @@ Mods for the [CasaOS](https://casaos.io) dashboard, installed with [CasaMOD](htt
 - [`casaos-app-updates`](casaos-app-updates) — **App Updates**: a badge on the icon of each app that has an update in its app store, as CasaOS knows it; the badge opens the app's menu, where "Check then update" is.
 - [`casaos-hide-footer`](casaos-hide-footer) — **Hide Footer**: hides the dashboard footer (CasaOS logo, text and social buttons) and gives the space to apps and widgets.
 - [`casaos-hide-widget-settings`](casaos-hide-widget-settings) — **Hide Widget Settings**: hides the "Widget settings" card of the widget column. With Hide Footer, they also fix CasaOS's widget column so it ends on the apps' line at any window size.
-- [`casaos-transparency-everywhere`](casaos-transparency-everywhere) — **Transparency Everywhere**: the widgets' frosted glass on the top bar, its menus and the CasaOS dialogs. CSS only.
+- [`casaos-transparency-everywhere`](casaos-transparency-everywhere) — **Transparency Everywhere**: the widgets' frosted glass on the top bar, its menus and the CasaOS dialogs. CSS, plus a small script for its settings (blur, darkness, top bar).
 
 Mods with settings keep them in a `config.json` in their folder, in one format for all ([CONFIG.md](CONFIG.md)): each setting says its type, its choices or limits, its default and its name in every CasaOS language, so the CasaMOD Store can show and change them.
 
@@ -44,6 +44,8 @@ node casaos-idle-hide/tests/text-check.js
 node casaos-idle-hide/tests/idle-runner.mjs
 node casaos-app-windows/tests/text-check.js
 ```
+
+Each mod with settings checks its `config.json` against [CONFIG.md](CONFIG.md): `node <project>/tests/config-check.js` (App Updates, App Usage, App Windows, Idle Hide, Live Wallpapers, Music Player, Transparency Everywhere).
 
 The widget column of Hide Footer and Hide Widget Settings: `node casaos-hide-widget-settings/tests/layout-check.mjs`.
 

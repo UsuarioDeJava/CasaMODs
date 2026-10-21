@@ -11,6 +11,11 @@
  * Local files are listed with the CasaOS API (/v1/folder) and streamed from
  * /v1/file, so nothing leaves your server. It was Music Player + Spotify
  * before 2.0.0: if that mod is installed too, only one widget shows.
+ *
+ * Settings (config.json): spotify and jellyfin, whether those modes are
+ * offered (true; with neither, the switch goes and it's the local player);
+ * maxFiles, the most tracks a folder scan collects (500 to 20000, by 500;
+ * 3000); depth, the subfolder levels it enters (1 to 10; 3).
  */
 (function () {
   'use strict';
@@ -25,8 +30,36 @@
   var OLD_STORE = 'casamod-music-player';   // the Music Player before 2.0.0: its folder, queue… are taken over once
   var DEFAULT_FOLDER = '/DATA/Media/Music';
   var AUDIO_EXT = /\.(mp3|flac|ogg|oga|opus|wav|m4a|aac|webm|weba)$/i;
-  var MAX_FILES = 3000, MAX_FOLDERS = 400, MAX_DEPTH = 3;
+  var MAX_FOLDERS = 400;
   var TAG = '[Music Player]';
+
+  // Settings: config.json next to this file, in the format of CONFIG.md at the
+  // repository's root (the CasaMOD Store shows and changes it). Each value by
+  // its key; a missing or invalid one is the default
+  var SELF = document.currentScript && document.currentScript.src;
+  var DEFAULTS = { spotify: true, jellyfin: true, maxFiles: 3000, depth: 3 };
+  var VALID = {
+    spotify: function (v) { return v === true || v === false; },
+    jellyfin: function (v) { return v === true || v === false; },
+    maxFiles: function (v) { return typeof v === 'number' && v >= 500 && v <= 20000 && v % 500 === 0; },
+    depth: function (v) { return typeof v === 'number' && v >= 1 && v <= 10 && v % 1 === 0; }
+  };
+  var configured = false;   // the widget waits for the settings (they apply at load: "applies": "reload")
+  // The modes offered: the local player always, Spotify and Jellyfin unless turned off
+  function offered(src) { return src === 'local' || (src === 'spotify' && config.spotify) || (src === 'jellyfin' && config.jellyfin); }
+  var config = {};
+  Object.keys(DEFAULTS).forEach(function (k) { config[k] = DEFAULTS[k]; });
+  function loadConfig() {
+    if (!SELF) return Promise.resolve();
+    return fetch(new URL('config.json', SELF).href, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) {
+        var values = {};
+        if (c && Array.isArray(c.settings)) c.settings.forEach(function (s) { if (s && typeof s.key === 'string') values[s.key] = s.value; });
+        Object.keys(DEFAULTS).forEach(function (k) { config[k] = VALID[k](values[k]) ? values[k] : DEFAULTS[k]; });
+      })
+      .catch(function () { /* no config.json, or not JSON: as it was */ });
+  }
 
   // ---------------------------------------------------------------------------
   // Text, in every CasaOS language (follows CasaOS; English by default).
@@ -1776,7 +1809,7 @@
 
     function walk() {
       if (id !== scanId) return Promise.resolve();
-      if (!queue.length || found.length >= MAX_FILES || folders >= MAX_FOLDERS) return Promise.resolve();
+      if (!queue.length || found.length >= config.maxFiles || folders >= MAX_FOLDERS) return Promise.resolve();
       var item = queue.shift();
       folders++;
       return listFolder(item.path).then(function (entries) {
@@ -1784,8 +1817,8 @@
           if (!e || !e.name || e.name.charAt(0) === '.') return;
           if (!e.is_dir && COVER_FILE.test(e.name) && !covers[item.path]) covers[item.path] = e.path;
           if (e.is_dir) {
-            if (state.recursive && item.depth < MAX_DEPTH) queue.push({ path: e.path, depth: item.depth + 1 });
-          } else if (AUDIO_EXT.test(e.name) && found.length < MAX_FILES) {
+            if (state.recursive && item.depth < config.depth) queue.push({ path: e.path, depth: item.depth + 1 });
+          } else if (AUDIO_EXT.test(e.name) && found.length < config.maxFiles) {
             var title = pretty(e.name), album = parentName(e.path);
             found.push({ path: e.path, name: e.name, title: title, album: album, key: fold(title + ' ' + album), dir: item.path });
           }
@@ -3318,7 +3351,7 @@
   var JF_AUTH = STORE + '-jellyfin';
   var JF_SHARED = SHARED_DIR + '/music-player-jellyfin.json';
   var JF_KEYS = ['server', 'token', 'user', 'device', 'at'];
-  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '2.1.0';
+  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '2.2.0';
   var JF_HELP = 'https://github.com/UsuarioDeJava/CasaMODs/tree/main/casaos-music-player#jellyfin';
   var JF_PAGE = 200, JF_ALL_PAGE = 500, JF_SHOWN = 300;
   // What this browser plays as it is (Jellyfin converts the rest to MP3)
@@ -3944,6 +3977,7 @@
 
   function setSource(src) {
     if (src !== 'spotify' && src !== 'jellyfin') src = 'local';
+    if (!offered(src)) src = 'local';
     if (state.source === src) return;
     var was = state.source;
     state.source = src;
@@ -4717,7 +4751,11 @@
     }
     root.setAttribute('data-source', state.source);
     root.classList.toggle('smp-free', spotify && auth.premium === false);
+    var shownSrc = [].filter.call(el.src, function (b) { return offered(b.getAttribute('data-src')); });
+    el.src[0].parentNode.hidden = shownSrc.length < 2;   // only the local player: no switch
+    root.style.setProperty('--smp-i', String(Math.max(0, shownSrc.findIndex(function (b) { return b.getAttribute('data-src') === state.source; }))));
     for (var i = 0; i < el.src.length; i++) {
+      el.src[i].hidden = !offered(el.src[i].getAttribute('data-src'));
       var mine = el.src[i].getAttribute('data-src') === state.source;
       el.src[i].classList.toggle('smp-on', mine);
       el.src[i].setAttribute('aria-pressed', String(mine));
@@ -5039,13 +5077,14 @@
 
   // Keeps the widget in the CasaOS sidebar, re-adding it when Vue re-renders
   function mount() {
+    if (!configured) return;
     var container = document.querySelector('.ps-container');
     if (!container) return;
     if (!root) {
       build();
       render();
-      sharedPull().then(sharedChanged);   // the logins kept on the CasaOS server
-      if (state.source === 'jellyfin' || jfOn()) jfPull().then(jfChanged);
+      if (config.spotify) sharedPull().then(sharedChanged);   // the logins kept on the CasaOS server
+      if (config.jellyfin && (state.source === 'jellyfin' || jfOn())) jfPull().then(jfChanged);
     }
     if (root.parentNode !== container) container.insertBefore(root, slot(container));
   }
@@ -5057,15 +5096,22 @@
     setTimeout(function () { scheduled = false; mount(); }, 150);
   }).observe(document.body, { childList: true, subtree: true });
 
-  mount();
-  scan();
-  finishLogin();
-  if (state.source === 'spotify' && connected()) {
-    if (!auth.user) loadMe();
-    poll();
-  }
-  webSync();
-  if (state.source === 'jellyfin') jfRestore();
+  loadConfig().then(function () {
+    configured = true;
+    if (!offered(state.source)) {   // a mode turned off in the settings: back to the local player
+      state.source = 'local';
+      save();
+    }
+    mount();
+    scan();
+    finishLogin();
+    if (state.source === 'spotify' && connected()) {
+      if (!auth.user) loadMe();
+      poll();
+    }
+    webSync();
+    if (state.source === 'jellyfin') jfRestore();
+  });
   console.info(TAG, 'loaded');
 
   // For other mods and debugging

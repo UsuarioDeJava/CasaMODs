@@ -1,6 +1,6 @@
 {
   "name": "Idle Hide",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "After a while without activity, everything but the wallpaper fades away, one by one; a click or a key brings it back. A switch at the far right of the top bar does it on demand. The idle time is set in the CasaOS settings.",
   "author": "UsuarioDeJava",
   "casaos_min_version": "0.4.0",

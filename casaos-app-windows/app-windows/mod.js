@@ -11,6 +11,10 @@
  *
  * A window is an iframe that never moves in the page (moving an iframe in the
  * DOM reloads it): which window is on top is only its z-index.
+ *
+ * Settings (config.json): panels, Files and the App Store as windows too
+ * (true); coverTopBar, windows may use the whole tab, over CasaOS's top bar
+ * (true), or only the space below it.
  */
 (function () {
   'use strict';
@@ -23,6 +27,30 @@
   // Above the dashboard and CasaOS's top bar (20), below its dialogs (40)
   var Z = 21, ZMAX = 29;
   var BAR = 34, MINW = 260, MINH = 160;
+
+  // Settings: config.json next to this file, in the format of CONFIG.md at the
+  // repository's root (the CasaMOD Store shows and changes it). Each value by
+  // its key; a missing or invalid one is the default
+  var SELF = document.currentScript && document.currentScript.src;
+  var DEFAULTS = { panels: true, coverTopBar: true };
+  var VALID = {
+    panels: function (v) { return v === true || v === false; },
+    coverTopBar: function (v) { return v === true || v === false; }
+  };
+  var configured = false;   // nothing is restored or turned into a window before the settings are in
+  var config = {};
+  Object.keys(DEFAULTS).forEach(function (k) { config[k] = DEFAULTS[k]; });
+  function loadConfig() {
+    if (!SELF) return Promise.resolve();
+    return fetch(new URL('config.json', SELF).href, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) {
+        var values = {};
+        if (c && Array.isArray(c.settings)) c.settings.forEach(function (s) { if (s && typeof s.key === 'string') values[s.key] = s.value; });
+        Object.keys(DEFAULTS).forEach(function (k) { config[k] = VALID[k](values[k]) ? values[k] : DEFAULTS[k]; });
+      })
+      .catch(function () { /* no config.json, or not JSON: as it was */ });
+  }
 
   // ---------------------------------------------------------------------------
   // Text, in every CasaOS language (follows CasaOS; English by default)
@@ -247,7 +275,12 @@
   // Where windows go: the whole tab, over CasaOS's top bar too (maximized is
   // the whole tab; with the browser in full screen, the whole screen)
   function area() {
-    return { x: 0, y: 0, w: window.innerWidth, h: Math.max(MINH, window.innerHeight) };
+    var top = 0;
+    if (!config.coverTopBar) {
+      var bar = document.querySelector('.top-bar');
+      top = bar ? Math.max(0, Math.round(bar.getBoundingClientRect().bottom)) : 0;
+    }
+    return { x: 0, y: top, w: window.innerWidth, h: Math.max(MINH, window.innerHeight - top) };
   }
   // A phone: windows always fill the area
   function narrow() { return window.innerWidth < 640; }
@@ -842,6 +875,7 @@
   var PANELS = [{ sel: '.modal.file-panel', name: 'Files' }, { sel: '.modal.app-panel', name: 'App Store' }];
 
   function scanPanels() {
+    if (!configured || !config.panels) return;
     // closed by CasaOS (its own close button, Esc), or gone
     wins.slice().forEach(function (w) {
       if (w.kind === 'panel' && (!w.root.isConnected || w.root.style.display === 'none')) dropPanel(w);
@@ -960,7 +994,7 @@
   // After a reload, once the dashboard is there (not on the login page)
   var restored = false;
   function restore() {
-    if (restored || !document.querySelector('.top-bar')) return;
+    if (!configured || restored || !document.querySelector('.top-bar')) return;
     restored = true;
     var list;
     try { list = JSON.parse(sessionStorage.getItem(SESSION) || '[]'); } catch (e) { list = []; }
@@ -1013,8 +1047,12 @@
     later();
   }).observe(document.body, { childList: true, subtree: true });
 
-  restore();
-  scanPanels();
+  // The settings first (they apply at load: "applies": "reload"), then what CasaOS shows already
+  loadConfig().then(function () {
+    configured = true;
+    restore();
+    scanPanels();
+  });
   console.info(TAG, 'loaded');
 
   // For other mods and debugging

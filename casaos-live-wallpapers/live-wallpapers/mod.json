@@ -1,6 +1,6 @@
 {
   "name": "Live Wallpapers",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Animated wallpapers for the dashboard: Wallpaper Engine web and video wallpapers, HTML folders and videos, picked from the CasaOS wallpaper menu, with a settings panel and reacting to the tab's audio.",
   "author": "UsuarioDeJava",
   "casaos_min_version": "0.4.0",

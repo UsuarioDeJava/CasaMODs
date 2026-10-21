@@ -22,10 +22,22 @@ The ones CasaOS itself can tell have an update: apps installed from an app store
 
 To remove it, move `app-updates` out of `/DATA/AppData/casamod/mod/` and restart CasaMOD.
 
+## Settings: `config.json`
+
+The mod's folder has a `config.json` with its settings, in the format every mod of this repository uses ([CONFIG.md](../CONFIG.md)): each setting describes itself (type, choices or limits, default, name in all 31 CasaOS languages), so the CasaMOD Store shows and changes them. By hand, change only a setting's `"value"`. A value outside its rules counts as the default.
+
+| Setting (`key`) | Type | Values | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `interval` | `number` | `5` to `1440`, step `5` (minutes) | `30` | Minutes between two checks with CasaOS. |
+
+They apply when the CasaOS tab comes back in sight (`"applies": "visible"`: switch to another tab and back), without reloading.
+
+Copying a newer folder over the old one brings the new `config.json` with the default values: the CasaMOD Store keeps your values (CONFIG.md says how); by hand, note yours and set them again.
+
 ## How it works
 
 - The mod asks CasaOS for its list of installed apps, `GET /v2/app_management/compose` (with the session's token): each app comes with CasaOS's `update_available`, the same check behind **Check then update** (CasaOS keeps its answer for a while, so it's quick after the first time).
-- It asks a couple of seconds after CasaOS opens, then every half hour while the tab is in sight, again soon after CasaOS draws its app cards again (an app installed, updated or removed; at most once a minute), and a minute and a half after a click on a badge (after the update).
+- It asks a couple of seconds after CasaOS opens, then every half hour (`interval`) while the tab is in sight, again soon after CasaOS draws its app cards again (an app installed, updated or removed; at most once a minute), and a minute and a half after a click on a badge (after the update).
 - The badge goes on the top-left corner of the app's icon, in CasaOS's card (`#app-<name>` → `.cards-content .is-relative`, next to the icon, where CasaOS puts its own "NEW" tag). A click on it opens the card's ⋯ menu (`.app-card-drop`), and doesn't open the app. When CasaOS draws its cards again, the badges come back.
 
 It relies on CasaOS-UI's markup: the `#app-<name>` card holders, `.cards-content .is-relative`, `.app-card-drop`. A CasaOS update that renames them needs the mod adjusted.

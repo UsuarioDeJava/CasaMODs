@@ -10,6 +10,10 @@
  * the far right of the top bar does the same on demand, until it is turned off
  * (or Esc). The idle time and an on/off switch for it sit in the CasaOS
  * settings dropdown.
+ *
+ * Settings (config.json): cascade, one piece after another (true) or all at
+ * once; speed of the fades, "slow", "normal" or "fast"; wakeOnMove, a mouse
+ * move brings it all back after an idle hide too (false).
  */
 (function () {
   'use strict';
@@ -19,6 +23,31 @@
 
   var TAG = '[Idle Hide]';
   var STORE = 'casamod-idle-hide';
+
+  // Settings: config.json next to this file, in the format of CONFIG.md at the
+  // repository's root (the CasaMOD Store shows and changes it). Each value by
+  // its key; a missing or invalid one is the default
+  var SELF = document.currentScript && document.currentScript.src;
+  var DEFAULTS = { cascade: true, speed: 'normal', wakeOnMove: false };
+  var VALID = {
+    cascade: function (v) { return v === true || v === false; },
+    speed: function (v) { return v === 'slow' || v === 'normal' || v === 'fast'; },
+    wakeOnMove: function (v) { return v === true || v === false; }
+  };
+  var PACE = { slow: 1.8, normal: 1, fast: 0.5 };   // how long the fades take, against the normal ones
+  var config = {};
+  Object.keys(DEFAULTS).forEach(function (k) { config[k] = DEFAULTS[k]; });
+  function loadConfig() {
+    if (!SELF) return Promise.resolve();
+    return fetch(new URL('config.json', SELF).href, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) {
+        var values = {};
+        if (c && Array.isArray(c.settings)) c.settings.forEach(function (s) { if (s && typeof s.key === 'string') values[s.key] = s.value; });
+        Object.keys(DEFAULTS).forEach(function (k) { config[k] = VALID[k](values[k]) ? values[k] : DEFAULTS[k]; });
+      })
+      .catch(function () { /* no config.json, or not JSON: as it was */ });
+  }
 
   // ---------------------------------------------------------------------------
   // Text, in every CasaOS language (follows CasaOS; English by default)
@@ -374,8 +403,8 @@
   // Delays for a cascade (forward when hiding, backward when showing); returns
   // how long the whole thing takes
   function cascade(list, hiding) {
-    var n = list.length, each = hiding ? HIDE_MS : SHOW_MS;
-    var step = reducedMotion() || n < 2 ? 0 : Math.min(hiding ? 45 : 25, (hiding ? 900 : 450) / (n - 1));
+    var pace = PACE[config.speed] || 1, n = list.length, each = Math.round((hiding ? HIDE_MS : SHOW_MS) * pace);
+    var step = reducedMotion() || n < 2 || !config.cascade ? 0 : Math.min(hiding ? 45 : 25, (hiding ? 900 : 450) / (n - 1)) * pace;
     list.forEach(function (el, i) {
       el.style.setProperty('--idh-d', Math.round((hiding ? i : n - 1 - i) * step) + 'ms');
     });
@@ -547,6 +576,7 @@
     lastX = e.screenX;
     lastY = e.screenY;
     last = Date.now();
+    if (config.wakeOnMove && e.isTrusted && mode === 'idle') show();   // the setting: a move wakes it too (only after idle)
   }, { capture: true, passive: true });
 
   function onDashboard() {
@@ -805,6 +835,8 @@
 
   if (document.body) refresh();
   else document.addEventListener('DOMContentLoaded', refresh);
+  loadConfig();
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) loadConfig(); });
   console.info(TAG, 'loaded');
 
   // For other mods, the tests and debugging

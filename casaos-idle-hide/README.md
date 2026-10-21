@@ -37,6 +37,21 @@ To remove it, move `idle-hide` out of `/DATA/AppData/casamod/mod/` and restart C
 - With "reduce motion" turned on in the system, there's no cascade, just a short fade.
 - It follows the CasaOS language (`localStorage.lang`) in all 31 CasaOS languages, English otherwise.
 
+## Settings: `config.json`
+
+The mod's folder has a `config.json` with its settings, in the format every mod of this repository uses ([CONFIG.md](../CONFIG.md)): each setting describes itself (type, choices or limits, default, name in all 31 CasaOS languages), so the CasaMOD Store shows and changes them. By hand, change only a setting's `"value"`. A value outside its rules counts as the default.
+
+| Setting (`key`) | Type | Values | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `cascade` | `boolean` | `true` or `false` | `true` | The pieces fade one after another, in a wave. `false`: all at once. |
+| `speed` | `select` | `"slow"`, `"normal"` or `"fast"` | `"normal"` | How long the fades take (slow: 1.8 times as long, fast: half). |
+| `wakeOnMove` | `boolean` | `true` or `false` | `false` | A mouse move brings everything back too, after it hid by itself (the switch's hiding still waits for a click, a key or Esc). `false`: only a click or a key, so an animated wallpaper keeps reacting to the mouse. |
+
+They apply when the CasaOS tab comes back in sight (`"applies": "visible"`: switch to another tab and back), without reloading.
+
+Copying a newer folder over the old one brings the new `config.json` with the default values: the CasaMOD Store keeps your values (CONFIG.md says how); by hand, note yours and set them again.
+
+The idle time and the on/off switch stay in the CasaOS settings dropdown, as before.
 ## How it works
 
 - **The cascade:**

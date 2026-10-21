@@ -382,10 +382,13 @@
   opacity: 0;
   transition: opacity 0.4s;
 }
-.smp-widget[data-source="spotify"] .smp-src-thumb { transform: translateX(100%); background-color: hsl(141, 73%, 42%); }
-.smp-widget[data-source="jellyfin"] .smp-src-thumb { transform: translateX(200%); background-color: #5582d0; }
+.smp-src-thumb { transform: translateX(calc(var(--smp-i, 0) * 100%)); }   /* --smp-i: the chosen mode among those offered */
+.smp-widget[data-source="spotify"] .smp-src-thumb { background-color: hsl(141, 73%, 42%); }
+.smp-widget[data-source="jellyfin"] .smp-src-thumb { background-color: #5582d0; }
 .smp-widget[data-source="jellyfin"] .smp-src-thumb::after { opacity: 1; }
 .smp-btn[hidden],
+.smp-src[hidden],
+.smp-source[hidden],
 .smp-like[hidden],
 .smp-dev-btn[hidden],
 .smp-device[hidden],

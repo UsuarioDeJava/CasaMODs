@@ -1,14 +1,17 @@
 /* ===== transparency-everywhere: frosted glass like the widgets' ===== */
 
+/* The settings (config.json, through mod.js): --te-blur and --te-tint on
+   <html>, html.te-no-bar for CasaOS's own top bar; these values otherwise */
+
 /* Top bar. The blur sits on a ::before so it doesn't limit
    the blur of the menus that open from it */
-html body .navbar.top-bar {
+html:not(.te-no-bar) body .navbar.top-bar {
   background-color: transparent !important;
   backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
 }
-html body .navbar.top-bar::before {
+html:not(.te-no-bar) body .navbar.top-bar::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background-color: rgba(53, 54, 58, .4);
+  background-color: rgba(53, 54, 58, var(--te-tint, .4));
   backdrop-filter: blur(5px) saturate(1.8); -webkit-backdrop-filter: blur(5px) saturate(1.8);
 }
 
@@ -16,8 +19,8 @@ html body .navbar.top-bar::before {
    The file manager (.file-panel) is left out */
 html body .top-bar .dropdown-menu .dropdown-content,
 html body .modal .modal-card:not(.file-panel .modal-card) {
-  background: rgba(53, 54, 58, .4) !important;
-  backdrop-filter: blur(20px) saturate(1.8); -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  background: rgba(53, 54, 58, var(--te-tint, .4)) !important;
+  backdrop-filter: blur(var(--te-blur, 20px)) saturate(1.8); -webkit-backdrop-filter: blur(var(--te-blur, 20px)) saturate(1.8);
   border: 1px solid rgba(255, 255, 255, .08);
 }
 html body .top-bar .dropdown-content .modal-card {

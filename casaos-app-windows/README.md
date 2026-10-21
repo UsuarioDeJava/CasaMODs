@@ -348,6 +348,19 @@ To have them:
 | F5 inside the app reloads the whole CasaOS | No window page on that app's address. | Step 4, or click the window's bar before F5. |
 | A new app opens at `https://casa.example.com:<port>` and fails | Each new app needs its own address. | Steps 1 and 2 for it. |
 
+## Settings: `config.json`
+
+The mod's folder has a `config.json` with its settings, in the format every mod of this repository uses ([CONFIG.md](../CONFIG.md)): each setting describes itself (type, choices or limits, default, name in all 31 CasaOS languages), so the CasaMOD Store shows and changes them. By hand, change only a setting's `"value"`. A value outside its rules counts as the default.
+
+| Setting (`key`) | Type | Values | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `panels` | `boolean` | `true` or `false` | `true` | Files and the App Store open as windows too. `false`: they stay CasaOS's own panels. |
+| `coverTopBar` | `boolean` | `true` or `false` | `true` | Windows may use the whole tab, over CasaOS's top bar (a maximized window covers it). `false`: only the space below the top bar, which stays in sight. |
+
+They apply when CasaOS is reloaded (`"applies": "reload"`: Ctrl+F5).
+
+Copying a newer folder over the old one brings the new `config.json` with the default values: the CasaMOD Store keeps your values (CONFIG.md says how); by hand, note yours and set them again.
+
 ## Notes
 
 - **Sound and wallpapers:** browsers don't let a page listen to another site's audio, and each app is another site (another port), so Live Wallpapers can't analyse an app's sound by itself. Through the frame proxy, the window page does it on the app's own address: it copies the playing element's audio (`captureStream`, the app's sound untouched) into an analyser set like Live Wallpapers' own and sends 64 bands about 30 times a second, only while a wallpaper listens (Live Wallpapers says so) and the app plays. The mod passes them on as `casamods:audio` events, and wallpapers react to Jellyfin's music as to the tab's own. **What** plays reaches them too, as a `casamods:nowplaying` event (as the Music Player's Spotify mode does), so a wallpaper with media integration shows the title, artist, cover and position. Protected audio (DRM) can't be analysed anywhere. An app whose service worker covers its whole address may show its own page instead of the window page; it still works, without these two.

@@ -141,9 +141,24 @@ The Jellyfin mode plays the music library of your [Jellyfin](https://jellyfin.or
 - **"The Jellyfin login was revoked"**: it was disconnected in another browser or deleted in Jellyfin's Devices: connect again.
 - **A track is skipped with "Could not play this file"**: Jellyfin couldn't stream or convert it (check Jellyfin's log); the next one plays.
 
+## Settings: `config.json`
+
+The mod's folder has a `config.json` with its settings, in the format every mod of this repository uses ([CONFIG.md](../CONFIG.md)): each setting describes itself (type, choices or limits, default, name in all 31 CasaOS languages), so the CasaMOD Store shows and changes them. By hand, change only a setting's `"value"`. A value outside its rules counts as the default.
+
+| Setting (`key`) | Type | Values | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `spotify` | `boolean` | `true` or `false` | `true` | The Spotify mode is offered (its icon at the top). |
+| `jellyfin` | `boolean` | `true` or `false` | `true` | The Jellyfin mode is offered. With neither, the switch goes away and the widget is the local player. A mode turned off while it was chosen gives the local player. |
+| `maxFiles` | `number` | `500` to `20000`, step `500` | `3000` | The most tracks a folder scan collects. |
+| `depth` | `number` | `1` to `10`, step `1` | `3` | How many levels of subfolders a scan enters (with **Include subfolders** on). |
+
+They apply when CasaOS is reloaded (`"applies": "reload"`: Ctrl+F5).
+
+Copying a newer folder over the old one brings the new `config.json` with the default values: the CasaMOD Store keeps your values (CONFIG.md says how); by hand, note yours and set them again.
+
 ## How it works
 
-- Folders are listed with the CasaOS API, `GET /v1/folder?path=…` (with the session's token), breadth-first up to 3 levels, 3000 files and 400 folders; hidden files are skipped. Audio types: mp3, flac, ogg/oga, opus, wav, m4a, aac, webm/weba.
+- Folders are listed with the CasaOS API, `GET /v1/folder?path=…` (with the session's token), breadth-first up to 3 levels (`depth`), 3000 files (`maxFiles`) and 400 folders; hidden files are skipped. Audio types: mp3, flac, ogg/oga, opus, wav, m4a, aac, webm/weba.
 - Tracks stream from `GET /v1/file?path=…&token=…`, which supports seeking. Your files never leave the server.
 - Tags are read from the same URL with HTTP ranges: the first 64 KB, then exactly the tag's size when it is bigger (up to 4 MB, for big covers); for MP4 the top-level atoms are walked with small reads to the `moov` one, wherever it is. The last 30 tracks' tags are kept in memory.
 - **Motion:** CSS transitions and one-shot animations (the source switch's sliding highlight, panels fading in, a mode sliding in) plus the widget's height, animated from the height it showed to the new one when a `ResizeObserver` on its content reports a change. Nothing runs while nothing changes; with "reduce motion" set in the system, none of it plays.

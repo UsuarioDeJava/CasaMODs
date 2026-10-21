@@ -21,6 +21,11 @@
  * storage), the audio of the tab (128 bands), what plays in it, the mouse over
  * the empty background, pause. Nothing is loaded until a wallpaper is chosen, and only
  * that one; the wallpaper menu reads the folder when it opens.
+ *
+ * Settings (config.json, for every wallpaper; each wallpaper's own are in its
+ * Customize panel): audio, wallpapers may hear the tab's sound (true); media,
+ * they may know what plays (true); memory, video wallpapers up to this many
+ * MB are kept in memory, bigger ones streamed (0 to 1000, by 10; 100).
  */
 (function () {
   'use strict';
@@ -29,6 +34,31 @@
   window.__liveWallpapersMod = true;
 
   var TAG = '[Live Wallpapers]';
+
+  // Settings: config.json next to this file, in the format of CONFIG.md at the
+  // repository's root (the CasaMOD Store shows and changes it). Each value by
+  // its key; a missing or invalid one is the default
+  var SELF = document.currentScript && document.currentScript.src;
+  var DEFAULTS = { audio: true, media: true, memory: 100 };
+  var VALID = {
+    audio: function (v) { return v === true || v === false; },
+    media: function (v) { return v === true || v === false; },
+    memory: function (v) { return typeof v === 'number' && v >= 0 && v <= 1000 && v % 10 === 0; }   // MB
+  };
+  var configured = loadConfig();   // read once: the settings apply at load ("applies": "reload")
+  var config = {};
+  Object.keys(DEFAULTS).forEach(function (k) { config[k] = DEFAULTS[k]; });
+  function loadConfig() {
+    if (!SELF) return Promise.resolve();
+    return fetch(new URL('config.json', SELF).href, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) {
+        var values = {};
+        if (c && Array.isArray(c.settings)) c.settings.forEach(function (s) { if (s && typeof s.key === 'string') values[s.key] = s.value; });
+        Object.keys(DEFAULTS).forEach(function (k) { config[k] = VALID[k](values[k]) ? values[k] : DEFAULTS[k]; });
+      })
+      .catch(function () { /* no config.json, or not JSON: as it was */ });
+  }
   var BASE = ((document.currentScript && document.currentScript.src) || '').replace(/[^/]*$/, '');
   var WALL_URL = (function () {
     try { return new URL('../wallpapers/', BASE).pathname; } catch (e) { return '/mod/wallpapers/'; }
@@ -38,7 +68,6 @@
   var STORE = 'casamod-live-wallpapers';
   var VIDEO_EXT = /\.(mp4|webm|m4v|ogv|mov)$/i;
   var IMAGE_EXT = /\.(jpe?g|png|gif|webp|bmp)$/i;
-  var MEMORY_LIMIT = 100 * 1024 * 1024;   // videos up to this size are downloaded once and played from memory
   var PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><defs><linearGradient id="g" x2="1" y2="1">' +
     '<stop offset="0" stop-color="#1d2b4f"/><stop offset="1" stop-color="#4a2a63"/></linearGradient></defs>' +
@@ -1342,8 +1371,8 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Video wallpapers. The browser plays them; a file up to MEMORY_LIMIT is
-  // fetched once and looped from memory, a bigger one is streamed.
+  // Video wallpapers. The browser plays them; a file up to the memory setting
+  // (100 MB unless set) is fetched once and looped from memory, a bigger one is streamed.
   // ---------------------------------------------------------------------------
   function sizeOf(w) {
     if (w.size) return Promise.resolve(w.size);
@@ -1360,9 +1389,10 @@
     video.preload = 'auto';
     applySound();
     layer.appendChild(video);
-    sizeOf(w).then(function (size) {
+    Promise.all([sizeOf(w), configured]).then(function (got) {
+      var size = got[0];
       if (gen !== generation) return;
-      if (!size || size > MEMORY_LIMIT) return stream();
+      if (!size || size > config.memory * 1024 * 1024) return stream();
       fetch(w.file).then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.blob();
@@ -1762,10 +1792,13 @@
     } else if (d.t === 'random' && d.v) {
       randomFile(d.v);
     } else if (d.t === 'audio') {
-      wantsAudio = true;
-      startAudio();
+      configured.then(function () {   // the settings may keep wallpapers from the sound, or from what plays
+        if (!config.audio) return;
+        wantsAudio = true;
+        startAudio();
+      });
     } else if (d.t === 'media') {
-      startMedia();
+      configured.then(function () { if (config.media) startMedia(); });
     }
   });
 

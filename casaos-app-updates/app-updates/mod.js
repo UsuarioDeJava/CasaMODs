@@ -6,6 +6,8 @@
  * update_available: what "Check then update" in the app's ⋯ menu installs).
  * The badge opens that menu. Apps not from a store, or on an image tag of
  * their own, never get one: CasaOS doesn't track their updates.
+ *
+ * Settings (config.json): interval, minutes between checks (5 to 1440, by 5; 30).
  */
 (function () {
   'use strict';
@@ -14,7 +16,25 @@
   window.__appUpdatesMod = true;
 
   var TAG = '[App Updates]';
-  var EVERY = 30 * 60 * 1000;   // CasaOS caches its answer: asking more often brings nothing new
+  // Settings: config.json next to this file, in the format of CONFIG.md at the
+  // repository's root (the CasaMOD Store shows and changes it). Each value by
+  // its key; a missing or invalid one is the default
+  var SELF = document.currentScript && document.currentScript.src;
+  var DEFAULTS = { interval: 30 };   // minutes: CasaOS caches its answer, asking more often brings little
+  var VALID = { interval: function (v) { return typeof v === 'number' && v >= 5 && v <= 1440 && v % 5 === 0; } };
+  var config = {};
+  Object.keys(DEFAULTS).forEach(function (k) { config[k] = DEFAULTS[k]; });
+  function loadConfig() {
+    if (!SELF) return Promise.resolve();
+    return fetch(new URL('config.json', SELF).href, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) {
+        var values = {};
+        if (c && Array.isArray(c.settings)) c.settings.forEach(function (s) { if (s && typeof s.key === 'string') values[s.key] = s.value; });
+        Object.keys(DEFAULTS).forEach(function (k) { config[k] = VALID[k](values[k]) ? values[k] : DEFAULTS[k]; });
+      })
+      .catch(function () { /* no config.json, or not JSON: as it was */ });
+  }
 
   // ---------------------------------------------------------------------------
   // Text, in every CasaOS language (follows CasaOS; English by default)
@@ -150,8 +170,9 @@
 
   // Read again every half hour while CasaOS is in sight, and soon after
   // CasaOS draws its cards again (an app installed, updated or removed)
-  setInterval(function () { if (Date.now() - at >= EVERY) read(); }, 60 * 1000);
-  document.addEventListener('visibilitychange', function () { if (!document.hidden && Date.now() - at >= EVERY) read(); });
+  function due() { return Date.now() - at >= config.interval * 60 * 1000; }
+  setInterval(function () { if (due()) read(); }, 60 * 1000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) loadConfig().then(function () { if (due()) read(); }); });
   var scheduled = false;
   new MutationObserver(function () {
     if (scheduled) return;
@@ -164,6 +185,7 @@
     }, 500);
   }).observe(document.body, { childList: true, subtree: true });
 
+  loadConfig();
   setTimeout(function () { if (!at) read(); }, 2000);   // the first reading, after CasaOS's own requests at load
   console.info(TAG, 'loaded');
 })();

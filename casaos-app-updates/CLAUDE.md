@@ -2,10 +2,11 @@
 
 A CasaMOD mod: a badge on the icon of each app with an update in its app store, from CasaOS's `GET /v2/app_management/compose` (`update_available`). See `README.md`.
 
-- `app-updates/` is the mod as installed (`mod.js`, `mod.css`, `mod.json`, `preview.png`): no build step, copied as is to `/DATA/AppData/casamod/mod/app-updates/`.
+- `app-updates/` is the mod as installed (`mod.js`, `mod.css`, `config.json`, `mod.json`, `preview.png`): no build step, copied as is to `/DATA/AppData/casamod/mod/app-updates/`.
 - It is its own project; it depends on no other mod.
 - CasaOS facts, from CasaOS-AppManagement's source: `MyComposeAppList` (`GET /v2/app_management/compose`) runs `IsUpdateAvailable` for each app (cached in `isAppUpgradable`): false for uncontrolled apps and apps without a store app id, else the installed main tag against the store's. `GET /compose/{id}` doesn't (its check is disabled for speed). The ⋯ menu's "Check then update" is CasaOS-UI's `checkAppVersion` in `components/Apps/AppCard.vue`; its label comes from CasaOS's own translations (`vm.$t('Check then update')`).
 - The badge is a button inside `.cards-content .is-relative` (next to the icon, like CasaOS's "NEW" `CTooltip`); its click (capture phase, stopped) clicks the card's `.app-card-drop [role="button"]`.
+- Settings: `app-updates/config.json` in the repository's format ([`../CONFIG.md`](../CONFIG.md)): `interval` (5–1440 minutes, by 5; 30; "applies": "visible", re-read when the tab comes back). `mod.js` keeps `DEFAULTS` and `VALID` and reads each `value` by key (`loadConfig`); a new or changed setting needs `config.json` (all 31 languages), `DEFAULTS`/`VALID` and the README's table, and `node tests/config-check.js` checks them.
 
 ## Working here
 
