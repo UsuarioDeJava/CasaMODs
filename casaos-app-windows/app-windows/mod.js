@@ -13,8 +13,8 @@
  * DOM reloads it): which window is on top is only its z-index.
  *
  * Settings (config.json): panels, Files and the App Store as windows too
- * (true); coverTopBar, windows may use the whole tab, over CasaOS's top bar
- * (true), or only the space below it.
+ * (false: experimental); coverTopBar, windows may use the whole tab, over
+ * CasaOS's top bar (true), or only the space below it.
  */
 (function () {
   'use strict';
@@ -32,7 +32,7 @@
   // repository's root (the CasaMOD Store shows and changes it). Each value by
   // its key; a missing or invalid one is the default
   var SELF = document.currentScript && document.currentScript.src;
-  var DEFAULTS = { panels: true, coverTopBar: true };
+  var DEFAULTS = { panels: false, coverTopBar: true };
   var VALID = {
     panels: function (v) { return v === true || v === false; },
     coverTopBar: function (v) { return v === true || v === false; }

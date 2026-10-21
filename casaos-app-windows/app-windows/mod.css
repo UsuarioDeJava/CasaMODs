@@ -167,6 +167,10 @@ html.cw-moving * { user-select: none !important; -webkit-user-select: none !impo
   margin: 0 !important;
   overflow: hidden !important;
 }
+/* Files' card sits in a plain div of its own (CasaOS gives the card 100vh):
+   the div fills the window too, so the card is the window's height and its
+   file list scrolls instead of running past the window's bottom */
+.modal.cw-panel > .animation-content > :not(.modal-card):not(.modal-close) { height: 100% !important; }
 .modal.cw-panel > .animation-content > .modal-card,
 .modal.cw-panel > .animation-content > * > .modal-card,
 .modal.cw-panel .animation-content > .modal-card {

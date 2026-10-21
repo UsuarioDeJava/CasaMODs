@@ -6,7 +6,7 @@ A [CasaMOD](https://github.com/Cp0204/CasaMOD) mod: the apps open in **windows i
 - **Drag** a window by its bar, **resize** it by its edges and corners. **Maximize** fills the whole tab, over the CasaOS top bar (with the browser in full screen, F11, the whole screen: only the window's bar and the app); double-click the bar to maximize or restore, drag a maximized window to set it loose again. A narrow window shows the app's phone layout, if it has one.
 - **Minimize** hides the window and the app **keeps running**: music keeps playing in this tab while you use other apps. The app's icon on the dashboard brings it back (an open app has a dot under its icon, dimmed while minimized).
 - **Open in a new tab** moves the app to a tab, CasaOS's usual way, and closes the window.
-- **Files** and the **App Store** (CasaOS's own panels) become windows too: the same bar, dragged, resized, minimized without closing (Files keeps its folder).
+- **Files** and the **App Store** (CasaOS's own panels) can become windows too, **experimental** and off by default (setting `panels`): the same bar, dragged, resized, minimized without closing (Files keeps its folder).
 - Windows go anywhere in the tab, over the CasaOS top bar too. Each app's size, place and maximized state are kept, in this browser. On a phone, windows always fill the screen.
 
 ## Install
@@ -354,7 +354,7 @@ The mod's folder has a `config.json` with its settings, in the format every mod 
 
 | Setting (`key`) | Type | Values | Default | What it does |
 | --- | --- | --- | --- | --- |
-| `panels` | `boolean` | `true` or `false` | `true` | Files and the App Store open as windows too. `false`: they stay CasaOS's own panels. |
+| `panels` | `boolean` | `true` or `false` | `false` | **Experimental.** Files and the App Store open as windows too. `false`: they stay CasaOS's own panels. |
 | `coverTopBar` | `boolean` | `true` or `false` | `true` | Windows may use the whole tab, over CasaOS's top bar (a maximized window covers it). `false`: only the space below the top bar, which stays in sight. |
 
 They apply when CasaOS is reloaded (`"applies": "reload"`: Ctrl+F5).
