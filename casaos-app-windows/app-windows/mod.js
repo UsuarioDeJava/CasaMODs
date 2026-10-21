@@ -329,6 +329,21 @@
       mx.title = w.max ? t('restore') : t('maximize');
       mx.hidden = narrow();
     }
+    reflow(w);
+  }
+
+  // CasaOS's panels lay themselves out on the tab's resize event only (Files
+  // counts its grid's columns then, the App Store its cards): when a panel's
+  // window changes size, they are told the same way. One event at most every
+  // 150 ms, after the last change, so resizing by an edge reflows a few times
+  // a second, not on every move
+  var reflowTimer = 0;
+  function reflow(w) {
+    if (w.kind !== 'panel' || reflowTimer) return;
+    reflowTimer = setTimeout(function () {
+      reflowTimer = 0;
+      window.dispatchEvent(new Event('resize'));
+    }, 150);
   }
 
   // A window's place, over any stylesheet (CasaOS's panels are Bulma modals,
@@ -482,6 +497,7 @@
         }
       }
       put(b, clamp(r, a));
+      if (edge) reflow(w);
     }
     function up() {
       window.removeEventListener('pointermove', move, true);
@@ -1010,7 +1026,8 @@
   // Keeping up with the page
   // ---------------------------------------------------------------------------
   var resizeTimer = 0;
-  window.addEventListener('resize', function () {
+  window.addEventListener('resize', function (e) {
+    if (!e.isTrusted) return;   // the panels' own (reflow): the tab is the same size
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () { wins.forEach(function (w) { if (!w.min) place(w); }); }, 120);
   });
