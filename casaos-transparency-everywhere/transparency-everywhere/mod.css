@@ -86,6 +86,14 @@ html body .modal .modal-card:not(.file-panel .modal-card) :is(.folder-list, .upd
 html body .modal .modal-card:not(.file-panel .modal-card) .folder-list .list-item:hover,
 html body .modal .modal-card:not(.file-panel .modal-card) .folder-list .list-item.active,
 html body .modal .modal-card:not(.file-panel .modal-card) .pri-mrl-2rem div:hover { background: rgba(255, 255, 255, .08) !important; }
+/* Storage Manager: the storage cards, the "CasaOS HD" box of a merge (and its
+   label on the box's border), the usage bars; and any white box */
+html body .modal .modal-card:not(.file-panel .modal-card) :is(.background-item, .combination-box, .combination-title) {
+  background: rgba(0, 0, 0, .2) !important; border-color: rgba(255, 255, 255, .08) !important;
+}
+html body .modal .modal-card:not(.file-panel .modal-card) .has-background-white { background: rgb(44, 45, 50) !important; }
+html body .modal .modal-card:not(.file-panel .modal-card) progress.progress { background-color: rgba(255, 255, 255, .15) !important; }
+html body .modal .modal-card:not(.file-panel .modal-card) progress.progress::-webkit-progress-bar { background-color: rgba(255, 255, 255, .15) !important; }
 /* Warning notes (light orange or pink boxes): tinted glass */
 html body .modal .modal-card:not(.file-panel .modal-card) :is(.message-alert, .pri-message-alert, ._is-normal:not([class*="_has-background-"])) {
   background: rgba(255, 170, 0, .15) !important;
