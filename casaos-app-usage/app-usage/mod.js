@@ -12,6 +12,8 @@
  *   show       "hover" (default): the gauges while the pointer is on the card,
  *              and CasaOS is asked only then; "always": all the time
  *   interval   seconds between readings, 1 to 60 (default 3)
+ *   startup    true: at load, every card's gauges sweep to 100% and back to
+ *              their reading, like a rev counter (default false)
  */
 (function () {
   'use strict';
@@ -23,12 +25,13 @@
   var NS = 'http://www.w3.org/2000/svg';
   var SELF = document.currentScript && document.currentScript.src;   // CasaMOD: <script src="mod/<folder>/mod.js">
   // The settings: the defaults, and what config.json may set them to
-  var DEFAULTS = { show: 'hover', interval: 3 };
+  var DEFAULTS = { show: 'hover', interval: 3, startup: false };
   var VALID = {
     show: function (v) { return v === 'hover' || v === 'always'; },
-    interval: function (v) { return typeof v === 'number' && v >= 1 && v <= 60 && v % 1 === 0; }
+    interval: function (v) { return typeof v === 'number' && v >= 1 && v <= 60 && v % 1 === 0; },
+    startup: function (v) { return v === true || v === false; }
   };
-  var config = { show: DEFAULTS.show, interval: DEFAULTS.interval };
+  var config = { show: DEFAULTS.show, interval: DEFAULTS.interval, startup: DEFAULTS.startup };
   var last = {};      // card name: { cpu (%), ram (bytes), limit (bytes) }
   var hovered = null; // the card under the pointer
 
@@ -143,6 +146,7 @@
 
   function paint() {
     defs();
+    var added = false;
     cards().forEach(function (c) {
       var u = last[c.name], el = c.el;
       var cpu = el.querySelector(':scope > .aus-cpu'), ram = el.querySelector(':scope > .aus-ram');
@@ -153,6 +157,7 @@
         return;
       }
       el.classList.add('aus-on');
+      if (!cpu || !ram) added = true;
       if (!cpu) cpu = el.appendChild(gauge('cpu'));
       if (!ram) ram = el.appendChild(gauge('ram'));
       set(cpu, u.cpu, u.cpu < 9.95 ? u.cpu.toFixed(1) : String(Math.round(u.cpu)), '%', 'CPU ' + u.cpu.toFixed(1) + '%');
@@ -160,6 +165,78 @@
       set(ram, share, mb >= 1000 ? (mb / 1024).toFixed(1) : String(Math.round(mb)), mb >= 1000 ? 'G' : 'M',
         'RAM ' + size(u.ram) + (u.limit ? ' \u00b7 ' + share.toFixed(1) + '%' : ''));
     });
+    if (added) fit();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Room under the name. CasaOS's cards are square, their content centered, so
+  // the space under the app's name shrinks with the window (about 47 px on a
+  // 205 px card, 27 on a 168 px one): the gauges are as big as it allows, from
+  // MIN to MAX, a GAP clear of the name. Where even MIN reaches the name's
+  // line, a name long enough to run over the gauges is kept between them
+  // while they show (aus-narrow); a short one isn't touched.
+  // ---------------------------------------------------------------------------
+  var EDGE = 0.3, GAP = 5, MIN = 32, MAX = 40;   // EDGE in rem (mod.css: bottom, left, right)
+  var ruler = null;
+  function textWidth(el) {
+    ruler = ruler || document.createElement('canvas').getContext('2d');
+    var cs = getComputedStyle(el);
+    ruler.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+    return ruler.measureText(el.textContent.trim()).width;
+  }
+  function fit() {
+    var holders = [].slice.call(document.querySelectorAll('[id^="app-"].aus-on')), space = Infinity;
+    var edge = EDGE * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
+    holders.forEach(function (el) {
+      var name = el.querySelector('.cards-content p'), r = el.getBoundingClientRect();
+      if (name && r.height) space = Math.min(space, r.bottom - name.getBoundingClientRect().bottom);
+    });
+    if (space === Infinity) return;   // nothing laid out (hidden)
+    var room = Math.floor(space - edge - GAP), g = Math.max(MIN, Math.min(MAX, room));
+    document.documentElement.style.setProperty('--aus-size', g + 'px');
+    holders.forEach(function (el) {
+      var name = el.querySelector('.cards-content p'), r = el.getBoundingClientRect(), side = edge + g + GAP;
+      var narrow = room < g && !!name && textWidth(name) / 2 > r.width / 2 - side;
+      el.classList.toggle('aus-narrow', narrow);
+      if (narrow) el.style.setProperty('--aus-name-w', Math.max(0, Math.floor(r.width - 2 * side)) + 'px');
+    });
+  }
+  var fitTimer = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(fitTimer);
+    fitTimer = setTimeout(fit, 200);
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);   // the name's width in its own font
+
+  // ---------------------------------------------------------------------------
+  // The startup animation (startup in config.json): once, at the first
+  // reading, every card's gauges show, sweep up to 100% and come back down to
+  // their reading, like a car's rev counter; then "show" applies again. Only
+  // for looks: in "hover", that first reading is asked without a card hovered
+  // ---------------------------------------------------------------------------
+  var intro = false, sweeping = false;
+  function sweep() {
+    sweeping = true;
+    var root = document.documentElement, fills = [].slice.call(document.querySelectorAll('[id^="app-"] > .aus-gauge .aus-fill'));
+    root.classList.add('aus-intro');
+    fills.forEach(function (f) {
+      f.style.transition = 'none';
+      f.style.strokeDashoffset = '75';   // from empty…
+    });
+    void root.offsetWidth;
+    fills.forEach(function (f) {
+      f.style.transition = 'stroke-dashoffset 0.7s cubic-bezier(0.5, 0, 0.75, 0)';
+      f.style.strokeDashoffset = '0';    // …up to full…
+    });
+    setTimeout(function () {
+      fills.forEach(function (f) { f.style.transition = 'stroke-dashoffset 1s cubic-bezier(0.2, 0.8, 0.2, 1)'; });
+      sweeping = false;
+      paint();                           // …and down to the reading (the latest)
+      setTimeout(function () {
+        fills.forEach(function (f) { f.style.transition = ''; });
+        root.classList.remove('aus-intro');
+      }, 1800);
+    }, 750);
   }
 
   // ---------------------------------------------------------------------------
@@ -171,7 +248,7 @@
   function read() {
     clearTimeout(timer);
     timer = setTimeout(read, config.interval * 1000);
-    if (busy || document.hidden || (config.show === 'hover' && !hovered) ||
+    if (busy || document.hidden || (config.show === 'hover' && !hovered && !intro) ||
       !document.querySelector('[id^="app-"] .app-card') || !token()) return;
     busy = true;
     readAt = Date.now();
@@ -188,7 +265,12 @@
           s.limit = Math.max(s.limit, m.limit);
         });
         last = sums;
+        if (sweeping) return;   // the sweep paints it when it comes down
         paint();
+        if (intro) {
+          intro = false;
+          sweep();
+        }
       })
       .catch(function () { /* CasaOS didn't answer: next time */ })
       .then(function () { busy = false; });
@@ -213,10 +295,14 @@
     scheduled = true;
     setTimeout(function () {
       scheduled = false;
-      if (document.querySelector('[id^="app-"]:not(.aus-on) .app-card')) paint();
+      // (not during the startup sweep: it paints when it comes down)
+      if (!sweeping && document.querySelector('[id^="app-"]:not(.aus-on) .app-card')) paint();
     }, 150);
   }).observe(document.body, { childList: true, subtree: true });
 
-  loadConfig().then(read);
+  loadConfig().then(function () {
+    intro = config.startup && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    read();
+  });
   console.info(TAG, 'loaded');
 })();

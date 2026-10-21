@@ -1,7 +1,8 @@
 /*
  * App Usage — the CPU and RAM gauges in the bottom corners of each app card,
  * drawn like CasaOS's own RadialBar (its system widget). Every class is
- * prefixed with "aus-".
+ * prefixed with "aus-". Their size, --aus-size, is set by mod.js (fit) from
+ * the room under the app's name; the texts scale with it.
  */
 .aus-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 
@@ -9,18 +10,19 @@
 
 .aus-gauge {
   position: absolute;
-  bottom: 0.45rem;
+  bottom: 0.3rem;   /* EDGE in mod.js */
   z-index: 2;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--aus-size, 2.5rem);
+  height: var(--aus-size, 2.5rem);
+  font-size: calc(var(--aus-size, 2.5rem) * 0.4);   /* 1rem at the full 2.5rem */
   color: #fff;
   line-height: 1;
   pointer-events: auto;
   cursor: default;
   animation: aus-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.aus-cpu { left: 0.45rem; }
-.aus-ram { right: 0.45rem; }
+.aus-cpu { left: 0.3rem; }
+.aus-ram { right: 0.3rem; }
 .aus-gauge svg {
   display: block;
   width: 100%;
@@ -46,19 +48,19 @@
   text-align: center;
   white-space: nowrap;
   letter-spacing: -0.02em;
-  font-size: 0.68rem;
+  font-size: 0.68em;
   font-weight: 600;
   color: hsl(0, 0%, 92%);
 }
 .aus-value b { font-weight: inherit; }
-.aus-value small { margin-left: 0.5px; font-size: 0.5rem; font-weight: 500; color: hsl(0, 0%, 75%); }
+.aus-value small { margin-left: 0.5px; font-size: 0.735em; font-weight: 500; color: hsl(0, 0%, 75%); }
 .aus-label {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0.05rem;
+  bottom: 0.05em;
   text-align: center;
-  font-size: 0.5rem;
+  font-size: 0.5em;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: hsl(0, 0%, 85%);
@@ -72,7 +74,12 @@
   animation: none;
   transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.aus-hover [id^="app-"]:hover .aus-gauge { opacity: 1; transform: none; pointer-events: auto; }
+.aus-hover [id^="app-"]:hover .aus-gauge,
+.aus-hover.aus-intro [id^="app-"] .aus-gauge { opacity: 1; transform: none; pointer-events: auto; }
+/* A long name on a small card, where the gauges reach its line (fit in
+   mod.js): kept between them, while they show */
+[id^="app-"].aus-narrow .cards-content p.one-line { max-width: var(--aus-name-w); margin-left: auto; margin-right: auto; }
+.aus-hover:not(.aus-intro) [id^="app-"].aus-narrow:not(:hover) .cards-content p.one-line { max-width: none; }
 @media (prefers-reduced-motion: reduce) {
   .aus-gauge,
   .aus-hover [id^="app-"] .aus-gauge { animation: none; transition: none; }
