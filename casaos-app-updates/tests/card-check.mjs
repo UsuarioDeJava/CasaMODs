@@ -17,7 +17,7 @@ const card = ([n, title, ic]) => `<div id="app-${n}" class="handle"><div class="
   <div class="has-text-centered is-flex is-justify-content-center is-flex-direction-column pt-5 pb-3px img-c"><div class="is-flex is-justify-content-center">
   <div class="is-relative"><figure class="image is-64x64" onclick="window.opened=(window.opened||0)+1"><img src="${ic}"></figure></div></div>
   <p class="mt-3 one-line"><a class="one-line">${title}</a></p></div></div></div></div></div></div>`;
-const html = `<!doctype html><html><head><style>
+const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 body{margin:0;font-family:system-ui,sans-serif;background:linear-gradient(135deg,#1b2a4a,#3b2a5a);min-height:100vh}
 .app-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;width:900px;margin:40px}
 .common-card{position:relative;border-radius:10px;color:#fff;overflow:hidden}
