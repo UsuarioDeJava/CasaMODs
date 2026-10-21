@@ -79,6 +79,12 @@ try {
   const swAt = await center('#idh-switch .idh-track');
   check('…a dialog\'s backdrop covers it too', !(await ev(`document.getElementById('idh-switch').contains(document.elementFromPoint(${swAt[0]}, ${swAt[1]}))`)), null);
   await ev('Mock.closeModal()');
+  // another mod's window over the top bar (App Windows: fixed, z-index 21 and up), even one added before the switch
+  await ev(`(() => { const w = document.createElement('div'); w.id = 'other-win'; w.style.cssText = 'position:fixed;top:0;right:0;width:420px;height:300px;z-index:21;background:#222';
+    document.body.insertBefore(w, document.body.firstChild); })()`);
+  check('…and another mod\'s window over the top bar (z-index 21) too, even added before the switch',
+    (await ev(`document.elementFromPoint(${swAt[0]}, ${swAt[1]}).id`)) === 'other-win', await ev(`document.elementFromPoint(${swAt[0]}, ${swAt[1]}).id`));
+  await ev(`document.getElementById('other-win').remove()`);
   check('everything shows at first, the switch off', JSON.stringify(await state()) === JSON.stringify({ mode: null, hidden: false, raised: false, anim: false, checked: false }), await state());
   await shot('idle_visible');
 

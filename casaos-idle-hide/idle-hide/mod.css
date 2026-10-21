@@ -94,7 +94,10 @@ html.idh-hidden #idh-catch { display: block; }
   position: fixed;
   top: 0;
   right: 0.75rem;
-  z-index: 21;   /* just above the top bar (20), under CasaOS's menus and windows (the file manager's close button…) */
+  /* the top bar's own level (20): later in the page, so over it, and under
+     everything above it (CasaOS's menus and windows, the file manager's close
+     button, other mods' windows from 21 up) */
+  z-index: 20;
   display: flex;
   align-items: center;
   height: 2.75rem;
