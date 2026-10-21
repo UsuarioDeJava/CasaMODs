@@ -6,8 +6,6 @@
 .aus-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 
 [id^="app-"].aus-on { position: relative; }
-/* The app's name keeps clear of the gauges */
-[id^="app-"].aus-on .cards-content p.one-line { padding: 0 2.85rem; }
 
 .aus-gauge {
   position: absolute;
@@ -66,7 +64,17 @@
   color: hsl(0, 0%, 85%);
 }
 @keyframes aus-in { from { opacity: 0; transform: scale(0.7); } }
+/* "show": "hover" (config.json): only on the card under the pointer, fading in */
+.aus-hover [id^="app-"] .aus-gauge {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+  animation: none;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.aus-hover [id^="app-"]:hover .aus-gauge { opacity: 1; transform: none; pointer-events: auto; }
 @media (prefers-reduced-motion: reduce) {
-  .aus-gauge { animation: none; }
+  .aus-gauge,
+  .aus-hover [id^="app-"] .aus-gauge { animation: none; transition: none; }
   .aus-fill { transition: none; }
 }

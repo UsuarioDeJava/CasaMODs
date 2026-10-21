@@ -17,7 +17,7 @@ const card = ([n, title, ic]) => `<div id="app-${n}" class="handle"><div class="
   <div class="has-text-centered is-flex is-justify-content-center is-flex-direction-column pt-5 pb-3px img-c"><div class="is-flex is-justify-content-center">
   <div class="is-relative"><figure class="image is-64x64" onclick="window.opened=(window.opened||0)+1"><img src="${ic}"></figure></div></div>
   <p class="mt-3 one-line"><a class="one-line">${title}</a></p></div></div></div></div></div></div>`;
-const html = `<!doctype html><html><head><style>
+const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 body{margin:0;font-family:system-ui,sans-serif;background:linear-gradient(135deg,#1b2a4a,#3b2a5a);min-height:100vh}
 .app-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;width:900px;margin:40px}
 .common-card{position:relative;border-radius:10px;color:#fff;overflow:hidden}
@@ -44,21 +44,33 @@ const MOD = 'casaos-app-usage/app-usage/mod.js';
 const b = await chromium.launch(CHROME ? { executablePath: CHROME } : {});
 const p = await b.newPage({ viewport: { width: 1000, height: 420 } });
 const errors = []; p.on('pageerror', (e) => errors.push(e.message));
+let CONFIG = read('casaos-app-usage/app-usage/config.json'), asked = 0;
 await p.route('**/*', (route) => {
   const u = route.request().url();
-  if (u.endsWith('/v1/container/usage')) return route.fulfill({ json: USAGE });
+  if (u.endsWith('/mod/app-usage/mod.js')) return route.fulfill({ contentType: 'text/javascript', body: read(MOD) });
+  if (u.endsWith('/mod/app-usage/config.json')) return route.fulfill({ contentType: 'application/json', body: CONFIG });
+  if (u.endsWith('/v1/container/usage')) { asked++; return route.fulfill({ json: USAGE }); }
   if (u.endsWith('/v2/app_management/compose')) return route.fulfill({ json: COMPOSE });
   if (u.startsWith('http://casa.test/')) return route.fulfill({ contentType: 'text/html', body: html });
   return route.abort();
 });
 await p.addInitScript(() => { localStorage.setItem('access_token', 'tok'); localStorage.setItem('lang', 'pt_br'); });
-await p.goto('http://casa.test/');
-await p.addScriptTag({ content: read(MOD) });
-await p.waitForTimeout(1500);
+const open = async () => {
+  await p.goto('http://casa.test/');
+  await p.addScriptTag({ url: 'http://casa.test/mod/app-usage/mod.js' });   // as CasaMOD: <script src="mod/<folder>/mod.js">
+  await p.waitForTimeout(1500);
+};
+await open();
 const res = []; const check = (n, ok, info) => { res.push(ok); console.log((ok ? 'PASS ' : 'FAIL ') + n + (ok ? '' : ' — ' + JSON.stringify(info))); };
 const g = () => p.evaluate(() => Object.fromEntries([...document.querySelectorAll('[id^="app-"]')].map((el) => [el.id.slice(4), {
   cpu: el.querySelector(':scope > .aus-cpu')?.textContent || null, ram: el.querySelector(':scope > .aus-ram')?.textContent || null,
   tip: el.querySelector(':scope > .aus-ram')?.title || null, badge: !!el.querySelector('.aup-badge') }])));
+const shown = (n) => p.evaluate((n) => getComputedStyle(document.querySelector('#app-' + n + ' > .aus-cpu')).opacity, n);
+check('"show": "hover" (config.json): nothing asked of CasaOS before the pointer is on a card', asked === 0, asked);
+await p.hover('#app-jellyfin .cards-content img');
+await p.waitForTimeout(1200);
+check('…on a card: CasaOS asked at once', asked === 1, asked);
+check('…its gauges fade in; the others stay hidden', (await shown('jellyfin')) === '1' && (await shown('librechat')) === '0', [await shown('jellyfin'), await shown('librechat')]);
 let s = await g();
 check('Jellyfin: CPU 3.0%, RAM 678M (the page cache left out)', s.jellyfin.cpu === '3.0%CPU' && s.jellyfin.ram === '678MRAM', s.jellyfin);
 check('LibreChat: its two containers summed (3.5%, 576M)', s.librechat.cpu === '3.5%CPU' && s.librechat.ram === '576MRAM', s.librechat);
@@ -67,11 +79,23 @@ check('Portainer: its container found by the icon', s['big-bear-portainer'].cpu 
 check('Syncthing (stopped): no gauges', s.syncthing.cpu === null && s.syncthing.ram === null, s.syncthing);
 check('RAM tooltip: the size and the share of the memory', s.jellyfin.tip === 'RAM 678.00 MB · 4.1%', s.jellyfin.tip);
 const pad = await p.evaluate(() => getComputedStyle(document.querySelector('#app-jellyfin p.one-line')).paddingLeft);
-check('the app name keeps clear of the gauges', parseFloat(pad) > 30, pad);
+check('the app name keeps its whole width', parseFloat(pad) === 0, pad);
+await p.mouse.move(990, 410);
+await p.waitForTimeout(500);
+const before = asked;
+await p.waitForTimeout(3500);
+check('pointer off the cards: gauges hidden, CasaOS no longer asked', (await shown('jellyfin')) === '0' && asked === before, [await shown('jellyfin'), asked - before]);
+await p.hover('#app-jellyfin .cards-content img');
+await p.waitForTimeout(600);
 await p.evaluate(() => { const el = document.getElementById('app-jellyfin'); const copy = el.cloneNode(true); copy.querySelectorAll('.aus-gauge, .aup-badge').forEach((n) => n.remove()); copy.classList.remove('aus-on'); el.replaceWith(copy); });
 await p.waitForTimeout(800);
 s = await g();
 check('after CasaOS draws a card again: its gauges are back', s.jellyfin.cpu === '3.0%CPU', s.jellyfin);
+CONFIG = JSON.stringify({ show: 'always', interval: 2 });
+asked = 0;
+await p.mouse.move(990, 410);
+await open();
+check('"show": "always": the gauges without the pointer, CasaOS asked', (await shown('jellyfin')) === '1' && asked >= 1, [await shown('jellyfin'), asked]);
 check('no page errors', errors.length === 0, errors);
 await b.close();
 const bad = res.filter((r) => !r).length;

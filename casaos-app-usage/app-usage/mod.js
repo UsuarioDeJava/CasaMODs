@@ -6,6 +6,11 @@
  * drawn like the gauges of CasaOS's own system widget. The numbers are
  * CasaOS's own (GET /v1/container/usage, what that widget lists under CPU and
  * RAM), summed over the app's containers. A stopped app shows none.
+ *
+ * config.json, next to this file (the CasaMOD Store can change it):
+ *   "show": "hover"   the gauges while the pointer is on the card (default),
+ *                     and CasaOS is asked only then; "always": all the time
+ *   "interval": 3     seconds between readings (1 to 60)
  */
 (function () {
   'use strict';
@@ -14,9 +19,27 @@
   window.__appUsageMod = true;
 
   var TAG = '[App Usage]';
-  var EVERY = 3000;   // ms between readings, only while CasaOS is in sight
   var NS = 'http://www.w3.org/2000/svg';
+  var SELF = document.currentScript && document.currentScript.src;   // CasaMOD: <script src="mod/<folder>/mod.js">
+  var config = { show: 'hover', interval: 3 };
   var last = {};      // card name: { cpu (%), ram (bytes), limit (bytes) }
+  var hovered = null; // the card under the pointer
+
+  // config.json, read at load and whenever the tab comes back in sight (so a
+  // change made in the CasaMOD Store applies without reloading)
+  function loadConfig() {
+    if (!SELF) return Promise.resolve();
+    return fetch(new URL('config.json', SELF).href, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) {
+        if (!c || typeof c !== 'object') return;
+        if (c.show === 'hover' || c.show === 'always') config.show = c.show;
+        var n = Number(c.interval);
+        if (n >= 1 && n <= 60) config.interval = n;
+      })
+      .catch(function () { /* no config.json, or not JSON: the defaults */ })
+      .then(function () { document.documentElement.classList.toggle('aus-hover', config.show === 'hover'); });
+  }
 
   function token() {
     try {
@@ -124,19 +147,23 @@
       set(cpu, u.cpu, u.cpu < 9.95 ? u.cpu.toFixed(1) : String(Math.round(u.cpu)), '%', 'CPU ' + u.cpu.toFixed(1) + '%');
       var mb = u.ram / 1048576, share = u.limit ? u.ram / u.limit * 100 : 0;
       set(ram, share, mb >= 1000 ? (mb / 1024).toFixed(1) : String(Math.round(mb)), mb >= 1000 ? 'G' : 'M',
-        'RAM ' + size(u.ram) + (u.limit ? ' · ' + share.toFixed(1) + '%' : ''));
+        'RAM ' + size(u.ram) + (u.limit ? ' \u00b7 ' + share.toFixed(1) + '%' : ''));
     });
   }
 
   // ---------------------------------------------------------------------------
   // Readings: every few seconds while the tab is in sight and has app cards
+  // (in "hover", only while the pointer is on one: each request keeps CasaOS
+  // reading every container's statistics for the next 100 seconds)
   // ---------------------------------------------------------------------------
-  var timer = 0, busy = false;
+  var timer = 0, busy = false, readAt = 0;
   function read() {
     clearTimeout(timer);
-    timer = setTimeout(read, EVERY);
-    if (busy || document.hidden || !document.querySelector('[id^="app-"] .app-card') || !token()) return;
+    timer = setTimeout(read, config.interval * 1000);
+    if (busy || document.hidden || (config.show === 'hover' && !hovered) ||
+      !document.querySelector('[id^="app-"] .app-card') || !token()) return;
     busy = true;
+    readAt = Date.now();
     fetch('/v1/container/usage', { headers: { Authorization: token(), Accept: 'application/json' }, credentials: 'include' })
       .then(function (r) { return r.json(); })
       .then(function (j) {
@@ -155,7 +182,17 @@
       .catch(function () { /* CasaOS didn't answer: next time */ })
       .then(function () { busy = false; });
   }
-  document.addEventListener('visibilitychange', function () { if (!document.hidden) read(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) loadConfig().then(read); });
+
+  // The card under the pointer: its gauges show (CSS), and a reading starts at once
+  document.addEventListener('mouseover', function (e) {
+    var el = e.target.closest ? e.target.closest('[id^="app-"]') : null;
+    if (el && !el.querySelector('.app-card')) el = null;
+    if (el === hovered) return;
+    hovered = el;
+    if (el && config.show === 'hover' && Date.now() - readAt > 1000) read();
+  });
+  document.addEventListener('mouseout', function (e) { if (!e.relatedTarget) hovered = null; });   // out of the window
 
   // CasaOS draws its cards again now and then (an app installed, started,
   // stopped): the gauges come back from the last reading at once
@@ -169,6 +206,6 @@
     }, 150);
   }).observe(document.body, { childList: true, subtree: true });
 
-  read();
+  loadConfig().then(read);
   console.info(TAG, 'loaded');
 })();

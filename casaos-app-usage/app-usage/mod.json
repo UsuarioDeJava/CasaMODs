@@ -1,6 +1,6 @@
 {
   "name": "App Usage",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Each app's card on the dashboard shows the CPU and RAM it uses right now, in two small gauges like CasaOS's own system widget.",
   "author": "UsuarioDeJava",
   "casaos_min_version": "0.4.0",

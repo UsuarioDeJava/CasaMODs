@@ -2,11 +2,12 @@
 
 A CasaMOD mod: CPU and RAM gauges in the bottom corners of each app card on the CasaOS dashboard, from CasaOS's own `GET /v1/container/usage` (what its System Status widget lists). See `README.md`.
 
-- `app-usage/` is the mod as installed (`mod.js`, `mod.css`, `mod.json`, `preview.png`): no build step, copied as is to `/DATA/AppData/casamod/mod/app-usage/`.
+- `app-usage/` is the mod as installed (`mod.js`, `mod.css`, `mod.json`, `preview.png`, `config.json`): no build step, copied as is to `/DATA/AppData/casamod/mod/app-usage/`.
 - It is its own project; it depends on no other mod.
 - CasaOS facts, from its source: the endpoint is CasaOS-AppManagement's `v1ContainerGroup.GET("/usage", v1.AppUsageList)`; each item is `{ title: container name, icon: the container's "icon" label, data: Docker stats, previous: the reading before }`, sampled about once a second by CasaOS for 100 s after each request. The CPU and RAM formulas are CasaOS-UI's `widgets/Cpu.vue` (CPU against the whole machine, not × cores, so the numbers match its widget). The gauge is `components/widgets/RadialBar.vue` (viewBox, `stroke-dasharray: 75 100`, `rotate(-225deg)`, the gradient).
 - Containers go to cards by name (equal, or `<name>-` / `<name>_` prefix, longest wins), then by icon. The gauges live in the `#app-<name>` holder (AppSection's v-for div), not inside the Vue component; a MutationObserver puts them back from the last reading.
-- No per-frame work: one request every 3 s only while the tab is visible and has cards; CSS transitions for the arcs.
+- `config.json` (the user's CasaMOD Store edits it): `show` (`"hover"`, the default: gauges only on the hovered card, fading in, and requests only while a card is hovered; `"always"`), `interval` (1–60 s, default 3). Read from `new URL('config.json', document.currentScript.src)` at load and on `visibilitychange`; invalid values keep the defaults. Hover mode matters for the server too: each request keeps CasaOS sampling every container's stats once a second for 100 s.
+- No per-frame work: one request per `interval` only while the tab is visible and has cards (and, in hover mode, a card is hovered); CSS transitions for the arcs and the fade. The gauges sit under the app's name (CasaOS's cards are square), which keeps its width.
 
 ## Working here
 
