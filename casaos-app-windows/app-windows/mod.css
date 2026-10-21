@@ -129,12 +129,16 @@ html.cw-moving * { user-select: none !important; -webkit-user-select: none !impo
 .cw-item input[type="checkbox"] { accent-color: #6aa8ff; }
 .cw-hint { margin: 4px 0.6rem 2px; color: rgba(255, 255, 255, 0.55); font-size: 12px; line-height: 1.4; }
 
-/* An open app's icon on the dashboard: a dot under it (dimmed while minimized) */
-[id^="app-"].cw-open .cards-content .is-relative::after {
+/* An open app on the dashboard (setting openMark): a dot under its name, which
+   stays put while the icon grows on hover, or a glow behind its icon. Dimmed
+   while minimized; each fades in when the app opens */
+/* (its own layer, so the glow stays over the card's background) */
+[id^="app-"].cw-open .cards-content .img-c { position: relative; isolation: isolate; }
+[id^="app-"].cw-open .cards-content .img-c::after {
   content: '';
   position: absolute;
   left: 50%;
-  bottom: -8px;
+  bottom: -9px;
   width: 6px;
   height: 6px;
   margin-left: -3px;
@@ -142,8 +146,28 @@ html.cw-moving * { user-select: none !important; -webkit-user-select: none !impo
   background: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
   pointer-events: none;
+  animation: cw-mark-in 0.3s ease;
 }
-[id^="app-"].cw-open.cw-min .cards-content .is-relative::after { opacity: 0.45; }
+/* The glow: behind the icon (under everything in the card's content, over
+   its background), a little wider than the icon grown on hover */
+html.cw-mark-glow [id^="app-"].cw-open .cards-content .img-c::after { content: none; }
+html.cw-mark-glow [id^="app-"].cw-open .cards-content .is-relative::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 128px;
+  height: 128px;
+  margin: -64px 0 0 -64px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.16) 60%, rgba(255, 255, 255, 0));
+  pointer-events: none;
+  animation: cw-mark-in 0.4s ease;
+}
+[id^="app-"].cw-open.cw-min .cards-content .img-c::after { opacity: 0.45; }
+[id^="app-"].cw-open.cw-min .cards-content .is-relative::before { opacity: 0.55; }
+@keyframes cw-mark-in { from { opacity: 0; transform: scale(0.4); } }
 
 /* Files and the App Store as windows: the place of a window, no backdrop, the
    bar on top and the panel filling the rest */

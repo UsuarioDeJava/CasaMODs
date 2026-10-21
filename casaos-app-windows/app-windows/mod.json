@@ -1,6 +1,6 @@
 {
   "name": "App Windows",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Apps open in windows inside the CasaOS tab instead of new tabs: drag, resize, maximize, minimize (the app keeps running, its music keeps playing) and open in a new tab. Files and the App Store become windows too.",
   "author": "UsuarioDeJava",
   "casaos_min_version": "0.4.0",

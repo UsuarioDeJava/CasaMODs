@@ -14,7 +14,9 @@
  *
  * Settings (config.json): panels, Files and the App Store as windows too
  * (false: experimental); coverTopBar, windows may use the whole tab, over
- * CasaOS's top bar (true), or only the space below it.
+ * CasaOS's top bar (true), or only the space below it; openMark, how an open
+ * app shows on its card: a dot under its name ("dot") or a glow behind its
+ * icon ("glow").
  */
 (function () {
   'use strict';
@@ -32,22 +34,24 @@
   // repository's root (the CasaMOD Store shows and changes it). Each value by
   // its key; a missing or invalid one is the default
   var SELF = document.currentScript && document.currentScript.src;
-  var DEFAULTS = { panels: false, coverTopBar: true };
+  var DEFAULTS = { panels: false, coverTopBar: true, openMark: 'dot' };
   var VALID = {
     panels: function (v) { return v === true || v === false; },
-    coverTopBar: function (v) { return v === true || v === false; }
+    coverTopBar: function (v) { return v === true || v === false; },
+    openMark: function (v) { return v === 'dot' || v === 'glow'; }
   };
   var configured = false;   // nothing is restored or turned into a window before the settings are in
   var config = {};
   Object.keys(DEFAULTS).forEach(function (k) { config[k] = DEFAULTS[k]; });
-  function loadConfig() {
+  // keys: only these (the ones that apply while running); all of them by default
+  function loadConfig(keys) {
     if (!SELF) return Promise.resolve();
     return fetch(new URL('config.json', SELF).href, { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (c) {
         var values = {};
         if (c && Array.isArray(c.settings)) c.settings.forEach(function (s) { if (s && typeof s.key === 'string') values[s.key] = s.value; });
-        Object.keys(DEFAULTS).forEach(function (k) { config[k] = VALID[k](values[k]) ? values[k] : DEFAULTS[k]; });
+        (keys || Object.keys(DEFAULTS)).forEach(function (k) { config[k] = VALID[k](values[k]) ? values[k] : DEFAULTS[k]; });
       })
       .catch(function () { /* no config.json, or not JSON: as it was */ });
   }
@@ -871,6 +875,10 @@
   });
 
   // The open apps' icons get a dot (dimmed while minimized)
+  // How (setting openMark): a dot under the name, or a glow behind the icon
+  function markStyle() {
+    document.documentElement.classList.toggle('cw-mark-glow', config.openMark === 'glow');
+  }
   function mark() {
     [].forEach.call(document.querySelectorAll('[id^="app-"].cw-open'), function (c) {
       if (!find(c.id.slice(4))) c.classList.remove('cw-open', 'cw-min');
@@ -1067,8 +1075,13 @@
   // The settings first (they apply at load: "applies": "reload"), then what CasaOS shows already
   loadConfig().then(function () {
     configured = true;
+    markStyle();
     restore();
     scanPanels();
+  });
+  // openMark applies when the tab is back in sight ("applies": "visible"); the others at the next load
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') loadConfig(['openMark']).then(markStyle);
   });
   console.info(TAG, 'loaded');
 

@@ -4,7 +4,7 @@ A [CasaMOD](https://github.com/Cp0204/CasaMOD) mod: the apps open in **windows i
 
 - A slim bar on top of each window: the app's icon and title, then **⋯** (more), **open in a new tab**, **minimize**, **maximize / restore** and **close**.
 - **Drag** a window by its bar, **resize** it by its edges and corners. **Maximize** fills the whole tab, over the CasaOS top bar (with the browser in full screen, F11, the whole screen: only the window's bar and the app); double-click the bar to maximize or restore, drag a maximized window to set it loose again. A narrow window shows the app's phone layout, if it has one.
-- **Minimize** hides the window and the app **keeps running**: music keeps playing in this tab while you use other apps. The app's icon on the dashboard brings it back (an open app has a dot under its icon, dimmed while minimized).
+- **Minimize** hides the window and the app **keeps running**: music keeps playing in this tab while you use other apps. The app's icon on the dashboard brings it back (an open app has a dot under its name, or a glow behind its icon if you prefer: setting `openMark`; dimmed while minimized).
 - **Open in a new tab** moves the app to a tab, CasaOS's usual way, and closes the window.
 - **Files** and the **App Store** (CasaOS's own panels) can become windows too, **experimental** and off by default (setting `panels`): the same bar, dragged, resized, minimized without closing (Files keeps its folder).
 - Windows go anywhere in the tab, over the CasaOS top bar too. Each app's size, place and maximized state are kept, in this browser. On a phone, windows always fill the screen.
@@ -356,8 +356,9 @@ The mod's folder has a `config.json` with its settings, in the format every mod 
 | --- | --- | --- | --- | --- |
 | `panels` | `boolean` | `true` or `false` | `false` | **Experimental.** Files and the App Store open as windows too. `false`: they stay CasaOS's own panels. |
 | `coverTopBar` | `boolean` | `true` or `false` | `true` | Windows may use the whole tab, over CasaOS's top bar (a maximized window covers it). `false`: only the space below the top bar, which stays in sight. |
+| `openMark` | `select` | `"dot"` or `"glow"` | `"dot"` | How an open app shows on its dashboard card: `"dot"`, a dot under its name; `"glow"`, a soft glow behind its icon. Dimmed while the app is minimized. |
 
-They apply when CasaOS is reloaded (`"applies": "reload"`: Ctrl+F5).
+`panels` and `coverTopBar` apply when CasaOS is reloaded (`"applies": "reload"`: Ctrl+F5); `openMark` when you come back to the tab (`"applies": "visible"`).
 
 Copying a newer folder over the old one brings the new `config.json` with the default values: the CasaMOD Store keeps your values (CONFIG.md says how); by hand, note yours and set them again.
 
