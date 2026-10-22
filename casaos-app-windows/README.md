@@ -44,7 +44,7 @@ To remove it, move `app-windows` out of `/DATA/AppData/casamod/mod/` and restart
 | qBittorrent | Web UI → uncheck "Enable clickjacking protection" |
 | Grafana | `allow_embedding = true` |
 
-**CasaOS on https://:** the browser blocks `http://` apps inside an `https://` page (mixed content). So with CasaOS opened over HTTPS, an app opens at its `https://` address on the same port, which needs the server to answer HTTPS there: the frame proxy does that for every app. Without it the window shows the browser's error: use **open in a new tab**. On your own domain, each app gets its own `https://` address instead: [CasaOS on your own domain](#casaos-on-your-own-domain-your-own-certificate). At CasaOS's `http://` address, windows work without either (except for apps that refuse frames).
+**CasaOS on https://:** the browser blocks `http://` apps inside an `https://` page (mixed content). So with CasaOS opened over HTTPS, an app opens at an `https://` address, which needs the server to answer HTTPS: the frame proxy does that for every app, on the app's port + 30000 (without it, App Windows tries the app's own port, for an `https://` you serve there yourself). Without it the window shows the browser's error: use **open in a new tab**. On your own domain, each app gets its own `https://` address instead: [CasaOS on your own domain](#casaos-on-your-own-domain-your-own-certificate). At CasaOS's `http://` address, windows work without either (except for apps that refuse frames).
 
 **An app with its own certificate** (self-signed: Portainer, MineOS) can't show inside a window by itself, because a certificate warning can't be accepted inside a frame. The frame proxy gives it Tailscale's certificate. Without it: open the app in a new tab and accept the certificate, and after that it opens in windows too.
 
@@ -57,12 +57,12 @@ This is for CasaOS opened at its **Tailscale** address. On your own domain, with
 ### How it works
 
 ```
-browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve        (Tailscale's certificate)
+browser ── https://<machine>.<tailnet>.ts.net:38096 ──▶ tailscale serve       (Tailscale's certificate)
         ──▶ Caddy on 127.0.0.1:38096 (container "frame-proxy")             (removes the frame blocks)
         ──▶ the app on 127.0.0.1:8096                                      (http, or its own https)
 ```
 
-- **Tailscale** answers HTTPS on each app's port with Tailscale's certificate (`tailscale serve`), only to devices in your tailnet.
+- **Tailscale** answers HTTPS on each app's port + 30000 with Tailscale's certificate (`tailscale serve`), only to devices in your tailnet. Not on the app's own port: for each port it serves, Tailscale also listens on the server's Tailscale IP and that port, and keeps retrying until it gets it. Once it holds it, an app that restarts can't listen on its port again (Linux refuses), so Home Assistant came back without its web page, and Docker would fail to start an app on that port.
 - **Caddy**, a small web server in a Docker container (`frame-proxy`, host network), runs as the CasaOS app **Frame Proxy** (see [below](#the-frame-proxy-app)). It listens only on the server itself, on `127.0.0.1:<port + 30000>`, and passes each request to the app:
   - without `X-Frame-Options` and without the CSP `frame-ancestors` directive, the two headers that forbid frames. The rest of the app's security policy stays.
   - with `X-Forwarded-Proto: https` (the app knows it's served over HTTPS), and without `X-Forwarded-For` (Home Assistant answers "400: Bad Request" to a proxy it wasn't told to trust).
@@ -73,7 +73,7 @@ browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve
   - **what the app plays** (title, artist, album, cover, playing or paused, position: what the browser's media controls show) reaches the CasaOS tab, for Live Wallpapers' media integration;
   - **its sound**, analysed there, so wallpapers that react to sound react to the app's music too (only while a wallpaper listens and the app plays);
   - "open in a new tab" and a reload of CasaOS keep the app's current page.
-- The app's port is the same in both addresses: `http://<server>:8096` on your network (unchanged) and `https://<machine>.<tailnet>.ts.net:8096` in the tailnet.
+- Each app has two addresses: `http://<server>:8096` on your network (unchanged) and `https://<machine>.<tailnet>.ts.net:38096` in the tailnet (its port + 30000; ports from 35536 up: minus 30000). App Windows knows the rule and uses it by itself. The Frame Proxy page links to each one.
 
 ### Before you start
 
@@ -102,10 +102,10 @@ browser ── https://<machine>.<tailnet>.ts.net:8096 ──▶ tailscale serve
    ```
    It prints one line per app port, with `(its own https)` for the apps that have their own certificate, and the port of its own page:
    ```
-   https port 8096 -> app 8096
-   https port 8123 -> app 8123
-   https port 8390 -> the Frame Proxy page
-   https port 8444 -> app 8444 (its own https)
+   https port 38096 -> app 8096
+   https port 38123 -> app 8123
+   https port 38390 -> the Frame Proxy page
+   https port 38444 -> app 8444 (its own https)
    ```
 4. **Reload CasaOS** at its `https://` address (Ctrl+F5) and open an app: it opens in a window. The dashboard now has the **Frame Proxy** app.
 
@@ -136,7 +136,7 @@ Set them before the command, as in step 3. They're kept in `/DATA/AppData/frame-
 On the server:
 
 ```bash
-tailscale serve status                     # each app port -> http://127.0.0.1:<port + 30000>
+tailscale serve status                     # each app's port + 30000 -> http://127.0.0.1:<port + 30000>
 sudo docker ps --filter name=frame-proxy   # the Caddy container, "Up"
 curl -sI http://127.0.0.1:38096/           # an app through Caddy (port + 30000): its answer, without X-Frame-Options
 sudo docker logs frame-proxy               # Caddy's messages
@@ -165,8 +165,8 @@ Changes work only with the page opened from CasaOS at its `https://` address (th
 
 | What you see | Why | What to do |
 | --- | --- | --- |
-| **"Frame proxy: the app on port … did not answer (502 …)"** | The app is stopped, or its port changed. | Start the app. If its port changed, run the script again. |
-| **"Refused to connect"** at `https://…ts.net:<port>` | Nothing answers HTTPS on that port: an app outside Docker or on the host network. | Add its port on the Frame Proxy page (or in `EXTRA`). |
+| **"Frame proxy: the app on port … did not answer (502 …)"** | The app is stopped, or its port changed. Or, with a script older than App Windows 1.4.0, Tailscale took the app's port while the app restarted (`sudo ss -ltnp \| grep <port>` shows only `tailscaled`): Home Assistant then runs without its web page. | Start the app. If its port changed, run the script again. For the last case, copy the mod again, run the script (it moves Tailscale off the apps' ports) and restart the app. |
+| **"Refused to connect"** at `https://…ts.net:<port + 30000>` | Nothing answers HTTPS on that port: an app outside Docker or on the host network. | Add its port on the Frame Proxy page (or in `EXTRA`). |
 | **A blank window**, and the console says `X-Frame-Options` or `frame-ancestors` | That app isn't going through the proxy (CasaOS opened at `http://`, or its port isn't served). | Open CasaOS at its `https://` address; run the script again with the port in `EXTRA` if needed. |
 | **"400: Bad Request"** (Home Assistant) | An older version of the script, or the port is served straight to the app by an older `tailscale serve` line. | Copy the mod again (it brings the newer script) and run the script. |
 | **A certificate error** for an app with its own HTTPS | The app wasn't running when the script ran, so it was taken for plain HTTP. | Start the app and press **Scan again** on the page, or remove the port and add it back with **the app serves https itself**. |

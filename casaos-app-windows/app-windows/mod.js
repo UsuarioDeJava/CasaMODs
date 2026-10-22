@@ -552,11 +552,15 @@
   // Apps
   // ---------------------------------------------------------------------------
   // An app's address. Inside CasaOS opened over https:// the browser blocks
-  // an http:// app (mixed content): its https:// address on the same port is
-  // used instead (with tailscale serve on that port, it answers). Nothing is
-  // checked beforehand: a page can't tell (Chrome hides the answer of a
-  // no-cors request for a web page, ORB), so a window that can't show its
-  // app shows the browser's error, and "open in a new tab" is right there.
+  // an http:// app (mixed content): its https:// address is used instead,
+  // through the frame proxy on its port + 30000 (frame-proxy.sh: Tailscale
+  // can't serve the app's own port, it would keep the app from listening on
+  // it after a restart), else on the same port (an own tailscale serve there).
+  // Only the frame proxy can be checked beforehand (its window page's little
+  // picture, see viaShim): a page can't tell whether a web page answers
+  // (Chrome hides the answer of a no-cors request, ORB), so a window that
+  // can't show its app shows the browser's error, and "open in a new tab" is
+  // right there.
   function route(app) {
     var u = new URL(app.url), orig = u.href;
     if (u.protocol === 'http:' && location.protocol === 'https:') {
@@ -580,6 +584,7 @@
       kind: 'app', name: app.name, title: app.title || app.name, icon: app.icon || '', url: app.url, orig: app.orig || app.url,
       min: false, max: !!appCfg(app.name).max, wait: !!app.wait
     };
+    w.alt = proxied(w.url, w.orig);
     var el = w.el = document.createElement('div');
     el.className = 'cw-win';
     el.innerHTML = barHtml(true) + '<div class="cw-menu" hidden></div><div class="cw-body"></div>' + edgesHtml();
@@ -593,11 +598,33 @@
     return w;
   }
 
+  // The frame proxy's address for an app on this server's https:// address and
+  // the app's own port (its port + 30000; frame-proxy.sh's local_port), or ''
+  function proxied(url, orig) {
+    var u = new URL(url, location.href), o = new URL(orig || url, location.href), p = portOf(u);
+    if (u.protocol !== 'https:' || location.protocol !== 'https:' || u.hostname !== location.hostname ||
+      !u.port || p !== portOf(o)) return '';
+    u.port = String(p < 35536 ? p + 30000 : p - 30000);
+    return u.href;
+  }
+
   // The window's page (again: a reload)
   function fill(w) {
     var body = w.el.querySelector('.cw-body'), url = w.url;
     body.textContent = '';
     w.frame = null;
+    if (w.alt) {
+      // through the frame proxy when it is there (its window page answers),
+      // else the app's own port, as before it
+      var alt = w.alt;
+      w.alt = '';
+      viaShim(alt, function (ok) {
+        if (!w.el.isConnected) return;
+        if (ok) w.url = alt;
+        fill(w);
+      });
+      return;
+    }
     if (w.wait) {
       // an app CasaOS has just started: its page once it is up, as CasaOS's
       // launch page does. Up: its icon (/favicon.ico) loads (an image is the
@@ -745,7 +772,7 @@
   // widget): from CasaOS's app list, by port
   var grid = null, gridAt = 0;
   function describe(w) {
-    var u = new URL(w.url, location.href), port = String(portOf(u));
+    var u = new URL(w.orig || w.url, location.href), port = String(portOf(u));   // CasaOS's address (its port, not the proxy's)
     (Date.now() - gridAt < 60000 && grid ? Promise.resolve(grid) : fetch('/v2/app_management/web/appgrid', {
       headers: { Authorization: casaToken(), Accept: 'application/json' }
     }).then(function (r) { return r.json(); }).then(function (j) {
@@ -758,13 +785,14 @@
       })[0];
       if (!hit || !w.el.isConnected) return;
       // its CasaOS name, as if its icon had opened it (its dot, its settings)
+      var was = w.name;
       if (hit.name && w.name === u.host && !find(hit.name)) {
         w.name = hit.name;
         mark();
       }
       var l = lang().replace('-', '_'), tt = hit.title;
       var title = typeof tt === 'string' ? tt : tt && (tt[l] || tt[l.split('_')[0]] || tt.en_us || tt.en || tt[Object.keys(tt)[0]]);
-      if (title && (!w.title || w.title === w.name)) w.title = title;
+      if (title && (!w.title || w.title === w.name || w.title === was)) w.title = title;
       if (hit.icon && !w.icon) w.icon = hit.icon;
       var img = w.el.querySelector('.cw-icon');
       w.el.querySelector('.cw-title').textContent = w.title;

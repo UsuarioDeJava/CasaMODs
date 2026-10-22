@@ -2,9 +2,9 @@
 # Frame proxy for App Windows (CasaMODs): every app of this server can open in
 # a window when CasaOS is opened at its Tailscale HTTPS address.
 #
-# For each app port P, `tailscale serve` gives https://<machine>.<tailnet>.ts.net:P
-# (Tailscale's certificate) and hands it to a small Caddy listening on
-# 127.0.0.1:P+30000, which passes it to the app without the headers that
+# For each app port P, `tailscale serve` gives https://<machine>.<tailnet>.ts.net:Q,
+# Q = P+30000 (Tailscale's certificate), and hands it to a small Caddy
+# listening on 127.0.0.1:Q, which passes it to the app without the headers that
 # forbid being shown inside another page (X-Frame-Options, the CSP
 # frame-ancestors directive), and without X-Forwarded-For (Home Assistant
 # refuses requests that carry it from a proxy it wasn't told to trust, and the
@@ -15,6 +15,16 @@
 # app plays reaches the CasaOS tab (Live Wallpapers). Only inside your
 # tailnet: nothing is exposed to the internet, and the http:// addresses on
 # your network don't change.
+#
+# Why not the app's own port P: for each port it serves, tailscaled also
+# listens on the machine's Tailscale IP and that port (for connections from
+# the machine itself), and keeps retrying until it gets it. Once it holds
+# <Tailscale IP>:P, an app that restarts can't listen on 0.0.0.0:P any more
+# (Linux refuses the wildcard while a specific address listens): Home
+# Assistant on the host network came back without its web page, and Docker
+# would fail to start a container on that port. On Q, tailscaled and Caddy
+# listen on two different addresses (the Tailscale IP, 127.0.0.1), which Linux
+# allows, and P is left to the app.
 #
 # Caddy runs as a CasaOS app, "Frame Proxy" (a Docker Compose project whose
 # file the script writes; CasaOS lists every Compose project). Its card opens
@@ -428,16 +438,17 @@ app_ports() {
   ports "$out $PAGE_PORT"
 }
 
+# The https port of app port P (Tailscale's, and Caddy's on 127.0.0.1); App
+# Windows uses the same rule
+local_port() {
+  if [ "$1" -lt 35536 ]; then echo $(($1 + OFFSET)); else echo $(($1 - OFFSET)); fi
+}
+
 # Run again when Docker's ports change (the scan timer)
 if [ "${1:-}" = scan ]; then
   [ "$(app_ports)" = "$(cat "$DIR/scanned" 2>/dev/null || true)" ] && exit 0
   exec bash "$0"
 fi
-
-# Where Caddy listens for port P (only on this machine)
-local_port() {
-  if [ "$1" -lt 35536 ]; then echo $(($1 + OFFSET)); else echo $(($1 - OFFSET)); fi
-}
 
 # An app that serves HTTPS itself: its port answers TLS (any certificate)
 is_https_app() {
@@ -446,7 +457,11 @@ is_https_app() {
 }
 
 if [ "${1:-}" = off ]; then
-  for p in $(app_ports) $(cat "$DIR/served" 2>/dev/null || true); do tailscale serve --https="$p" off >/dev/null 2>&1 || true; done
+  for p in $(app_ports) $(cat "$DIR/served" 2>/dev/null || true); do
+    # its https port, and the app's own (where older versions served it)
+    tailscale serve --https="$(local_port "$p")" off >/dev/null 2>&1 || true
+    tailscale serve --https="$p" off >/dev/null 2>&1 || true
+  done
   if [ -n "$SYSTEMD" ]; then
     systemctl disable --now frame-proxy-api.socket frame-proxy-scan.timer >/dev/null 2>&1 || true
     rm -f "$UNITS/frame-proxy-api.socket" "$UNITS/frame-proxy-api@.service" \
@@ -465,6 +480,14 @@ exec 9>"$DIR/lock"
 flock 9   # one run at a time (the page, the timer, by hand)
 save_config
 app_ports > "$DIR/scanned"   # what the timer compares (a failed run isn't retried until they change)
+# Older versions served each app on its own port P: tailscaled then holds
+# <Tailscale IP>:P, which keeps the app (after a restart) and Caddy's page
+# from listening there. Those lines go first
+legacy=""
+for p in $(ports "$(app_ports) $(cat "$DIR/served" 2>/dev/null || true)"); do
+  if tailscale serve --https="$p" off >/dev/null 2>&1; then legacy=1; fi
+done
+[ -z "$legacy" ] || sleep 2   # tailscaled lets go of those ports
 docker rm -f "$NAME" >/dev/null 2>&1 || true   # the old one, if any (its ports free up)
 mkdir -p "$DIR/www" "$DIR/page" "$DIR/api"
 # The copy the page's requests and the timer run
@@ -494,7 +517,9 @@ busy=""
   fi
   for p in $(app_ports); do
     q=$(local_port "$p")
-    if ss -ltnH "sport = :$q" 2>/dev/null | grep -q .; then
+    # in use where Caddy listens (127.0.0.1, or every address); not tailscaled's
+    # own listener on the Tailscale IPs (it serves this port: that's us)
+    if ss -ltnH "sport = :$q" 2>/dev/null | awk '{ print $4 }' | grep -qE '^(0\.0\.0\.0|\*|\[::\]|127\.0\.0\.1|\[::ffff:127\.0\.0\.1\]):'; then
       echo "Port $q is in use: app port $p skipped." >&2
       busy="$busy $p"
       continue
@@ -507,7 +532,7 @@ busy=""
       up="127.0.0.1:$p"
       tls=""
     fi
-    # any Host (tailscale serve passes the browser's: <machine>.<tailnet>.ts.net:P),
+    # any Host (tailscale serve passes the browser's: <machine>.<tailnet>.ts.net:Q),
     # on this machine only
     printf 'http://:%s {\n\tbind 127.0.0.1\n' "$q"
     printf '\thandle_path /__casaos-windows/* {\n\t\troot * /srv/casaos-windows\n'
@@ -591,7 +616,7 @@ code{background:rgba(255,255,255,.08);padding:.1rem .35rem;border-radius:.3rem}
       var out = has(skip, p) && !has(extra, p), li = document.createElement('li'), name, what = [];
       if (has(served, p)) {
         name = document.createElement('a');
-        name.href = location.protocol + '//' + location.hostname + ':' + p + '/';
+        name.href = location.protocol + '//' + location.hostname + ':' + (p < 35536 ? p + 30000 : p - 30000) + '/';
         name.target = '_blank';
         name.rel = 'noopener';
       } else name = document.createElement('span');
@@ -812,13 +837,17 @@ if ! docker ps --filter "name=^${NAME}$" --format '{{.Status}}' | grep -q '^Up';
 fi
 
 for p in $served; do
-  tailscale serve --bg --https="$p" "http://127.0.0.1:$(local_port "$p")" >/dev/null
+  q=$(local_port "$p")
+  tailscale serve --bg --https="$q" "http://127.0.0.1:$q" >/dev/null
   case " $tls_ports " in *" $p "*) how=' (its own https)' ;; *) how='' ;; esac
-  if [ "$p" = "$PAGE_PORT" ]; then echo "https port $p -> the Frame Proxy page"; else echo "https port $p -> app $p$how"; fi
+  if [ "$p" = "$PAGE_PORT" ]; then echo "https port $q -> the Frame Proxy page"; else echo "https port $q -> app $p$how"; fi
 done
 # The ports served last time and not now (removed on the page, or their app is gone)
 for p in $(cat "$DIR/served" 2>/dev/null || true); do
-  case " $served " in *" $p "*) ;; *) tailscale serve --https="$p" off >/dev/null 2>&1 || true ;; esac
+  case " $served " in *" $p "*) ;; *)
+    tailscale serve --https="$(local_port "$p")" off >/dev/null 2>&1 || true
+    tailscale serve --https="$p" off >/dev/null 2>&1 || true ;;
+  esac
 done
 printf '%s\n' $served > "$DIR/served"
 
