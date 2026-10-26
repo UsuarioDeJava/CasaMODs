@@ -3351,7 +3351,7 @@
   var JF_AUTH = STORE + '-jellyfin';
   var JF_SHARED = SHARED_DIR + '/music-player-jellyfin.json';
   var JF_KEYS = ['server', 'token', 'user', 'device', 'at'];
-  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '2.2.1';
+  var JF_CLIENT = 'CasaOS Music Player', JF_VERSION = '2.2.2';
   var JF_HELP = 'https://github.com/UsuarioDeJava/CasaMODs/tree/main/casaos-music-player#jellyfin';
   var JF_PAGE = 200, JF_ALL_PAGE = 500, JF_SHOWN = 300;
   // What this browser plays as it is (Jellyfin converts the rest to MP3)

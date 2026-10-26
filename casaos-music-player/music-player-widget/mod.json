@@ -1,6 +1,6 @@
 {
   "name": "Music Player",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "A dashboard music widget with three sources: a folder of your CasaOS storage, your Spotify account (control what plays on any of your devices, or play it in the CasaOS tab) or your Jellyfin music library.",
   "author": "UsuarioDeJava",
   "casaos_min_version": "0.4.0",

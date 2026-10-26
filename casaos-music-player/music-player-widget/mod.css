@@ -262,6 +262,35 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
+/* The lists' scrollbars: CasaOS's own (its dashboard's .contents: 8px, no
+   track, a rounded white thumb at 40%). Firefox has no ::-webkit-scrollbar:
+   there, the standard properties (in Chrome they would win over it) */
+.smp-list::-webkit-scrollbar,
+.smp-nlist::-webkit-scrollbar,
+.smp-dev-list::-webkit-scrollbar,
+.smp-dirs::-webkit-scrollbar { width: 8px; height: 8px; }
+.smp-list::-webkit-scrollbar-track,
+.smp-nlist::-webkit-scrollbar-track,
+.smp-dev-list::-webkit-scrollbar-track,
+.smp-dirs::-webkit-scrollbar-track { background: transparent; }
+.smp-list::-webkit-scrollbar-thumb,
+.smp-nlist::-webkit-scrollbar-thumb,
+.smp-dev-list::-webkit-scrollbar-thumb,
+.smp-dirs::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  outline: none;
+}
+.smp-list::-webkit-scrollbar-corner,
+.smp-nlist::-webkit-scrollbar-corner,
+.smp-dev-list::-webkit-scrollbar-corner,
+.smp-dirs::-webkit-scrollbar-corner { background: transparent; }
+@supports not selector(::-webkit-scrollbar) {
+  .smp-list,
+  .smp-nlist,
+  .smp-dev-list,
+  .smp-dirs { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.4) transparent; }
+}
 .smp-none {
   padding: 0.4rem;
   font-size: 0.8rem;
