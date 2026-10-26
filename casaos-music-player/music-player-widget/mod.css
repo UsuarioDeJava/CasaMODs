@@ -184,7 +184,9 @@
 .smp-path:focus { outline: none; border-color: var(--smp-accent); }
 .smp-dirs {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);   /* never wider than the widget: no sideways scrolling */
   max-height: 9rem;
+  overflow-x: hidden;
   overflow-y: auto;
   font-size: 0.8rem;
   color: var(--smp-muted);
@@ -255,7 +257,9 @@
 .smp-search:focus { outline: none; border-color: var(--smp-accent); }
 .smp-list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);   /* never wider than the widget: long names wrap instead */
   max-height: 14rem;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 .smp-none {
@@ -263,7 +267,9 @@
   font-size: 0.8rem;
   color: var(--smp-muted);
 }
-/* A row: the track (plays now) and its queue button */
+/* A row: the track (plays now) and its queue button. In the track, its
+   number (or picture) on the left, then its name, wrapped on two lines at
+   most, with what goes with it (the artist, a playlist's tracks) under it */
 .smp-track {
   display: flex;
   align-items: center;
@@ -275,9 +281,11 @@
 .smp-track-play {
   flex: 1;
   min-width: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "n t" "n s";
   align-items: center;
-  gap: 0.6rem;
+  column-gap: 0.6rem;
   padding: 0.35rem 0.4rem;
   border: 0;
   background: transparent;
@@ -287,6 +295,8 @@
   text-align: start;
   cursor: pointer;
 }
+.smp-track-n,
+.smp-track-play > .smp-pl-img { grid-area: n; }
 .smp-track-n {
   flex: none;
   min-width: 1.4rem;
@@ -295,7 +305,15 @@
   font-variant-numeric: tabular-nums;
   text-align: end;
 }
-.smp-track-t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.smp-track-t {
+  grid-area: t;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+}
 .smp-queue {
   flex: none;
   display: grid;
@@ -476,10 +494,10 @@
   padding-top: 0.25rem;
   border-top: 1px solid var(--smp-faint);
 }
-.smp-nlist { display: grid; max-height: 14rem; overflow-y: auto; }
+.smp-nlist { display: grid; grid-template-columns: minmax(0, 1fr); max-height: 14rem; overflow-x: hidden; overflow-y: auto; }
 /* Queued tracks: their place in the queue in the accent color, ✕ takes them out */
 .smp-track.smp-queued .smp-track-n { color: var(--smp-accent); font-weight: 600; }
-.smp-dev-list { display: grid; max-height: 10rem; overflow-y: auto; font-size: 0.8rem; color: var(--smp-muted); }
+.smp-dev-list { display: grid; grid-template-columns: minmax(0, 1fr); max-height: 10rem; overflow-x: hidden; overflow-y: auto; font-size: 0.8rem; color: var(--smp-muted); }
 .smp-dev.smp-current { color: var(--smp-accent); }
 .smp-dev:disabled { opacity: 0.45; cursor: default; }
 /* Text fields never widen the widget (a grid item's min-content width otherwise would) */
@@ -554,11 +572,9 @@
 .smp-liked-img { background: linear-gradient(135deg, hsl(250, 70%, 55%), hsl(190, 60%, 70%)); }
 .smp-liked-img svg { width: 15px; height: 15px; opacity: 1; }
 .smp-liked-img svg path { fill: #fff; }
-.smp-track-play { flex-wrap: nowrap; }
-.smp-track-t { flex: 0 1 auto; min-width: 0; }
 .smp-track-s {
-  flex: 1 1 0;
-  min-width: 0;
+  grid-area: s;
+  margin-top: 0.1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
